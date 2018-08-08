@@ -5,5 +5,5 @@ with open("inputs/sentences.csv", "r", encoding="utf8") as input:
         for line in input:
             sentenceId, language, sentenceText = line.split("\t")
             sentenceText = sentenceText.strip()
-            sentenceKana = kanji_to_kana.kanjiSentenceToKana(sentenceText) if language == "jpn" else ""
-            output.write("%s\t%s\t%s\t%s\n" % (sentenceId, language, sentenceKana))
+            sentenceKana = libs.kanji_to_kana.kanjiSentenceToKana(sentenceText) if language == "jpn" else ""
+            output.write("%s\t%s\t%s\t%s\n" % (sentenceId, language, sentenceText, sentenceKana))
