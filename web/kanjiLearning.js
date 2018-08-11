@@ -43,6 +43,7 @@ let SentenceRepository = function ()
     }
     this.getFullListOfRandomSentences = () =>
     {
+        // TODO: precompute sorted keys instead of sorting at every request
         return Object.keys(sentenceRepository.sentences)
             .map((c) =>
             {
@@ -56,10 +57,11 @@ let SentenceRepository = function ()
                 return 0;
             })
     }
+
+    this.loadSentences()
 }
 
 let sentenceRepository = new SentenceRepository()
-sentenceRepository.loadSentences()
 
 app.set("view engine", "ejs")
 app.get("/", (req, res) =>

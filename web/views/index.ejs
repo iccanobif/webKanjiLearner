@@ -11,18 +11,27 @@
 </head>
 
 <body>
-    <h1>HEH</h1>
+    <h1>MY DICK SMELLS REALLY BAD</h1>
+    
     <% firstBatchOfRandomSentences.forEach((sentence) => { %>
-
-    char: <%= sentence.char %> <br/>
-    freq: <%= sentence.freq %> <br/>
-    giap: <%= sentence.jpn %> <br/>
-    kana: <%= sentence.kana %> <br/>
-    eng: <%= sentence.eng %> <br/>
-
+    <div class="sentenceBlock">
+        <div class="char">
+            <%= sentence.char %>
+        </div>
+        <div class="freq">
+        (freq. <%= sentence.freq %>)
+        </div>
+        <div class="giap">
+            <%= sentence.jpn %>
+        </div>
+        <div class="kana">
+            <%= sentence.kana %>
+        </div>
+        <div class="eng">
+            <%= sentence.eng %>
+        </div>
+    </div>
     <% }); %>
-
-
 </body>
 
 </html>

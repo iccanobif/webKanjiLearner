@@ -3,3 +3,36 @@ body
     background-color: black;
     color: lightgray;
 }
+
+.sentenceBlock
+{
+    border-bottom-style: solid;
+    border-bottom-color: lightgray;
+}
+
+.char
+{
+    display: inline-block;
+    font-size: 2em;
+}
+
+.freq
+{
+    display: inline-block;
+    font-size: 0.7em;
+}
+
+.giap
+{
+
+}
+
+.kana
+{
+
+}
+
+.eng
+{
+
+}
