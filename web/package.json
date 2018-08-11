@@ -2,7 +2,13 @@
   "name": "kanjilearner",
   "version": "1.0.0",
   "main": "kanjiLearning.js",
+  "description": "meh",
+  "repository": {
+    "url": ""
+  },
+  "license": "none",
   "dependencies": {
+    "ejs": "^2.6.1",
     "express": "^4.16.3"
   }
 }

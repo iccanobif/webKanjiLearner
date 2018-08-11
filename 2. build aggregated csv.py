@@ -56,11 +56,11 @@ frasi, frequenzaCaratteri = preparaFrasi()
 # Le frasi di un carattere sono tutte le frasi in cui quel carattere è il piu' difficile che hanno
 
 def makeJson(carattere, fraseGiapponese, fraseInGiapponeseInKana, traduzione):
-    return """["char": "%s", "freq": %d, jpn": "%s", "kana": "%s", "eng": "%s"]""" \
-            % (carattere, frequenzaCaratteri[carattere], fraseGiapponese, fraseInGiapponeseInKana, traduzione)
+    return """{"char": "%s", "freq": %d, "jpn": "%s", "kana": "%s", "eng": "%s"}""" \
+            % (carattere, frequenzaCaratteri[carattere], fraseGiapponese.replace("\"", "\\\""), fraseInGiapponeseInKana.replace("\"", "\\\""), traduzione.replace("\"", "\\\""))
 
 print("Preparing mapping")
-with open("output/frasi giapponesi 2.csv", "w", encoding="utf8") as f:
+with open("output/allSentences.csv", "w", encoding="utf8") as f:
     for c in sorted(frequenzaCaratteri.keys(), key=lambda x: frequenzaCaratteri[x]):
         print("Doing character", c, frequenzaCaratteri[c])
         f.write("\n".join([makeJson(c, frase.fraseInGiapponese, frase.fraseInGiapponeseInKana, traduzione) \

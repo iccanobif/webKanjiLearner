@@ -1,40 +1,92 @@
-let express = require('express');
-let app = express();
-let http = require('http').Server(app);
-let fs = require('fs');
+const express = require('express')
+const app = express()
+const http = require('http').Server(app)
+const fs = require('fs')
+const readline = require('readline')
 
 function log(msg)
 {
-    let d = new Date();
-    console.log("[" + d.toISOString() + "] " + msg);
+    let d = new Date()
+    console.log("[" + d.toISOString() + "] " + msg)
 }
 
 function printError(e)
 {
-    log(e.message + " " + e.stack);
-};
+    log(e.message + " " + e.stack)
+}
 
+let SentenceRepository = function ()
+{
+    this.sentences = {}
+    this.isLoaded = false
+    this.loadSentences = () =>
+    {
+        readline
+            .createInterface({ input: fs.createReadStream("../output/allSentences.csv") })
+            .on("line", (line) =>
+            {
+                if (line.trim() == "")
+                    return;
+                // Format:
+                // ["char": "糞", "freq": 1, "jpn": "糞です", "kana": "くそです", "eng": "It's poop"]
+                parsed = JSON.parse(line)
+                if (parsed["char"] in this.sentences)
+                    this.sentences[parsed["char"]].push(parsed)
+                else
+                    this.sentences[parsed["char"]] = [parsed]
+            })
+            .on("close", () =>
+            {
+                log("Finished loading datasets")
+                this.isLoaded = true
+            })
+    }
+    this.getFullListOfRandomSentences = () =>
+    {
+        return Object.keys(sentenceRepository.sentences)
+            .map((c) =>
+            {
+                let index = Math.floor((sentenceRepository.sentences[c].length - 1) * Math.random())
+                return sentenceRepository.sentences[c][index]
+            })
+            .sort((a, b) =>
+            {
+                if (a.freq > b.freq) return -1;
+                if (a.freq < b.freq) return 1;
+                return 0;
+            })
+    }
+}
+
+let sentenceRepository = new SentenceRepository()
+sentenceRepository.loadSentences()
+
+app.set("view engine", "ejs")
 app.get("/", (req, res) =>
 {
     try
     {
-        res.writeHead(200, { 'Content-Type': 'text/html' });
-        fs.readFile("static/index.htm", (err, data) =>
+        if (!sentenceRepository.isLoaded)
         {
-            if (err) res.end(err);
-            else res.end(data);
-        });
+            res.render("stillLoading.ejs")
+        }
+        else
+        {
+            res.render("index.ejs", {
+                firstBatchOfRandomSentences: sentenceRepository.getFullListOfRandomSentences()
+            })
+        }
     }
     catch (e)
     {
-        printError(e);
+        printError(e)
     }
-});
+})
 
 app.use(express.static('static', {
     "maxAge": 24 * 60 * 60 * 1000 // 1 day in milliseconds
-}));
+}))
 
-http.listen(8081, "0.0.0.0");
+http.listen(8081, "0.0.0.0")
 
-log("Server running");
+log("Server running")
