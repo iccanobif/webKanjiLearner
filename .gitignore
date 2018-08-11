@@ -1,3 +1,5 @@
 inputs
 intermediateFiles
+output
 __pycache__
+tmp
