@@ -28,7 +28,7 @@ let SentenceRepository = function ()
                 if (line.trim() == "")
                     return;
                 // Format:
-                // ["char": "糞", "freq": 1, "jpn": "糞です", "kana": "くそです", "eng": "It's poop"]
+                // {"char": "糞", "freq": 1, "jpn": "糞です", "kana": "くそです", "eng": "It's poop"}
                 parsed = JSON.parse(line)
                 if (parsed["char"] in this.sentences)
                     this.sentences[parsed["char"]].push(parsed)
@@ -44,11 +44,11 @@ let SentenceRepository = function ()
     this.getFullListOfRandomSentences = () =>
     {
         // TODO: precompute sorted keys instead of sorting at every request
-        return Object.keys(sentenceRepository.sentences)
+        return Object.keys(this.sentences)
             .map((c) =>
             {
-                let index = Math.floor((sentenceRepository.sentences[c].length - 1) * Math.random())
-                return sentenceRepository.sentences[c][index]
+                let index = Math.floor((this.sentences[c].length - 1) * Math.random())
+                return this.sentences[c][index]
             })
             .sort((a, b) =>
             {
@@ -56,6 +56,19 @@ let SentenceRepository = function ()
                 if (a.freq < b.freq) return 1;
                 return 0;
             })
+    }
+    this.getRandomSentence = (char) =>
+    {
+        // if (!(char in this.sentences))
+        //     return null;
+
+        let index = Math.floor((this.sentences[char].length - 1) * Math.random())
+
+        // log("index: " + index)
+        // log("this.sentences[char]: " + this.sentences[char])
+        // console.log("this.sentences[char][index]: ", this.sentences[char][index])
+        
+        return this.sentences[char][index]
     }
 
     this.loadSentences()
@@ -66,23 +79,22 @@ let sentenceRepository = new SentenceRepository()
 app.set("view engine", "ejs")
 app.get("/", (req, res) =>
 {
-    try
+    if (!sentenceRepository.isLoaded)
     {
-        if (!sentenceRepository.isLoaded)
-        {
-            res.render("stillLoading.ejs")
-        }
-        else
-        {
-            res.render("index.ejs", {
-                firstBatchOfRandomSentences: sentenceRepository.getFullListOfRandomSentences()
-            })
-        }
+        res.render("stillLoading.ejs")
     }
-    catch (e)
+    else
     {
-        printError(e)
+        res.render("index.ejs", {
+            firstBatchOfRandomSentences: sentenceRepository.getFullListOfRandomSentences()
+        })
     }
+})
+
+app.get("/getRandomSentence/:char", (req, res) =>
+{
+    res.type("application/json")
+    res.end(JSON.stringify(sentenceRepository.getRandomSentence(req.params.char)))
 })
 
 app.use(express.static('static', {

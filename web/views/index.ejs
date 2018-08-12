@@ -7,6 +7,10 @@
     <title>Knaji</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    <script
+        src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
     <script src="main.js"></script>
 </head>
 
@@ -14,22 +18,13 @@
     <h1>MY DICK SMELLS REALLY BAD</h1>
     
     <% firstBatchOfRandomSentences.forEach((sentence) => { %>
-    <div class="sentenceBlock">
-        <div class="char">
-            <%= sentence.char %>
-        </div>
-        <div class="freq">
-        (freq. <%= sentence.freq %>)
-        </div>
-        <div class="giap">
-            <%= sentence.jpn %>
-        </div>
-        <div class="kana">
-            <%= sentence.kana %>
-        </div>
-        <div class="eng">
-            <%= sentence.eng %>
-        </div>
+    <div id="<%=sentence.char%>" class="sentenceBlock">
+        <div class="char"><%= sentence.char %></div>
+        <div class="freq">(freq. <%= sentence.freq %>)</div>
+        <input type="button" value="Load new sentence" name="<%= sentence.char %>" />
+        <div class="jpn"><%= sentence.jpn %></div>
+        <div class="kana"><%= sentence.kana %></div>
+        <div class="eng"><%= sentence.eng %></div>
     </div>
     <% }); %>
 </body>
