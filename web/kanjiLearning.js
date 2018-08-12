@@ -59,15 +59,10 @@ let SentenceRepository = function ()
     }
     this.getRandomSentence = (char) =>
     {
-        // if (!(char in this.sentences))
-        //     return null;
+        if (!(char in this.sentences))
+            return null
 
         let index = Math.floor((this.sentences[char].length - 1) * Math.random())
-
-        // log("index: " + index)
-        // log("this.sentences[char]: " + this.sentences[char])
-        // console.log("this.sentences[char][index]: ", this.sentences[char][index])
-        
         return this.sentences[char][index]
     }
 
@@ -93,8 +88,18 @@ app.get("/", (req, res) =>
 
 app.get("/getRandomSentence/:char", (req, res) =>
 {
-    res.type("application/json")
-    res.end(JSON.stringify(sentenceRepository.getRandomSentence(req.params.char)))
+    let randomSentence = sentenceRepository.getRandomSentence(req.params.char)
+    if (randomSentence == null)
+    {
+        res.type("text/plain")
+        res.status(404).end("Character not found.")
+    }
+    else
+    {
+        res.type("application/json")
+        res.end(JSON.stringify(randomSentence))
+    }
+        
 })
 
 app.use(express.static('static', {

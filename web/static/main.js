@@ -1,19 +1,22 @@
-$(() =>
+function loadNewSentence(char)
 {
-    document.querySelectorAll("input").forEach((btn) =>
-    {
-        btn.addEventListener("click", () =>
+    $.ajax("/getRandomSentence/" + char)
+        .done((data) =>
         {
-            char = btn.name
-            console.log(char)
-            $.ajax("/getRandomSentence/" + char)
-                .done((data) =>
-                {
-                    $("#" + char + " > .kana").text(data["kana"])
-                    $("#" + char + " > .jpn").text(data["jpn"])
-                    $("#" + char + " > .eng").text(data["eng"])
-                })
+            $("#" + char + " > .kana").text(data["kana"])
+            $("#" + char + " > .jpn").text(data["jpn"])
+            $("#" + char + " > .eng").text(data["eng"])
         })
-    })
-}
-)
+} 
+
+// $(() =>
+// {
+//     document.querySelectorAll("input").forEach((btn) =>
+//     {
+//         btn.addEventListener("click", () =>
+//         {
+//             loadNewSentence(btn.name())
+//         })
+//     })
+// }
+// )

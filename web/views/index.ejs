@@ -21,7 +21,12 @@
     <div id="<%=sentence.char%>" class="sentenceBlock">
         <div class="char"><%= sentence.char %></div>
         <div class="freq">(freq. <%= sentence.freq %>)</div>
-        <input type="button" value="Load new sentence" name="<%= sentence.char %>" />
+        <input 
+            type="button" 
+            value="Load new sentence" 
+            name="<%= sentence.char %>"
+            onclick="loadNewSentence('<%=sentence.char%>')"
+             />
         <div class="jpn"><%= sentence.jpn %></div>
         <div class="kana"><%= sentence.kana %></div>
         <div class="eng"><%= sentence.eng %></div>
