@@ -75,7 +75,7 @@ let SentenceRepository = function ()
         if (!(char in this.sentences))
             return null
 
-        let index = Math.floor((this.sentences[char].length - 1) * Math.random())
+        let index = Math.floor((this.sentences[char].length) * Math.random())
         return this.sentences[char][index]
     }
 
