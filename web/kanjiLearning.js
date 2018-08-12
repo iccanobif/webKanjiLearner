@@ -143,6 +143,7 @@ app.get("/", (req, res) =>
                     {
                         return !hiddenCharacters.has(x["char"])
                     })
+                    .slice(0, 200) // TODO make some real pagination
             })
         })
     }

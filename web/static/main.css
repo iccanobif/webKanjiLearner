@@ -10,6 +10,11 @@ body
     border-bottom-color: lightgray;
 }
 
+.updatingSentenceBlock
+{
+    background-color: green;
+}
+
 .char
 {
     display: inline-block;
@@ -22,17 +27,8 @@ body
     font-size: 0.7em;
 }
 
-.giap
+input
 {
-
-}
-
-.kana
-{
-
-}
-
-.eng
-{
-
+    width: 200px;
+    height: 2em;
 }

@@ -23,11 +23,13 @@
         <div class="freq">(freq. <%= sentence.freq %>)</div>
         <input 
             type="button" 
+            class="loadNewSentenceButton"
             value="Load new sentence" 
             name="<%= sentence.char %>"
             onclick="loadNewSentence('<%=sentence.char%>')" />
         <input 
             type="button" 
+            class="hideCharacterButton"
             value="Hide character" 
             name="<%= sentence.char %>"
             onclick="hideCharacter('<%=sentence.char%>')" />
