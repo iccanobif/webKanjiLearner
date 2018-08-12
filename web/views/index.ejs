@@ -25,8 +25,12 @@
             type="button" 
             value="Load new sentence" 
             name="<%= sentence.char %>"
-            onclick="loadNewSentence('<%=sentence.char%>')"
-             />
+            onclick="loadNewSentence('<%=sentence.char%>')" />
+        <input 
+            type="button" 
+            value="Hide character" 
+            name="<%= sentence.char %>"
+            onclick="hideCharacter('<%=sentence.char%>')" />
         <div class="jpn"><%= sentence.jpn %></div>
         <div class="kana"><%= sentence.kana %></div>
         <div class="eng"><%= sentence.eng %></div>

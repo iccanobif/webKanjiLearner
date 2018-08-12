@@ -7,16 +7,10 @@ function loadNewSentence(char)
             $("#" + char + " > .jpn").text(data["jpn"])
             $("#" + char + " > .eng").text(data["eng"])
         })
-} 
+}
 
-// $(() =>
-// {
-//     document.querySelectorAll("input").forEach((btn) =>
-//     {
-//         btn.addEventListener("click", () =>
-//         {
-//             loadNewSentence(btn.name())
-//         })
-//     })
-// }
-// )
+function hideCharacter(character)
+{
+    $.post("/hideCharacter", character)
+    $("#" + character).hide()
+}
