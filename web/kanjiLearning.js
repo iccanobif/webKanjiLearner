@@ -60,7 +60,7 @@ let SentenceRepository = function ()
         return Object.keys(this.sentences)
             .map((c) =>
             {
-                let index = Math.floor((this.sentences[c].length - 1) * Math.random())
+                let index = Math.floor((this.sentences[c].length) * Math.random())
                 return this.sentences[c][index]
             })
             .sort((a, b) =>
@@ -168,7 +168,6 @@ app.post("/hideCharacter", (req, res) =>
 {
     let character = ""
 
-
     req.on("data", (data) =>
     {
         character += data
@@ -187,9 +186,7 @@ app.post("/hideCharacter", (req, res) =>
     })
 })
 
-app.use(express.static('static', {
-    "maxAge": 24 * 60 * 60 * 1000 // 1 day in milliseconds
-}))
+app.use(express.static('static'))
 
 http.listen(8081, "0.0.0.0")
 
