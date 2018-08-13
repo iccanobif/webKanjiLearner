@@ -4,6 +4,9 @@ const http = require('http').Server(app)
 const fs = require('fs')
 const readline = require('readline')
 const sqlite3 = require("sqlite3")
+const bodyParser = require('body-parser');
+
+const maxPostDataLength = 10000
 
 function log(msg)
 {
@@ -27,6 +30,8 @@ function readCookie(cookies, cookieName)
     }
     return null;
 }
+
+app.use(bodyParser.urlencoded({ extended: false }));
 
 let SentenceRepository = function ()
 {
@@ -98,7 +103,7 @@ let HiddenCharacterRepository = function ()
             [user, character],
             (err) =>
             {
-                if (err) throw err
+                if (err) printError(err)
             })
     }
     this.unhideAllCharacters = (user) =>
@@ -107,7 +112,7 @@ let HiddenCharacterRepository = function ()
             [user],
             (err) =>
             {
-                if (err) throw err
+                if (err) printError(err)
             })
     }
     // Call
@@ -117,17 +122,27 @@ let HiddenCharacterRepository = function ()
             [user],
             (err, rows) =>
             {
-                if (err) throw err
-                callback(new Set(rows.map((row) => row["CHARACTER"])))
+                if (err)
+                {
+                    printError(err)
+                    callback(new Set())
+                }
+                else 
+                {
+                    callback(new Set(rows.map((row) => row["CHARACTER"])))
+                }
             })
     }
 }
 
 let hiddenCharacterRepository = new HiddenCharacterRepository()
-hiddenCharacterRepository.unhideAllCharacters("utente2")
 
 app.set("view engine", "ejs")
 app.get("/", (req, res) =>
+{
+    res.render("login.ejs")
+})
+app.post("/sentences", (req, res) =>
 {
     if (!sentenceRepository.isLoaded)
     {
@@ -135,7 +150,7 @@ app.get("/", (req, res) =>
     }
     else
     {
-        hiddenCharacterRepository.getHiddenCharacters("USER", (hiddenCharacters) =>
+        hiddenCharacterRepository.getHiddenCharacters(req.body.userName, (hiddenCharacters) =>
         {
             res.render("index.ejs", {
                 firstBatchOfRandomSentences: sentenceRepository.getFullListOfRandomSentences()
@@ -143,14 +158,20 @@ app.get("/", (req, res) =>
                     {
                         return !hiddenCharacters.has(x["char"])
                     })
-                    .slice(0, 200) // TODO make some real pagination
+                    .slice(0, 200), // TODO make some real pagination
+                userName: req.body.userName
             })
         })
     }
 })
+app.get("/sentences", (req, res) =>
+{
+    res.redirect("/")
+})
 
 app.get("/getRandomSentence/:char", (req, res) =>
 {
+    log("Requested new sentence for character " + req.params.char)
     let randomSentence = sentenceRepository.getRandomSentence(req.params.char)
     if (randomSentence == null)
     {
@@ -161,29 +182,15 @@ app.get("/getRandomSentence/:char", (req, res) =>
     {
         res.type("application/json")
         res.end(JSON.stringify(randomSentence))
+        log("Sent new sentence for character " + req.params.char)
     }
 })
 
 app.post("/hideCharacter", (req, res) =>
 {
-    let character = ""
-
-    req.on("data", (data) =>
-    {
-        character += data
-        if (character.length > 1)
-        {
-            res.type("text/plain")
-            res.status(500)
-            res.end("Too much data in the POST request, send only one character")
-        }
-    })
-    req.on("end", () =>
-    {
-        hiddenCharacterRepository.hideCharacter("USER", character)
-        res.type("text/plain")
-        res.end()
-    })
+    hiddenCharacterRepository.hideCharacter(req.body.userId, req.body.character)
+    res.type("text/plain")
+    res.end()
 })
 
 app.use(express.static('static'))

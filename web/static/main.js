@@ -14,5 +14,5 @@ function loadNewSentence(char)
 function hideCharacter(character)
 {
     $("#" + character).hide()
-    $.post("/hideCharacter", character)
+    $.post("/hideCharacter", {character: character, userId: $("#user").val()})
 }

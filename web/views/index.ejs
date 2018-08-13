@@ -15,8 +15,6 @@
 </head>
 
 <body>
-    <h1>MY DICK SMELLS REALLY BAD</h1>
-    
     <% firstBatchOfRandomSentences.forEach((sentence) => { %>
     <div id="<%=sentence.char%>" class="sentenceBlock">
         <div class="char"><%= sentence.char %></div>
@@ -38,6 +36,7 @@
         <div class="eng"><%= sentence.eng %></div>
     </div>
     <% }); %>
+    <input type="hidden" id="user" value="<%=userName%>" />
 </body>
 
 </html>
