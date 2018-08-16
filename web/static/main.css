@@ -4,6 +4,16 @@ body
     color: lightgray;
 }
 
+a {
+    color: lightgray
+        
+}
+
+a:visited {
+    color: lightgray
+}
+
+
 .sentenceBlock
 {
     border-bottom-style: solid;

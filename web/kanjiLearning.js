@@ -83,6 +83,13 @@ let SentenceRepository = function ()
         let index = Math.floor((this.sentences[char].length) * Math.random())
         return this.sentences[char][index]
     }
+    this.getAllSentences = (char) =>
+    {
+        if (!(char in this.sentences))
+            return []
+        else
+            return this.sentences[char]
+    }
 
     this.loadSentences()
 }
@@ -169,10 +176,10 @@ app.get("/sentences", (req, res) =>
     res.redirect("/")
 })
 
-app.get("/getRandomSentence/:char", (req, res) =>
+app.get("/getRandomSentence/:character", (req, res) =>
 {
-    log("Requested new sentence for character " + req.params.char)
-    let randomSentence = sentenceRepository.getRandomSentence(req.params.char)
+    log("Requested new sentence for character " + req.params.character)
+    let randomSentence = sentenceRepository.getRandomSentence(req.params.character)
     if (randomSentence == null)
     {
         res.type("text/plain")
@@ -183,6 +190,25 @@ app.get("/getRandomSentence/:char", (req, res) =>
         res.type("application/json")
         res.end(JSON.stringify(randomSentence))
         log("Sent new sentence for character " + req.params.char)
+    }
+})
+app.get("/sentenceListFromCharacter/:character", (req, res) =>
+{
+    if (!sentenceRepository.isLoaded)
+    {
+        res.render("stillLoading.ejs")
+    }
+    else
+    {
+        log("Requested full sentence list for character " + req.params.character)
+        res.render("sentenceListFromCharacter.ejs", {
+            character: req.params.char,
+            sentences: sentenceRepository.getAllSentences(req.params.character)
+                .sort((a, b) =>
+                {
+                    return a.jpn.localeCompare(b.jpn)
+                })
+        })
     }
 })
 
