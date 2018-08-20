@@ -183,7 +183,7 @@ app.get("/getRandomSentence/:character", (req, res) =>
         ut.log("Sent new sentence for character " + req.params.char)
     }
 })
-app.get("/sentenceListFromCharacter/:character", (req, res) =>
+app.get("/kanjiDetail/:character", (req, res) =>
 {
     if (!sentenceRepository.isLoaded)
     {
@@ -192,7 +192,7 @@ app.get("/sentenceListFromCharacter/:character", (req, res) =>
     else
     {
         ut.log("Requested full sentence list for character " + req.params.character)
-        res.render("sentenceListFromCharacter.ejs", {
+        res.render("kanjiDetail.ejs", {
             character: req.params.character,
             sentences: sentenceRepository.getAllSentences(req.params.character)
                 .sort((a, b) =>

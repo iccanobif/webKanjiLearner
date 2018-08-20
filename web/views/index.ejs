@@ -17,7 +17,7 @@
 <body>
     <% firstBatchOfRandomSentences.forEach((sentence) => { %>
     <div id="<%=sentence.char%>" class="sentenceBlock">
-        <div class="char"><a href="sentenceListFromCharacter/<%= sentence.char %>"><%= sentence.char %></a></div>
+        <div class="char"><a href="kanjiDetail/<%= sentence.char %>"><%= sentence.char %></a></div>
         <div class="freq">(freq. <%= sentence.freq %>)</div>
         <input 
             type="button" 
