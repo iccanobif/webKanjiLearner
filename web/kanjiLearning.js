@@ -1,23 +1,14 @@
-const express = require('express')
+const express = require("express")
 const app = express()
-const http = require('http').Server(app)
-const fs = require('fs')
-const readline = require('readline')
+const http = require("http").Server(app)
+const fs = require("fs")
+const readline = require("readline")
 const sqlite3 = require("sqlite3")
-const bodyParser = require('body-parser');
+const bodyParser = require("body-parser");
+const kanjidic = require("./kanjidic.js")
+const ut = require("./utils.js")
 
 const maxPostDataLength = 10000
-
-function log(msg)
-{
-    let d = new Date()
-    console.log("[" + d.toISOString() + "] " + msg)
-}
-
-function printError(e)
-{
-    log(e.message + " " + e.stack)
-}
 
 function readCookie(cookies, cookieName)
 {
@@ -55,7 +46,7 @@ let SentenceRepository = function ()
             })
             .on("close", () =>
             {
-                log("Finished loading datasets")
+                ut.log("Finished loading datasets")
                 this.isLoaded = true
             })
     }
@@ -105,7 +96,7 @@ let HiddenCharacterRepository = function ()
     })
     this.hideCharacter = (user, character) =>
     {
-        log("Hiding character " + character + " for user " + user)
+        ut.log("Hiding character " + character + " for user " + user)
         db.run("INSERT INTO HIDDEN_CHARACTERS (USER_ID, CHARACTER) VALUES (?, ?)",
             [user, character],
             (err) =>
@@ -178,7 +169,7 @@ app.get("/sentences", (req, res) =>
 
 app.get("/getRandomSentence/:character", (req, res) =>
 {
-    log("Requested new sentence for character " + req.params.character)
+    ut.log("Requested new sentence for character " + req.params.character)
     let randomSentence = sentenceRepository.getRandomSentence(req.params.character)
     if (randomSentence == null)
     {
@@ -189,7 +180,7 @@ app.get("/getRandomSentence/:character", (req, res) =>
     {
         res.type("application/json")
         res.end(JSON.stringify(randomSentence))
-        log("Sent new sentence for character " + req.params.char)
+        ut.log("Sent new sentence for character " + req.params.char)
     }
 })
 app.get("/sentenceListFromCharacter/:character", (req, res) =>
@@ -200,14 +191,16 @@ app.get("/sentenceListFromCharacter/:character", (req, res) =>
     }
     else
     {
-        log("Requested full sentence list for character " + req.params.character)
+        ut.log("Requested full sentence list for character " + req.params.character)
         res.render("sentenceListFromCharacter.ejs", {
-            character: req.params.char,
+            character: req.params.character,
             sentences: sentenceRepository.getAllSentences(req.params.character)
                 .sort((a, b) =>
                 {
                     return a.jpn.localeCompare(b.jpn)
-                })
+                }),
+            readings: kanjidic.getKanjiReadings(req.params.character),
+            meanings: kanjidic.getKanjiMeanings(req.params.character)
         })
     }
 })
@@ -223,4 +216,4 @@ app.use(express.static('static'))
 
 http.listen(8081, "0.0.0.0")
 
-log("Server running")
+ut.log("Server running")

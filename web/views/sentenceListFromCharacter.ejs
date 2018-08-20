@@ -15,6 +15,15 @@
 </head>
 
 <body>
+
+    <h1><%=character%></h1>
+    <h2>Readings:</h2>
+    <%= readings.join(" / ") %><br />
+
+    <h2>Meanings:</h2>
+    <%= meanings.join(" / ") %><br />
+    <h2>Sentences:</h2>
+
     <% if (sentences.length == 0) { %>
     nothing to see here....
     <% } %>
