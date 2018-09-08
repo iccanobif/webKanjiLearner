@@ -1,3 +1,8 @@
 # webKanjiLearner
 
-just a meaningless commit to test jenkins
+To run:
+
+cd web
+npm install
+cd ..
+./run
