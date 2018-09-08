@@ -12,7 +12,8 @@ pipeline {
                 sh 'chmod +x kill'
                 sh './kill'   
                 echo 'Starting new process'
-                sh 'cd web && node kanjiLearning.js >>log.txt 2>>log.txt &'
+                sh 'chmod +x run'
+                sh './run'
             }
         }
     }
