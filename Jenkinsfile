@@ -3,7 +3,8 @@ pipeline {
     stages {
         stage('build') {
             steps {
-                sh 'echo build >> /home/iccanobif/jenkinsWasHere'
+                sh 'cd web'
+                sh 'npm install'
             }
         }
         stage('deploy') {
