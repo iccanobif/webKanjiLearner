@@ -1,5 +1,5 @@
 echo starting...
-PID_TO_KILL=$( ps aux | grep "kanjiLearning" | grep -v grep | awk '{ print $2 }' )
+PID_TO_KILL=$( ps aux | grep "node kanjiLearning.js" | grep -v grep | awk '{ print $2 }' )
 echo PID $PID_TO_KILL
 if [ -z "$PID_TO_KILL" ]
 then
