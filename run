@@ -2,4 +2,6 @@ echo doing cd
 cd web
 echo starting task
 /usr/sbin/daemonize -E BUILD_ID=dontKillMe node kanjiLearning.js >>log.txt 2>>log.txt &
+echo sleeping
+sleep 60
 echo done
