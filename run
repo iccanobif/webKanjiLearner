@@ -1,1 +1,5 @@
-cd web && node kanjiLearning.js >>log.txt 2>>log.txt &
+echo doing cd
+cd web
+echo starting task
+node kanjiLearning.js >>log.txt 2>>log.txt &
+echo done
