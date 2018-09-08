@@ -3,8 +3,7 @@ pipeline {
     stages {
         stage('build') {
             steps {
-                sh 'cd web'
-                sh 'npm install'
+                sh 'cd web && npm install'
             }
         }
         stage('deploy') {
