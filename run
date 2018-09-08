@@ -1,5 +1,5 @@
 echo doing cd
 cd web
 echo starting task
-/usr/sbin/daedddddmonize -E BUILD_ID=dontKillMe node kanjiLearning.js >>log.txt 2>>log.txt &
+/usr/sbin/daemonize -E BUILD_ID=dontKillMe /usr/bin/node kanjiLearning.js >>log.txt 2>>log.txt &
 echo done
