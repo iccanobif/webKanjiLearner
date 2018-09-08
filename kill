@@ -1,6 +1,6 @@
-echo i'm starting
+echo starting...
 PID_TO_KILL=$( ps aux | grep "kanjiLearning" | grep -v grep | awk '{ print $2 }' )
-echo killing $PID_TO_KILL
+echo PID $PID_TO_KILL
 if [ -z "$PID_TO_KILL" ]
 then
     echo Nothing to kill
