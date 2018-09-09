@@ -1,13 +1,13 @@
 pipeline {
     agent any
     stages {
-        stage('build') {
-            steps {
-                sh 'cd web && pwd && npm install'
-                // Would be nice to also install pm2
-                // And here there should be tests!
-            }
-        }
+        // stage('build') {
+        //     steps {
+        //         // Would be nice to also install pm2
+        //         // And here there should be tests!
+        //         sh 'cd web && pwd && npm install'
+        //     }
+        // }
         stage('deploy') {
             steps {
                 sh 'pm2 delete kanjiLearning || true'
