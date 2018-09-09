@@ -4,16 +4,15 @@ pipeline {
         stage('build') {
             steps {
                 sh 'cd web && npm install'
+                // Would be nice to also install pm2
             }
         }
         stage('deploy') {
             steps {
-                sh 'echo Killing existing process $( ps aux | grep "kanjiLearning" | grep -v grep | awk \'{ print $2 }\' )'
-                sh 'chmod +x kill'
-                sh './kill'   
+                sh 'pm2 delete kanjiLearning ; true'
                 echo 'Starting new process'
-                sh 'chmod +x run'
-                sh './run'
+                sh 'chmod +x run.sh'
+                sh 'pm2 start run.sh --name kanjiLearning'
             }
         }
     }
