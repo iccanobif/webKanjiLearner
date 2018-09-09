@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('build') {
             steps {
-                sh 'cd web && npm install'
+                sh 'cd web && pwd && npm install'
                 // Would be nice to also install pm2
                 // And here there should be tests!
             }
