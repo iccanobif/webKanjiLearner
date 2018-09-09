@@ -1,2 +1,3 @@
-kanjiLearning.js >>/home/iccanobif/log.txt 2>>log.txt
+cd web
+node kanjiLearning.js >>/home/iccanobif/log.txt 2>>log.txt
 
