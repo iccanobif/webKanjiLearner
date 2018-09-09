@@ -12,7 +12,7 @@ pipeline {
             steps {
                 sh 'pm2 delete kanjiLearning || true'
                 sh 'cd ~/webKanjiLearner && git pull && npm install'
-                sh 'cd ~/webKanjiLearner && pm2 start run.sh --name kanjiLearning'
+                sh 'cd ~/webKanjiLearner/web && pm2 start kanjiLearning.js'
             }
         }
     }
