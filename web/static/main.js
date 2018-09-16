@@ -1,18 +1,30 @@
-function loadNewSentence(char)
+function loadNewSentence(character)
 {
-    $("#" + char + " > .loadNewSentenceButton").prop("value", "Loading...")
-    $.ajax("/getRandomSentence/" + char)
+    let originalLabel = $("#" + character + " > .loadNewSentenceButton").prop("value")
+    $("#" + character + " > .loadNewSentenceButton").prop("value", "Loading...")
+    $.ajax("/getRandomSentence/" + character)
         .done((data) =>
         {
-            $("#" + char + " > .kana").text(data["kana"])
-            $("#" + char + " > .jpn").text(data["jpn"])
-            $("#" + char + " > .eng").text(data["eng"])
-            $("#" + char + " > .loadNewSentenceButton").prop("value", "Load new sentence")
+            $("#" + character + " > .kana").text(data["kana"])
+            $("#" + character + " > .jpn").text(data["jpn"])
+            $("#" + character + " > .eng").text(data["eng"])
+            $("#" + character + " > .loadNewSentenceButton").prop("value", originalLabel)
         })
 }
 
 function hideCharacter(character)
 {
-    $("#" + character).hide()
-    $.post("/hideCharacter", {character: character, userId: $("#user").val()})
+    let hideCharacterButton = $("#" + character + " > .hideCharacterButton")
+    let originalLabel = hideCharacterButton.prop("value")
+    hideCharacterButton.prop("value", "Hiding...")
+    $.post("/hideCharacter", { character: character, userId: $("#user").val() })
+        .done(() =>
+        {
+            $("#" + character).hide()
+        })
+        .fail(() =>
+        {
+            alert("failed to delete character " + character)
+            hideCharacterButton.prop("value", originalLabel)
+        })
 }
