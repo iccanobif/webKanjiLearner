@@ -10,6 +10,11 @@ function loadNewSentence(character)
             $("#" + character + " > .eng").text(data["eng"])
             $("#" + character + " > .loadNewSentenceButton").prop("value", originalLabel)
         })
+        .fail(() =>
+        {
+            alert("failed to delete character " + character)
+            $("#" + character + " > .loadNewSentenceButton").prop("value", originalLabel)
+        })
 }
 
 function hideCharacter(character)
