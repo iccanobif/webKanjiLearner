@@ -161,7 +161,7 @@ app.get("/sentences", (req, res) =>
     {
         hiddenCharacterRepository.getHiddenCharacters(req.query.userName, (hiddenCharacters) =>
         {
-            res.render("index.ejs", {
+            res.render("sentences.ejs", {
                 firstBatchOfRandomSentences: sentenceRepository.getFullListOfRandomSentences()
                     .filter((x) =>
                     {
