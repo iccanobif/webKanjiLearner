@@ -187,7 +187,7 @@ app.get("/getRandomSentence/:character", (req, res) =>
     {
         res.type("application/json")
         res.end(JSON.stringify(randomSentence))
-        ut.log("Sent new sentence for character " + req.params.char)
+        ut.log("Sent new sentence for character " + req.params.character)
     }
 })
 app.get("/kanjiDetail/:character", (req, res) =>

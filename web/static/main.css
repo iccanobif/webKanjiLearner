@@ -36,10 +36,16 @@ a:visited {
     font-size: 0.7em;
 }
 
+.buttons
+{
+    display: inline-block;
+}
+
 input
 {
     width: 200px;
     height: 2em;
+    border: 0;
 }
 
 .insultForImproperLogin

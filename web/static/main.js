@@ -1,27 +1,28 @@
 function loadNewSentence(character)
 {
-    let originalLabel = $("#" + character + " > .loadNewSentenceButton").prop("value")
-    $("#" + character + " > .loadNewSentenceButton").prop("value", "Loading...")
+    let button = $("#" + character + " >> .loadNewSentenceButton")
+    let originalLabel = button.prop("value")
+    button.prop("value", "Loading...")
     $.ajax("/getRandomSentence/" + character)
         .done((data) =>
         {
             $("#" + character + " > .kana").text(data["kana"])
             $("#" + character + " > .jpn").text(data["jpn"])
             $("#" + character + " > .eng").text(data["eng"])
-            $("#" + character + " > .loadNewSentenceButton").prop("value", originalLabel)
+            button.prop("value", originalLabel)
         })
         .fail(() =>
         {
             alert("Failed to load new sentence for character " + character + ".")
-            $("#" + character + " > .loadNewSentenceButton").prop("value", originalLabel)
+            $("#" + character + " >> .loadNewSentenceButton").prop("value", originalLabel)
         })
 }
 
 function hideCharacter(character)
 {
-    let hideCharacterButton = $("#" + character + " > .hideCharacterButton")
-    let originalLabel = hideCharacterButton.prop("value")
-    hideCharacterButton.prop("value", "Hiding...")
+    let button = $("#" + character + " >> .hideCharacterButton")
+    let originalLabel = button.prop("value")
+    button.prop("value", "Hiding...")
     $.post("/hideCharacter", { character: character, userId: $("#user").val() })
         .done(() =>
         {
@@ -30,6 +31,6 @@ function hideCharacter(character)
         .fail(() =>
         {
             alert("Failed to hide character " + character + ".")
-            hideCharacterButton.prop("value", originalLabel)
+            button.prop("value", originalLabel)
         })
 }
