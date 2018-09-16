@@ -2,17 +2,16 @@ body
 {
     background-color: black;
     color: lightgray;
+    font-size: 1.5em;
 }
 
 a {
     color: lightgray
-        
 }
 
 a:visited {
     color: lightgray
 }
-
 
 .sentenceBlock
 {
