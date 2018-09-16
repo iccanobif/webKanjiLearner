@@ -12,7 +12,7 @@ function loadNewSentence(character)
         })
         .fail(() =>
         {
-            alert("failed to delete character " + character)
+            alert("Failed to load new sentence for character " + character + ".")
             $("#" + character + " > .loadNewSentenceButton").prop("value", originalLabel)
         })
 }
@@ -29,7 +29,7 @@ function hideCharacter(character)
         })
         .fail(() =>
         {
-            alert("failed to delete character " + character)
+            alert("Failed to hide character " + character + ".")
             hideCharacterButton.prop("value", originalLabel)
         })
 }

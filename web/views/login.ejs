@@ -14,7 +14,10 @@
 
 <body>
     <h1>HEY</h1>
-    <form method="POST" action="sentences">
+    <% if(invalidLogin) { %>
+        <h2 class="insultForImproperLogin">Login properly, you dipshit</h2>
+    <% } %>
+    <form method="GET" action="sentences">
         <input type="text" name="userName">
         <input type="submit" value="go">
     </form>

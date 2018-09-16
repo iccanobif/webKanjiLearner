@@ -96,6 +96,11 @@ let HiddenCharacterRepository = function ()
     })
     this.hideCharacter = (user, character) =>
     {
+        if (user == "" || user == undefined || user == null)
+        {
+            ut.log("Tried to hide character " + character + " for empty or null user. Won't do anything.")
+            return
+        }
         ut.log("Hiding character " + character + " for user " + user)
         db.run("INSERT INTO HIDDEN_CHARACTERS (USER_ID, CHARACTER) VALUES (?, ?)",
             [user, character],
@@ -136,19 +141,25 @@ let HiddenCharacterRepository = function ()
 let hiddenCharacterRepository = new HiddenCharacterRepository()
 
 app.set("view engine", "ejs")
+//PAGES
 app.get("/", (req, res) =>
 {
-    res.render("login.ejs")
+    res.render("login.ejs", { invalidLogin: req.query.invalidLogin == "true" ? true : false })
 })
-app.post("/sentences", (req, res) =>
+app.get("/sentences", (req, res) =>
 {
+    if (req.query.userName == "" || req.query.userName == undefined || req.query.userName == null)
+    {
+        res.redirect("/?invalidLogin=true")
+        return
+    }
     if (!sentenceRepository.isLoaded)
     {
         res.render("stillLoading.ejs")
     }
     else
     {
-        hiddenCharacterRepository.getHiddenCharacters(req.body.userName, (hiddenCharacters) =>
+        hiddenCharacterRepository.getHiddenCharacters(req.query.userName, (hiddenCharacters) =>
         {
             res.render("index.ejs", {
                 firstBatchOfRandomSentences: sentenceRepository.getFullListOfRandomSentences()
@@ -157,16 +168,12 @@ app.post("/sentences", (req, res) =>
                         return !hiddenCharacters.has(x["char"])
                     })
                     .slice(0, 200), // TODO make some real pagination
-                userName: req.body.userName
+                userName: req.query.userName
             })
         })
     }
 })
-app.get("/sentences", (req, res) =>
-{
-    res.redirect("/")
-})
-
+//REST API
 app.get("/getRandomSentence/:character", (req, res) =>
 {
     ut.log("Requested new sentence for character " + req.params.character)
@@ -204,7 +211,6 @@ app.get("/kanjiDetail/:character", (req, res) =>
         })
     }
 })
-
 app.post("/hideCharacter", (req, res) =>
 {
     hiddenCharacterRepository.hideCharacter(req.body.userId, req.body.character)
@@ -213,7 +219,5 @@ app.post("/hideCharacter", (req, res) =>
 })
 
 app.use(express.static('static'))
-
 http.listen(8081, "0.0.0.0")
-
 ut.log("Server running")

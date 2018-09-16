@@ -42,3 +42,8 @@ input
     width: 200px;
     height: 2em;
 }
+
+.insultForImproperLogin
+{
+    color: red;
+}
