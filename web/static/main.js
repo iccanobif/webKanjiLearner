@@ -23,7 +23,7 @@ function hideCharacter(character)
     let button = $("#" + character + " >> .hideCharacterButton")
     let originalLabel = button.prop("value")
     button.prop("value", "Hiding...")
-    $.post("/hideCharacter", { character: character, userId: $("#user").val() })
+    $.post("hideCharacter", { character: character, userId: $("#user").val() })
         .done(() =>
         {
             $("#" + character).hide()
@@ -34,3 +34,23 @@ function hideCharacter(character)
             button.prop("value", originalLabel)
         })
 }
+
+function hideCharacterDetails()
+{
+    $("#popupOverlay").hide()
+    $("#popupCharacterDetails").hide()
+}
+
+function showCharacterDetails(character)
+{
+    $("#popupOverlay").show()
+    $("#popupCharacterDetails").show()
+
+    $.get("kanjiDetail/" + character)
+    .done((data) => {
+        $("#popupCharacterDetails").html(data)
+        $("#closePopupButton").click(hideCharacterDetails)
+    })
+}
+
+$("#popupOverlay").click(hideCharacterDetails)

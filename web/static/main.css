@@ -52,3 +52,37 @@ input
 {
     color: red;
 }
+
+#popupOverlay
+{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 50;
+    background-color: white;
+    opacity: 0.3;
+    display: none;
+}
+
+#popupCharacterDetails
+{
+    position: fixed;
+    top: 10%;
+    left: 10%;
+    width: 80%;
+    height: 80%;
+    z-index: 100;
+    background-color: black;
+    overflow-y: auto;
+    display: none;
+}
+
+#closePopupButton
+{
+    font-size: 2em;
+    position: absolute;
+    right: 0;
+    top: 0;
+}

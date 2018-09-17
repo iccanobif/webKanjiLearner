@@ -6,17 +6,17 @@
     <title>Knaji</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="/main.css" />
-    <script
-        src="https://code.jquery.com/jquery-3.3.1.min.js"
-        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-        crossorigin="anonymous"></script>
-    <script src="/main.js"></script>
+
 </head>
 
 <body>
     <% firstBatchOfRandomSentences.forEach((sentence) => { %>
     <div id="<%=sentence.char%>" class="sentenceBlock">
-        <div class="char"><a href="kanjiDetail/<%= sentence.char %>"><%= sentence.char %></a></div>
+        <div class="char">
+            <a href="#" onclick="showCharacterDetails('<%= sentence.char %>')">
+                <%= sentence.char %>
+            </a>
+        </div>
         <div class="freq">(freq. <%= sentence.freq %>)</div>
         <div class="buttons">
             <input 
@@ -38,7 +38,15 @@
         <div class="eng"><%= sentence.eng %></div>
     </div>
     <% }); %>
+    <div id="popupOverlay"></div>
+    <div id="popupCharacterDetails"></div>
     <input type="hidden" id="user" value="<%=userName%>" />
+
+    <script
+        src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <script src="/main.js"></script>
 </body>
 
 </html>
