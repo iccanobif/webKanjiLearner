@@ -12,11 +12,9 @@
 <body>
     <% firstBatchOfRandomSentences.forEach((sentence) => { %>
     <div id="<%=sentence.char%>" class="sentenceBlock">
-        <div class="char">
-            <a href="#" onclick="showCharacterDetails('<%= sentence.char %>'); return false">
-                <%= sentence.char %>
-            </a>
-        </div>
+        <a href="#" class="char" onclick="showCharacterDetails('<%= sentence.char %>'); return false">
+            <%= sentence.char %>
+        </a>
         <div class="freq">(freq. <%= sentence.freq %>)</div>
         <div class="buttons">
             <input 
@@ -25,7 +23,6 @@
                 value="Load new sentence" 
                 name="<%= sentence.char %>"
                 onclick="loadNewSentence('<%=sentence.char%>')" />
-                <br />
             <input 
                 type="button" 
                 class="hideCharacterButton"

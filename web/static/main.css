@@ -28,24 +28,30 @@ a:visited {
 {
     display: inline-block;
     font-size: 2em;
+    vertical-align: bottom;
+    margin-bottom: -12px;
 }
 
 .freq
 {
     display: inline-block;
     font-size: 0.7em;
+    vertical-align: bottom;
 }
 
 .buttons
 {
     display: inline-block;
+    vertical-align: bottom;
 }
 
-input
+.buttons input
 {
-    width: 200px;
-    height: 2em;
+    width: 80px;
+    height: 50px;
     border: 0;
+    white-space: normal;
+    vertical-align: bottom;
 }
 
 .insultForImproperLogin
