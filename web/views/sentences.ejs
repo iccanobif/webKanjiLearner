@@ -13,7 +13,7 @@
     <% firstBatchOfRandomSentences.forEach((sentence) => { %>
     <div id="<%=sentence.char%>" class="sentenceBlock">
         <div class="char">
-            <a href="#" onclick="showCharacterDetails('<%= sentence.char %>')">
+            <a href="#" onclick="showCharacterDetails('<%= sentence.char %>'); return false">
                 <%= sentence.char %>
             </a>
         </div>
