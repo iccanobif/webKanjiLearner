@@ -20,6 +20,9 @@ function loadNewSentence(character)
 
 function hideCharacter(character)
 {
+    if (!confirm("You sure you want to hide " + character + "?"))
+        return;
+
     let button = $("#" + character + " >> .hideCharacterButton")
     let originalLabel = button.prop("value")
     button.prop("value", "Hiding...")
@@ -48,10 +51,11 @@ function showCharacterDetails(character)
     $("#popupCharacterDetails").show()
 
     $.get("kanjiDetail/" + character)
-    .done((data) => {
-        $("#popupCharacterDetails").html(data)
-        $("#closePopupButton").click(hideCharacterDetails)
-    })
+        .done((data) =>
+        {
+            $("#popupCharacterDetails").html(data)
+            $("#closePopupButton").click(hideCharacterDetails)
+        })
 }
 
 $("#popupOverlay").click(hideCharacterDetails)
