@@ -39,6 +39,7 @@ function hideCharacterDetails()
 {
     $("#popupOverlay").hide()
     $("#popupCharacterDetails").hide()
+    $("#popupCharacterDetails").html("")
 }
 
 function showCharacterDetails(character)
