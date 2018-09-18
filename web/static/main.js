@@ -54,7 +54,6 @@ function showCharacterDetails(character)
         .done((data) =>
         {
             $("#popupCharacterDetails").html(data)
-            $("#closePopupButton").click(hideCharacterDetails)
         })
 }
 
