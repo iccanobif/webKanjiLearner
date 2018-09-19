@@ -162,12 +162,14 @@ app.get("/sentences", (req, res) =>
         hiddenCharacterRepository.getHiddenCharacters(req.query.userName, (hiddenCharacters) =>
         {
             res.render("sentences.ejs", {
-                firstBatchOfRandomSentences: sentenceRepository.getFullListOfRandomSentences()
-                    .filter((x) =>
-                    {
-                        return !hiddenCharacters.has(x["char"])
-                    })
-                    .slice(0, 200), // TODO make some real pagination
+                firstBatchOfRandomSentences:
+                    sentenceRepository.getFullListOfRandomSentences()
+                        .filter((x) =>
+                        {
+                            return !hiddenCharacters.has(x["char"])
+                        })
+                        .slice(0, 100)
+                        .shuffle(), // TODO make some real pagination
                 userName: req.query.userName
             })
         })
