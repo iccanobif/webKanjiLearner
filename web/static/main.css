@@ -84,6 +84,9 @@ a:visited {
     background-color: black;
     overflow-y: auto;
     display: none;
+    border-style: solid;
+    border-color: lightgray;
+    border-width: 3px;
 }
 
 #closePopupButton
