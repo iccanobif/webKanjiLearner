@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const kanjidic = require("./kanjidic.js")
 const ut = require("./utils.js")
 const sr = require("./sentenceRepository.js")
+const sentenceSplitter = require("./sentenceSplitter.js")
 
 function readCookie(cookies, cookieName)
 {
@@ -173,15 +174,28 @@ app.get("/kanjiDetail/:character", (req, res) =>
     else
     {
         ut.log("Requested full sentence list for character " + req.params.character)
+        let sentences = sentenceRepository.getAllSentences(req.params.character)
+            .sort((a, b) =>
+            {
+                return a.jpn.localeCompare(b.jpn)
+            })
         res.render("kanjiDetail.ejs", {
             character: req.params.character,
-            sentences: sentenceRepository.getAllSentences(req.params.character)
-                .sort((a, b) =>
-                {
-                    return a.jpn.localeCompare(b.jpn)
-                }),
+            sentences: sentences,
             readings: kanjidic.getKanjiReadings(req.params.character),
-            meanings: kanjidic.getKanjiMeanings(req.params.character)
+            meanings: kanjidic.getKanjiMeanings(req.params.character),
+            exampleWords: sentences
+                .map(x => x.jpn) // Exctract the kanji text from each sentence object
+                .map(sentence => sentenceSplitter.split(sentence)) // Split each sentence, outputs an array of arrays of strings
+                .reduce((acc, val) => acc.concat(val), []) // Flatten into a single array of strings
+                .filter(x => x.match(new RegExp(req.params.character))) // Only keep the strings containing the relevant character
+                .sort() // Remove duplicates (first sort, then use reduce() to make a new array without repeating the same values)
+                .reduce((acc, val) =>
+                {
+                    if (acc[acc.length - 1] != val)
+                        acc.push(val)
+                    return acc
+                }, [])
         })
     }
 })
