@@ -9,6 +9,7 @@
 </head>
 
 <body>
+<h2>Count: <%= hiddenCharacters.size %></h2>
     <% hiddenCharacters.forEach((character) => { %>
         <a href="#" id="<%= character %>" class="char" onclick="unhideCharacter('<%= character %>'); return false">
             <%= character %>
