@@ -6,7 +6,7 @@ module.exports.log = function log(msg)
 
 module.exports.printError = function printError(e)
 {
-    log(e.message + " " + e.stack)
+    module.exports.log(e.message + " " + e.stack)
 }
 
 Array.prototype.shuffle = function ()

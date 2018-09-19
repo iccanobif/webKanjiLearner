@@ -10,6 +10,7 @@
 </head>
 
 <body>
+    <h2><a href="hiddenCharacters?userName=<%=userName%>">Show hidden characters list</a></h2>
     <% firstBatchOfRandomSentences.forEach((sentence) => { %>
     <div id="<%=sentence.char%>" class="sentenceBlock">
         <a href="#" class="char" onclick="showCharacterDetails('<%= sentence.char %>'); return false">
@@ -35,7 +36,7 @@
         <div class="eng"><%= sentence.eng %></div>
     </div>
     <% }); %>
-    <div id="popupOverlay"></div>
+    <div id="popupOverlay" class="overlay"></div>
     <div id="popupCharacterDetails"></div>
     <input type="hidden" id="user" value="<%=userName%>" />
 

@@ -106,7 +106,22 @@ let HiddenCharacterRepository = function ()
             [user, character],
             (err) =>
             {
-                if (err) printError(err)
+                if (err) ut.printError(err)
+            })
+    }
+    this.unhideCharacter = (user, character) =>
+    {
+        if (user == "" || user == undefined || user == null)
+        {
+            ut.log("Tried to unhide character " + character + " for empty or null user. Won't do anything.")
+            return
+        }
+        ut.log("Unhiding character " + character + " for user " + user)
+        db.run("DELETE FROM HIDDEN_CHARACTERS WHERE USER_ID = ? AND CHARACTER = ?",
+            [user, character],
+            (err) =>
+            {
+                if (err) ut.printError(err)
             })
     }
     this.unhideAllCharacters = (user) =>
@@ -115,10 +130,9 @@ let HiddenCharacterRepository = function ()
             [user],
             (err) =>
             {
-                if (err) printError(err)
+                if (err) ut.printError(err)
             })
     }
-    // Call
     this.getHiddenCharacters = (user, callback) =>
     {
         db.all("SELECT CHARACTER FROM HIDDEN_CHARACTERS WHERE USER_ID = ?",
@@ -127,7 +141,7 @@ let HiddenCharacterRepository = function ()
             {
                 if (err)
                 {
-                    printError(err)
+                    ut.printError(err)
                     callback(new Set())
                 }
                 else 
@@ -140,6 +154,23 @@ let HiddenCharacterRepository = function ()
 
 let hiddenCharacterRepository = new HiddenCharacterRepository()
 
+// Check "authentication" and whether the datasets are all loaded. If necessary, redirects to the login page or
+// renders an error page and returns false.
+function canOpenPage(req, res)
+{
+    if (req.query.userName == "" || req.query.userName == undefined || req.query.userName == null)
+    {
+        res.redirect("/?invalidLogin=true")
+        return false
+    }
+    if (!sentenceRepository.isLoaded)
+    {
+        res.render("stillLoading.ejs")
+        return false
+    }
+    return true
+}
+
 app.set("view engine", "ejs")
 //PAGES
 app.get("/", (req, res) =>
@@ -148,33 +179,38 @@ app.get("/", (req, res) =>
 })
 app.get("/sentences", (req, res) =>
 {
-    if (req.query.userName == "" || req.query.userName == undefined || req.query.userName == null)
-    {
-        res.redirect("/?invalidLogin=true")
+    if (!canOpenPage(req, res))
         return
-    }
-    if (!sentenceRepository.isLoaded)
+
+    hiddenCharacterRepository.getHiddenCharacters(req.query.userName, (hiddenCharacters) =>
     {
-        res.render("stillLoading.ejs")
-    }
-    else
-    {
-        hiddenCharacterRepository.getHiddenCharacters(req.query.userName, (hiddenCharacters) =>
-        {
-            res.render("sentences.ejs", {
-                firstBatchOfRandomSentences:
-                    sentenceRepository.getFullListOfRandomSentences()
-                        .filter((x) =>
-                        {
-                            return !hiddenCharacters.has(x["char"])
-                        })
-                        .slice(0, 100)
-                        .shuffle(), // TODO make some real pagination
-                userName: req.query.userName
-            })
+        res.render("sentences.ejs", {
+            firstBatchOfRandomSentences:
+                sentenceRepository.getFullListOfRandomSentences()
+                    .filter((x) =>
+                    {
+                        return !hiddenCharacters.has(x["char"])
+                    })
+                    .slice(0, 100)
+                    .shuffle(), // TODO make some real pagination
+            userName: req.query.userName
         })
-    }
+    })
 })
+app.get("/hiddenCharacters", (req, res) =>
+{
+    if (!canOpenPage(req, res))
+        return
+
+    hiddenCharacterRepository.getHiddenCharacters(req.query.userName, (hiddenCharacters) =>
+    {
+        res.render("hiddenCharacters.ejs", {
+            hiddenCharacters: hiddenCharacters,
+            userName: req.query.userName
+        })
+    })
+})
+
 //REST API
 app.get("/getRandomSentence/:character", (req, res) =>
 {
@@ -217,7 +253,13 @@ app.post("/hideCharacter", (req, res) =>
 {
     hiddenCharacterRepository.hideCharacter(req.body.userId, req.body.character)
     res.type("text/plain")
-    res.end()
+    res.end("OK")
+})
+app.post("/unhideCharacter", (req, res) =>
+{
+    hiddenCharacterRepository.unhideCharacter(req.body.userId, req.body.character)
+    res.type("text/plain")
+    res.end("OK")
 })
 
 app.use(express.static('static'))

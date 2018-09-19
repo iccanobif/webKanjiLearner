@@ -1,0 +1,3 @@
+- Fix sql injection problem.
+- switch to another kanji -> kana library.
+- add sentence splitter, so that the character detail page can show all the words where that character appears.
