@@ -46,6 +46,11 @@ readline
         isLoaded = true
     })
 
+module.exports.isLoaded = () =>
+{
+    return isLoaded
+}
+
 module.exports.getKanjiReadings = (kanji) =>
 {
     ut.log("Getting kanji readings for " + kanji)
