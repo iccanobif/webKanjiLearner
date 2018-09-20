@@ -1,3 +1,4 @@
 - Fix sql injection problem.
 - switch to another kanji -> kana library.
-- add sentence splitter, so that the character detail page can show all the words where that character appears.
+- Show only uninflected forms in the "Example words" list
+- Render every sentence as splitted words, each being a link; when clicked, show a popup with the definitions from EDICT for that word
