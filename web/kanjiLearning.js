@@ -180,15 +180,19 @@ app.get("/kanjiDetail/:character", (req, res) =>
             {
                 return a.jpn.localeCompare(b.jpn)
             })
+            .map((x) => {
+                x.splits = sentenceSplitter.split(x.jpn)
+                return x
+            })
+        
         res.render("kanjiDetail.ejs", {
             character: req.params.character,
             sentences: sentences,
             readings: kanjidic.getKanjiReadings(req.params.character),
             meanings: kanjidic.getKanjiMeanings(req.params.character),
             exampleWords: sentences
-                .map(x => x.jpn) // Exctract the kanji text from each sentence object
-                .map(sentence => sentenceSplitter.split(sentence)) // Split each sentence, outputs an array of arrays of strings
-                .reduce((acc, val) => acc.concat(val), []) // Flatten into a single array of strings
+                .map(x => x.splits) // Extract the kanji text (split in words) from each sentence object
+                .reduce((acc, val) => acc.concat(val), []) // Flatten into an array of arrays
                 .filter(x => x.match(new RegExp(req.params.character))) // Only keep the strings containing the relevant character
                 .sort() // Remove duplicates (first sort, then use reduce() to make a new array without repeating the same values)
                 .reduce((acc, val) =>

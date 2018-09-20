@@ -9,7 +9,10 @@
 
 <h2>Example words:</h2>
 
-<%= exampleWords.join(" / ") %><br />
+<%- exampleWords
+    .map(x => "<a href='#word'>word</a>".replace(/word/g, x))
+    .join(" / ") 
+%><br />
 
 <h2>Sentences:</h2>
 
@@ -19,7 +22,12 @@ nothing to see here....
 
 <% sentences.forEach((sentence) => { %>
 <div class="sentenceBlock">
-    <div class="jpn"><%= sentence.jpn %></div>
+    <div class="jpn">
+    <%- sentence
+            .splits
+            .map(word => "<a name='word'>word</a>".replace(/word/g, word))
+            .join("")
+     %></div>
     <div class="kana"><%= sentence.kana %></div>
     <div class="eng"><%= sentence.eng %></div>
 </div>
