@@ -14,6 +14,9 @@ class KanjiInfo
 
 let kanjiInfoCollection = {}
 let isLoaded = false
+
+ut.log("Start loading kanjidic")
+
 readline
     .createInterface({ input: fs.createReadStream("kanjidic") }) // This file has to be encoded in UTF-8 and not in shift-jis
     .on("line", (line) =>

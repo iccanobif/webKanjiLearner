@@ -7,6 +7,7 @@ const kanjidic = require("./kanjidic.js")
 const ut = require("./utils.js")
 const sr = require("./sentenceRepository.js")
 const sentenceSplitter = require("./sentenceSplitter.js")
+const edict = require("./edict.js")
 
 function readCookie(cookies, cookieName)
 {
@@ -100,7 +101,7 @@ function canOpenPage(req, res)
         res.redirect("/?invalidLogin=true")
         return false
     }
-    if (!sentenceRepository.isLoaded)
+    if (!sentenceRepository.isLoaded || !edict.isLoaded)
     {
         res.render("stillLoading.ejs")
         return false

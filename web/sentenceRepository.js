@@ -6,6 +6,9 @@ module.exports.SentenceRepository = function ()
 {
     this.sentences = {}
     this.isLoaded = false
+
+    ut.log("Start loading sentences")
+
     this.loadSentences = () =>
     {
         readline
@@ -24,7 +27,7 @@ module.exports.SentenceRepository = function ()
             })
             .on("close", () =>
             {
-                ut.log("Finished loading datasets")
+                ut.log("Finished loading sentences")
                 this.isLoaded = true
             })
     }
