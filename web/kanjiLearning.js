@@ -101,7 +101,7 @@ function canOpenPage(req, res)
         res.redirect("/?invalidLogin=true")
         return false
     }
-    if (!sentenceRepository.isLoaded() || !edict.isLoaded() || !kanjidic.isLoaded())
+    if (!sentenceRepository.isLoaded || !edict.isLoaded() || !kanjidic.isLoaded())
     {
         res.render("stillLoading.ejs")
         return false
