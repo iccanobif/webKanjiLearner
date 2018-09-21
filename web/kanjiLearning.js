@@ -5,7 +5,7 @@ const sqlite3 = require("sqlite3")
 const bodyParser = require("body-parser");
 const kanjidic = require("./kanjidic.js")
 const ut = require("./utils.js")
-const sr = require("./sentenceRepository.js")
+const sentenceRepository = require("./sentenceRepository.js")
 const sentenceSplitter = require("./sentenceSplitter.js")
 const edict = require("./edict.js")
 
@@ -22,8 +22,6 @@ function readCookie(cookies, cookieName)
 }
 
 app.use(bodyParser.urlencoded({ extended: false }));
-
-let sentenceRepository = new sr.SentenceRepository()
 
 let HiddenCharacterRepository = function ()
 {
@@ -101,7 +99,7 @@ function canOpenPage(req, res)
         res.redirect("/?invalidLogin=true")
         return false
     }
-    if (!sentenceRepository.isLoaded || !edict.isLoaded() || !kanjidic.isLoaded())
+    if (!sentenceRepository.isLoaded() || !edict.isLoaded() || !kanjidic.isLoaded()) 
     {
         res.render("stillLoading.ejs")
         return false
@@ -168,7 +166,7 @@ app.get("/getRandomSentence/:character", (req, res) =>
 })
 app.get("/kanjiDetail/:character", (req, res) =>
 {
-    if (!sentenceRepository.isLoaded)
+    if (!sentenceRepository.isLoaded() || !kanjidic.isLoaded() || !edict.isLoaded())
     {
         res.render("stillLoading.ejs")
     }
@@ -180,11 +178,12 @@ app.get("/kanjiDetail/:character", (req, res) =>
             {
                 return a.jpn.localeCompare(b.jpn)
             })
-            .map((x) => {
+            .map((x) =>
+            {
                 x.splits = sentenceSplitter.split(x.jpn)
                 return x
             })
-        
+
         res.render("kanjiDetail.ejs", {
             character: req.params.character,
             sentences: sentences,

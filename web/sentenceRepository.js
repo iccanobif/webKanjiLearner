@@ -2,66 +2,63 @@ const fs = require("fs")
 const readline = require("readline")
 const ut = require("./utils.js")
 
-module.exports.SentenceRepository = function ()
-{
-    this.sentences = {}
-    this.isLoaded = false
+let sentences = {}
+let isLoaded = false
 
-    ut.log("Start loading sentences")
+ut.log("Start loading sentences")
 
-    this.loadSentences = () =>
+readline
+    .createInterface({ input: fs.createReadStream("../output/allSentences.csv") })
+    .on("line", (line) =>
     {
-        readline
-            .createInterface({ input: fs.createReadStream("../output/allSentences.csv") })
-            .on("line", (line) =>
-            {
-                if (line.trim() == "")
-                    return;
-                // Format:
-                // {"char": "糞", "freq": 1, "jpn": "糞です", "kana": "くそです", "eng": "It's poop"}
-                parsed = JSON.parse(line)
-                if (parsed["char"] in this.sentences)
-                    this.sentences[parsed["char"]].push(parsed)
-                else
-                    this.sentences[parsed["char"]] = [parsed]
-            })
-            .on("close", () =>
-            {
-                ut.log("Finished loading sentences")
-                this.isLoaded = true
-            })
-    }
-    this.getFullListOfRandomSentences = () =>
-    {
-        // TODO: precompute sorted keys instead of sorting at every request
-        return Object.keys(this.sentences)
-            .map((c) =>
-            {
-                let index = Math.floor((this.sentences[c].length) * Math.random())
-                return this.sentences[c][index]
-            })
-            .sort((a, b) =>
-            {
-                if (a.freq > b.freq) return -1;
-                if (a.freq < b.freq) return 1;
-                return 0;
-            })
-    }
-    this.getRandomSentence = (char) =>
-    {
-        if (!(char in this.sentences))
-            return null
-
-        let index = Math.floor((this.sentences[char].length) * Math.random())
-        return this.sentences[char][index]
-    }
-    this.getAllSentences = (char) =>
-    {
-        if (!(char in this.sentences))
-            return []
+        if (line.trim() == "")
+            return;
+        // Format:
+        // {"char": "糞", "freq": 1, "jpn": "糞です", "kana": "くそです", "eng": "It's poop"}
+        parsed = JSON.parse(line)
+        if (parsed["char"] in sentences)
+            sentences[parsed["char"]].push(parsed)
         else
-            return this.sentences[char]
-    }
+            sentences[parsed["char"]] = [parsed]
+    })
+    .on("close", () =>
+    {
+        ut.log("Finished loading sentences")
+        isLoaded = true
+    })
+    
+module.exports.getFullListOfRandomSentences = () =>
+{
+    // TODO: precompute sorted keys instead of sorting at every request
+    return Object.keys(sentences)
+        .map((c) =>
+        {
+            let index = Math.floor((sentences[c].length) * Math.random())
+            return sentences[c][index]
+        })
+        .sort((a, b) =>
+        {
+            if (a.freq > b.freq) return -1;
+            if (a.freq < b.freq) return 1;
+            return 0;
+        })
+}
+module.exports.getRandomSentence = (char) =>
+{
+    if (!(char in sentences))
+        return null
 
-    this.loadSentences()
+    let index = Math.floor((sentences[char].length) * Math.random())
+    return sentences[char][index]
+}
+module.exports.getAllSentences = (char) =>
+{
+    if (!(char in sentences))
+        return []
+    else
+        return sentences[char]
+}
+module.exports.isLoaded = () =>
+{
+    return isLoaded
 }
