@@ -80,17 +80,13 @@ a:visited {
 #scrollToTop
 {
     font-size: 2em;
-    position: absolute;
-    left: 0;
-    top: 0;
+    float: left;
 }
 
 #closePopupButton
 {
     font-size: 2em;
-    position: absolute;
-    right: 0;
-    top: 0;
+    float: right;
 }
 
 #loaderText {
