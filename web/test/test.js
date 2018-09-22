@@ -13,6 +13,8 @@ describe('edict', function ()
     it('should recognize base forms ', () => { assert.ok(edict.isJapaneseWord("食べる")) })
     it('should recognize past forms ', () => { assert.ok(edict.isJapaneseWord("食べた")) })
     it('should not recognize non-existing words ', () => { assert.ok(!edict.isJapaneseWord("fdsarv")) })
+    it('そう for for i-adj ', () => { assert.ok(edict.isJapaneseWord("強そう")) })
+    it('すぎる for for i-adj ', () => { assert.ok(edict.isJapaneseWord("強すぎる")) })
     describe("imperative forms", () =>
     {
       it('v1', () => { assert.ok(edict.isJapaneseWord("食べろ")) })

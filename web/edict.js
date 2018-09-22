@@ -32,6 +32,9 @@ function conjugate(words, typeOfWord)
                 add("かった") // past
                 add("くなかった") // past negative
                 add("くて") // te-form
+                add("すぎる") // too much
+                add("すぎ") // too much
+                add("そう") // looks like it's...
                 break;
             case "adj-ix":
                 newWords.push(word.slice(0, word.length - 2) + "よくない") // negative
