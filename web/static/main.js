@@ -23,6 +23,7 @@ class NavigationHandler
 
     back()
     {
+        // TODO: remove old page from DOM
         $(this.pages.pop().element).hide()
         let currentPage = this.pages[this.pages.length - 1]
         $(currentPage.element).show()
@@ -71,6 +72,7 @@ function hideCharacter(character)
 }
 
 let navigationHandler = new NavigationHandler(document.getElementById("mainPage"))
+let loader = new Loader()
 
 function hideCharacterDetails()
 {
@@ -80,11 +82,11 @@ function hideCharacterDetails()
 function showCharacterDetails(character)
 {
     let newPage = navigationHandler.goToNextPage()
-    console.log(newPage)
-
+    loader.show()
     $.get("kanjiDetail/" + character)
         .done((data) =>
         {
             $(newPage).html(data)
+            loader.hide()
         })
 }
