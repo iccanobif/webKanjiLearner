@@ -1,8 +1,4 @@
 
-<div class="fixedHeader">
-    <a id="scrollToTop" href="#" onClick="scrollToTop(); return false">TO TOP</a>
-    <a id="closePopupButton" href="#" onClick="hideCharacterDetails(); return false">BACK</a>
-</div>
 <div id="kanjiDetailBody">
     <h1><%=character%></h1>
     <h2>Readings:</h2>
@@ -36,4 +32,9 @@
         <div class="eng"><%= sentence.eng %></div>
     </div>
     <% }); %>
+</div>
+
+<div class="fixedFooter">
+    <a id="scrollToTop" href="#" onClick="scrollToTop(); return false">TO TOP</a>
+    <a id="closePopupButton" href="#" onClick="hideCharacterDetails(); return false">BACK</a>
 </div>

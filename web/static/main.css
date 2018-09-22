@@ -106,20 +106,20 @@ a:visited {
     100% { transform: rotate(360deg); }
 } 
 
-.fixedHeader {
+.fixedFooter {
     position: fixed;
-    top: 0;
+    bottom: 0;
     left: 0;
     height: 2em;
     width: 100%;
     z-index: 10;
     background-color: black;
-    border-bottom-style: solid;
-    border-bottom-width: 2px;
-    border-bottom-color: lightgray;
+    border-top-style: solid;
+    border-top-width: 2px;
+    border-top-color: lightgray;
 }
 
 #kanjiDetailBody
 {
-    margin-top: 2em; /* Same as .fixedHeader's height */
+    margin-bottom: 2em; /* Same as .fixedFooter's height */
 }
