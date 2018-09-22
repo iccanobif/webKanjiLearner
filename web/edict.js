@@ -47,39 +47,54 @@ function conjugate(words, typeOfWord)
                 add("た") // past
                 add("なかった") // past negative
                 add("て") // -te form
+                add("ている") // -te+iru form
+                add("てる") // -teiru form (informal)
                 add("られる") // potential + passive (they're the same for ichidan verbs...)
                 add("させる") // causative
                 add("よう") // volitive
                 add("たい") // tai-form
                 add("ず") // zu-form
+                add("ろ") // imperative
                 break;
             case "v5s":
                 add("した") // past
                 add("して") // -te form
+                add("している") // -te+iru form
+                add("してる") // -te+iru form (informal)
                 break;
             case "v5k":
                 add("いた") // past
                 add("いて") // -te form
+                add("いている") // -te+iru form
+                add("いてる") // -te+iru form (informal)
                 break;
             case "v5g":
                 add("いだ") // past
                 add("いで") // -te form
+                add("いでいる") // -te+iru form
+                add("いでる") // -te+iru form (informal)
                 break;
             case "v5k-s": // for verbs ending in 行く
                 add("った") // past
                 add("いて") // -te form
+                add("いている") // -te+iru form
+                add("いてる") // -te+iru form (informal)
                 break;
             case "v5b":
             case "v5m":
             case "v5n":
                 add("んだ") // past
                 add("んで") // -te form
+                add("んている") // -te+iru form
+                add("んてる") // -te+iru form (informal)
                 break;
             case "v5r":
             case "v5t":
             case "v5u":
                 add("った") // past
                 add("って") // -te form
+                add("っている") // -te+iru form
+                add("ってる") // -te+iru form (informal)
         }
 
         let firstNegativeKana = ""
@@ -87,16 +102,16 @@ function conjugate(words, typeOfWord)
 
         switch (typeOfWord)
         {
-            case "v5k-s": // potential // volitive   
-            case "v5k": add("ける"); add("こう"); stemKana = "き"; firstNegativeKana = "か"; break;
-            case "v5g": add("げる"); add("ごう"); stemKana = "ぎ"; firstNegativeKana = "が"; break;
-            case "v5b": add("べる"); add("ぼう"); stemKana = "び"; firstNegativeKana = "ば"; break;
-            case "v5m": add("める"); add("もう"); stemKana = "み"; firstNegativeKana = "ま"; break;
-            case "v5n": add("ねる"); add("のう"); stemKana = "に"; firstNegativeKana = "な"; break;
-            case "v5r": add("れる"); add("ろう"); stemKana = "り"; firstNegativeKana = "ら"; break;
-            case "v5t": add("てる"); add("とう"); stemKana = "ち"; firstNegativeKana = "た"; break;
-            case "v5u": add("える"); add("おう"); stemKana = "い"; firstNegativeKana = "わ"; break;
-            case "v5s": add("せる"); add("そう"); stemKana = "し"; firstNegativeKana = "さ"; break;
+            case "v5k-s": // potential // volitive // imperative  
+            case "v5k": add("ける"); add("こう"); 　add("け"); stemKana = "き"; firstNegativeKana = "か"; break;
+            case "v5g": add("げる"); add("ごう"); 　add("げ"); stemKana = "ぎ"; firstNegativeKana = "が"; break;
+            case "v5b": add("べる"); add("ぼう"); 　add("べ"); stemKana = "び"; firstNegativeKana = "ば"; break;
+            case "v5m": add("める"); add("もう"); 　add("め"); stemKana = "み"; firstNegativeKana = "ま"; break;
+            case "v5n": add("ねる"); add("のう"); 　add("ね"); stemKana = "に"; firstNegativeKana = "な"; break;
+            case "v5r": add("れる"); add("ろう"); 　add("れ"); stemKana = "り"; firstNegativeKana = "ら"; break;
+            case "v5t": add("てる"); add("とう"); 　add("て"); stemKana = "ち"; firstNegativeKana = "た"; break;
+            case "v5u": add("える"); add("おう");　/* ???? */ stemKana = "い"; firstNegativeKana = "わ"; break;
+            case "v5s": add("せる"); add("そう"); 　add("せ"); stemKana = "し"; firstNegativeKana = "さ"; break;
         }
 
         if (typeOfWord.startsWith("v5"))
