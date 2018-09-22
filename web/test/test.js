@@ -30,4 +30,19 @@ describe('edict', function ()
       // Do imperatives exist for v5u??
     })
   })
+  describe("#getDefinition()", () =>
+  {
+    it("should throw not implemented exception", () =>
+    {
+      try
+      {
+        edict.getDefinitions("word")
+        assert.ok(false)
+      }
+      catch (ex)
+      {
+        assert.ok(true)
+      }
+    })
+  })
 })

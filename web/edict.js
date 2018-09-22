@@ -177,6 +177,11 @@ module.exports.isJapaneseWord = (word) =>
     return wordsSet.has(word)
 }
 
+module.exports.getDefinitions = (word) =>
+{
+    throw Exception("not implemented")
+}
+
 module.exports.addLoadedCallback = (callback) =>
 {
     if (isFullyLoaded)
