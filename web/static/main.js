@@ -12,8 +12,8 @@ class NavigationHandler
     {
         this.pages[this.pages.length - 1].scrollPosition = window.scrollY
         $(this.pages[this.pages.length - 1].element).hide()
-        let newPage = document.body.appendChild(document.createElement("div")) 
-        
+        let newPage = document.body.appendChild(document.createElement("div"))
+
         this.pages.push({
             element: newPage,
             scrollPosition: 0
@@ -89,4 +89,9 @@ function showCharacterDetails(character)
             $(newPage).html(data)
             loader.hide()
         })
+}
+
+function scrollToTop()
+{
+    window.scrollTo(0, 0);
 }

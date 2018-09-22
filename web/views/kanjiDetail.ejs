@@ -1,34 +1,39 @@
-<a id="closePopupButton" href="#" onClick="hideCharacterDetails(); return false">X</a>
 
-<h1><%=character%></h1>
-<h2>Readings:</h2>
-<%= readings.join(" / ") %><br />
-
-<h2>Meanings:</h2>
-<%= meanings.join(" / ") %><br />
-
-<h2>Example words:</h2>
-
-<%- exampleWords
-    .map(x => "<a href='#word'>word</a>".replace(/word/g, x))
-    .join(" / ") 
-%><br />
-
-<h2>Sentences:</h2>
-
-<% if (sentences.length == 0) { %>
-nothing to see here....
-<% } %>
-
-<% sentences.forEach((sentence) => { %>
-<div class="sentenceBlock">
-    <div class="jpn">
-    <%- sentence
-            .splits
-            .map(word => "<a name='word'>word</a>".replace(/word/g, word))
-            .join("")
-     %></div>
-    <div class="kana"><%= sentence.kana %></div>
-    <div class="eng"><%= sentence.eng %></div>
+<div class="fixedHeader">
+    <a id="scrollToTop" href="#" onClick="scrollToTop(); return false">TO TOP</a>
+    <a id="closePopupButton" href="#" onClick="hideCharacterDetails(); return false">BACK</a>
 </div>
-<% }); %>
+<div id="kanjiDetailBody">
+    <h1><%=character%></h1>
+    <h2>Readings:</h2>
+    <%= readings.join(" / ") %><br />
+
+    <h2>Meanings:</h2>
+    <%= meanings.join(" / ") %><br />
+
+    <h2>Example words:</h2>
+
+    <%- exampleWords
+        .map(x => "<a href='#word'>word</a>".replace(/word/g, x))
+        .join(" / ") 
+    %><br />
+
+    <h2>Sentences:</h2>
+
+    <% if (sentences.length == 0) { %>
+    nothing to see here....
+    <% } %>
+
+    <% sentences.forEach((sentence) => { %>
+    <div class="sentenceBlock">
+        <div class="jpn">
+        <%- sentence
+                .splits
+                .map(word => "<a name='word'>word</a>".replace(/word/g, word))
+                .join("")
+        %></div>
+        <div class="kana"><%= sentence.kana %></div>
+        <div class="eng"><%= sentence.eng %></div>
+    </div>
+    <% }); %>
+</div>
