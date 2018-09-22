@@ -12,8 +12,8 @@ class NavigationHandler
     {
         this.pages[this.pages.length - 1].scrollPosition = window.scrollY
         $(this.pages[this.pages.length - 1].element).hide()
-        let newPage = document.createElement("div")
-        document.body.appendChild(newPage)
+        let newPage = document.body.appendChild(document.createElement("div")) 
+        
         this.pages.push({
             element: newPage,
             scrollPosition: 0
@@ -23,10 +23,10 @@ class NavigationHandler
 
     back()
     {
-        $(this.pages[this.pages.length - 1].element).hide()
-        this.pages.pop()
-        $(this.pages[this.pages.length - 1].element).show()
-        window.scrollTo(0, this.pages[this.pages.length - 1].scrollPosition)
+        $(this.pages.pop().element).hide()
+        let currentPage = this.pages[this.pages.length - 1]
+        $(currentPage.element).show()
+        window.scrollTo(0, currentPage.scrollPosition)
     }
 }
 
