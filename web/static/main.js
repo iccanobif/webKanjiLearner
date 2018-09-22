@@ -23,8 +23,7 @@ class NavigationHandler
 
     back()
     {
-        // TODO: remove old page from DOM
-        $(this.pages.pop().element).hide()
+        document.body.removeChild(this.pages.pop().element)
         let currentPage = this.pages[this.pages.length - 1]
         $(currentPage.element).show()
         window.scrollTo(0, currentPage.scrollPosition)
