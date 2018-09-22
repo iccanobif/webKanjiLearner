@@ -14,7 +14,7 @@
     <h2>Example words:</h2>
 
     <%- exampleWords
-        .map(x => "<a href='#word'>word</a>".replace(/word/g, x))
+        .map(x => "<a href='#kanjiDetail_word'>word</a>".replace(/word/g, x))
         .join(" / ") 
     %><br />
 
@@ -29,7 +29,7 @@
         <div class="jpn">
         <%- sentence
                 .splits
-                .map(word => "<a name='word'>word</a>".replace(/word/g, word))
+                .map(word => "<a name='kanjiDetail_word'>word</a>".replace(/word/g, word))
                 .join("")
         %></div>
         <div class="kana"><%= sentence.kana %></div>
