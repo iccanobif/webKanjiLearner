@@ -1,5 +1,16 @@
 const assert = require("assert")
 const edict = require("../edict.js")
+const ut = require("../utils.js")
+
+describe("utils", function ()
+{
+  describe("#uniq()", () =>
+  {
+    it("should work lol", () => {
+      assert.deepStrictEqual([1,2,3], [2,2,1,3].uniq())
+    })
+  })
+})
 
 describe('edict', function ()
 {
@@ -28,6 +39,11 @@ describe('edict', function ()
       it('v5r', () => { assert.ok(edict.isJapaneseWord("謝れ")) })
       it('v5t', () => { assert.ok(edict.isJapaneseWord("待て")) })
       // Do imperatives exist for v5u??
+    })
+    it("should conjugate 湿気る both as a v1 and as a v5r", () =>
+    {
+      assert.ok(edict.isJapaneseWord("湿気た"))
+      assert.ok(edict.isJapaneseWord("湿気った"))
     })
   })
   describe("#getDefinition()", () =>

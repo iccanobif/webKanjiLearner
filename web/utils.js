@@ -19,3 +19,15 @@ Array.prototype.shuffle = function ()
     }
     return output;
 }
+
+Array.prototype.uniq = function ()
+{
+    return this
+        .sort()
+        .reduce((acc, val) =>
+        {
+            if (acc[acc.length - 1] != val)
+                acc.push(val)
+            return acc
+        }, [])
+}

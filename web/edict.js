@@ -1,24 +1,29 @@
 const fs = require("fs")
 const readline = require("readline")
-const xmlReader = require("xml-reader")
+const assert = require("assert")
 const ut = require("./utils.js")
+
 
 const partOfSpeechWhitelist = new Set("v1|v5aru|v5b|v5g|v5k-s|v5k|v5m|v5n|v5r-i|v5r|v5s|v5t|v5u-s|v5uru|v5u|v5|adj-ix|adj-i".split("|"))
 const unsupportedConjugations = new Set(["v5", "v5aru", "v5r-i", "v5u-s", "v5uru"])
 
-let wordsSet = new Set()
 let entireDictionary = {}
 let isFullyLoaded = false
 let callbacks = []
 
-let currentEntryData = { keys: [], partOfSpeech: null, glosses: [] }
+function makeNewDictionaryEntry()
+{
+    return { keys: [], partOfSpeech: new Set(), glosses: [] }
+}
+
+let currentEntryData = makeNewDictionaryEntry()
 
 function conjugate(words, partOfSpeech)
 {
     if (partOfSpeech == null)
-        return words
+        return []
     if (unsupportedConjugations.has(partOfSpeech))
-        return words // I don't know how to conjugate this stuff (yet)
+        return [] // I don't know how to conjugate this stuff (yet)
 
     let newWords = []
     words.forEach((word) =>
@@ -132,7 +137,7 @@ function conjugate(words, partOfSpeech)
         }
     })
 
-    return words.concat(newWords)
+    return newWords
 }
 
 ut.log("Start loading edict")
@@ -148,11 +153,11 @@ readline
         if (line.startsWith("<pos>"))
         {
             // For some reason <pos> entries begin with a & and end with a ;
-            // I don't include them in the strings i add to typesOfWord
+            // I don't include them in the strings I add to the partOfSpeech array
             let type = line.substring("<pos>".length + 1, line.length - "</pos>".length - 1)
 
             if (partOfSpeechWhitelist.has(type))
-                currentEntryData.partOfSpeech = type
+                currentEntryData.partOfSpeech.add(type)
         }
         if (line.startsWith("<gloss>"))
         {
@@ -162,7 +167,16 @@ readline
         {
             // I have collected all relevant data for this entry, can add it to the dictionary
 
-            currentEntryData.keys = conjugate(currentEntryData.keys, currentEntryData.partOfSpeech)
+            // Alas, some verbs (very few) can behave both as v1 and as v5r...
+            currentEntryData.keys = Array
+                .from(currentEntryData.partOfSpeech) // convert to array
+                .filter((partOfSpeech) => partOfSpeechWhitelist.has(partOfSpeech)) // only consider the relevant types of part of speech for conjugations
+                .reduce((acc, partOfSpeech) => { 
+                    // Get the conjugations for this verb considering every type of part of speech and aggregate them
+                    return acc.concat(conjugate(currentEntryData.keys, partOfSpeech))
+                }, currentEntryData.keys)
+                .uniq() // remove duplicates
+
             currentEntryData.keys.forEach((x) =>
             {
                 if (x in entireDictionary)
@@ -171,7 +185,7 @@ readline
                     entireDictionary[x] = [currentEntryData]
             })
 
-            currentEntryData = { keys: [], typesOfWord: [], glosses: [] } // Reset the currentEntryData
+            currentEntryData = makeNewDictionaryEntry()
         }
     })
     .on("close", () =>
