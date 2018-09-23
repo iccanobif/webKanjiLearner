@@ -1,21 +1,23 @@
 const fs = require("fs")
 const readline = require("readline")
+const xmlReader = require("xml-reader")
 const ut = require("./utils.js")
 
-const typeOfWordWhitelist = new Set("v1|v5aru|v5b|v5g|v5k-s|v5k|v5m|v5n|v5r-i|v5r|v5s|v5t|v5u-s|v5uru|v5u|v5|adj-ix|adj-i".split("|"))
+const partOfSpeechWhitelist = new Set("v1|v5aru|v5b|v5g|v5k-s|v5k|v5m|v5n|v5r-i|v5r|v5s|v5t|v5u-s|v5uru|v5u|v5|adj-ix|adj-i".split("|"))
 const unsupportedConjugations = new Set(["v5", "v5aru", "v5r-i", "v5u-s", "v5uru"])
 
 let wordsSet = new Set()
+let entireDictionary = {}
 let isFullyLoaded = false
 let callbacks = []
 
-let currentEntryData = { keys: [], typeOfWord: null }
+let currentEntryData = { keys: [], partOfSpeech: null, glosses: [] }
 
-function conjugate(words, typeOfWord)
+function conjugate(words, partOfSpeech)
 {
-    if (typeOfWord == null)
+    if (partOfSpeech == null)
         return words
-    if (unsupportedConjugations.has(typeOfWord))
+    if (unsupportedConjugations.has(partOfSpeech))
         return words // I don't know how to conjugate this stuff (yet)
 
     let newWords = []
@@ -24,7 +26,7 @@ function conjugate(words, typeOfWord)
         let root = word.slice(0, word.length - 1)
         let add = (w) => { newWords.push(root + w) }
 
-        switch (typeOfWord)
+        switch (partOfSpeech)
         {
             case "adj-i":
                 add("くない") // negative
@@ -103,21 +105,21 @@ function conjugate(words, typeOfWord)
         let firstNegativeKana = ""
         let stemKana = ""
 
-        switch (typeOfWord)
+        switch (partOfSpeech)
         {
             case "v5k-s": // potential // volitive // imperative  
-            case "v5k": add("ける"); add("こう"); 　add("け"); stemKana = "き"; firstNegativeKana = "か"; break;
-            case "v5g": add("げる"); add("ごう"); 　add("げ"); stemKana = "ぎ"; firstNegativeKana = "が"; break;
-            case "v5b": add("べる"); add("ぼう"); 　add("べ"); stemKana = "び"; firstNegativeKana = "ば"; break;
-            case "v5m": add("める"); add("もう"); 　add("め"); stemKana = "み"; firstNegativeKana = "ま"; break;
-            case "v5n": add("ねる"); add("のう"); 　add("ね"); stemKana = "に"; firstNegativeKana = "な"; break;
-            case "v5r": add("れる"); add("ろう"); 　add("れ"); stemKana = "り"; firstNegativeKana = "ら"; break;
-            case "v5t": add("てる"); add("とう"); 　add("て"); stemKana = "ち"; firstNegativeKana = "た"; break;
+            case "v5k": add("ける"); add("こう"); add("け"); stemKana = "き"; firstNegativeKana = "か"; break;
+            case "v5g": add("げる"); add("ごう"); add("げ"); stemKana = "ぎ"; firstNegativeKana = "が"; break;
+            case "v5b": add("べる"); add("ぼう"); add("べ"); stemKana = "び"; firstNegativeKana = "ば"; break;
+            case "v5m": add("める"); add("もう"); add("め"); stemKana = "み"; firstNegativeKana = "ま"; break;
+            case "v5n": add("ねる"); add("のう"); add("ね"); stemKana = "に"; firstNegativeKana = "な"; break;
+            case "v5r": add("れる"); add("ろう"); add("れ"); stemKana = "り"; firstNegativeKana = "ら"; break;
+            case "v5t": add("てる"); add("とう"); add("て"); stemKana = "ち"; firstNegativeKana = "た"; break;
             case "v5u": add("える"); add("おう");　/* ???? */ stemKana = "い"; firstNegativeKana = "わ"; break;
-            case "v5s": add("せる"); add("そう"); 　add("せ"); stemKana = "し"; firstNegativeKana = "さ"; break;
+            case "v5s": add("せる"); add("そう"); add("せ"); stemKana = "し"; firstNegativeKana = "さ"; break;
         }
 
-        if (typeOfWord.startsWith("v5"))
+        if (partOfSpeech.startsWith("v5"))
         {
             add(firstNegativeKana + "ない")  // negative
             add(firstNegativeKana + "なかった")  // past negative
@@ -134,29 +136,42 @@ function conjugate(words, typeOfWord)
 }
 
 ut.log("Start loading edict")
+
 readline
     .createInterface({ input: fs.createReadStream("JMdict_e") })
     .on("line", (line) =>
     {
         if (line.startsWith("<keb>") || line.startsWith("<reb>"))
-            currentEntryData.keys.push(line.substring(5, line.length - 6))
+        {
+            currentEntryData.keys.push(line.substring("<keb>".length, line.length - "</keb>".length))
+        }
         if (line.startsWith("<pos>"))
         {
             // For some reason <pos> entries begin with a & and end with a ;
             // I don't include them in the strings i add to typesOfWord
-            let type = line.substring(6, line.length - 7)
+            let type = line.substring("<pos>".length + 1, line.length - "</pos>".length - 1)
 
-            if (typeOfWordWhitelist.has(type))
-                currentEntryData.typeOfWord = type
+            if (partOfSpeechWhitelist.has(type))
+                currentEntryData.partOfSpeech = type
+        }
+        if (line.startsWith("<gloss>"))
+        {
+            currentEntryData.glosses.push(line.substring("<gloss>".length, line.length - "</gloss>".length))
         }
         if (line.startsWith("</entry>"))
         {
-            // Collected all relevant data for this entry, can add it to the dictionary
+            // I have collected all relevant data for this entry, can add it to the dictionary
 
-            currentEntryData.keys = conjugate(currentEntryData.keys, currentEntryData.typeOfWord)
+            currentEntryData.keys = conjugate(currentEntryData.keys, currentEntryData.partOfSpeech)
+            currentEntryData.keys.forEach((x) =>
+            {
+                if (x in entireDictionary)
+                    entireDictionary[x].push(currentEntryData)
+                else
+                    entireDictionary[x] = [currentEntryData]
+            })
 
-            currentEntryData.keys.forEach((x) => { wordsSet.add(x) })
-            currentEntryData = { keys: [], typesOfWord: [] } // Reset the currentEntryData
+            currentEntryData = { keys: [], typesOfWord: [], glosses: [] } // Reset the currentEntryData
         }
     })
     .on("close", () =>
@@ -174,12 +189,12 @@ module.exports.isLoaded = () =>
 
 module.exports.isJapaneseWord = (word) =>
 {
-    return wordsSet.has(word)
+    return word in entireDictionary
 }
 
 module.exports.getDefinitions = (word) =>
 {
-    throw Exception("not implemented")
+    return entireDictionary[word]
 }
 
 module.exports.addLoadedCallback = (callback) =>

@@ -32,17 +32,24 @@ describe('edict', function ()
   })
   describe("#getDefinition()", () =>
   {
-    it("should throw not implemented exception", () =>
+    it("should get the definitions of unconjugated words", () =>
     {
-      try
-      {
-        edict.getDefinitions("word")
-        assert.ok(false)
-      }
-      catch (ex)
-      {
-        assert.ok(true)
-      }
+      let definitions = edict.getDefinitions("食べる")
+      assert.equal(definitions.length, 1)
+      assert.ok(definitions[0].keys.includes("食べる"))
+    })
+    it("should get the definitions of conjugated words", () =>
+    {
+      let definitions = edict.getDefinitions("泳いだ")
+      assert.equal(definitions.length, 1)
+      assert.ok(definitions[0].keys.includes("泳ぐ"))
+    })
+    it("should get more than one definition for ambiguous pronouciations", () =>
+    {
+      let definitions = edict.getDefinitions("かんじょう")
+      assert.ok(definitions.length > 1)
+      assert.ok(definitions.filter((x) => x.keys.includes("感情")).length = 1)
+      assert.ok(definitions.filter((x) => x.keys.includes("勘定")).length = 1)
     })
   })
 })
