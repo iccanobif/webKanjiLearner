@@ -197,6 +197,22 @@ app.get("/kanjiDetail/:character", (req, res) =>
         })
     }
 })
+app.get("/dictionaryDefinition/:word", (req, res) =>
+{
+    if (!sentenceRepository.isLoaded() || !kanjidic.isLoaded() || !edict.isLoaded())
+    {
+        res.render("stillLoading.ejs")
+    }
+    else
+    {
+        let word = req.params.word
+        ut.log("Requested dictionary Definition for character " + word)
+
+        res.render("dictionaryDefinition.ejs", {
+            definitions: edict.getDefinitions(word)
+        })
+    }
+})
 app.post("/hideCharacter", (req, res) =>
 {
     hiddenCharacterRepository.hideCharacter(req.body.userId, req.body.character)

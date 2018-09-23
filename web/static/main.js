@@ -90,6 +90,18 @@ function showCharacterDetails(character)
         })
 }
 
+function showDictionaryDefinition(word)
+{
+    let newPage = navigationHandler.goToNextPage()
+    loader.show()
+    $.get("dictionaryDefinition/" + word)
+        .done((data) =>
+        {
+            $(newPage).html(data)
+            loader.hide()
+        })
+}
+
 function scrollToTop()
 {
     window.scrollTo(0, 0);

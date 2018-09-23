@@ -1,0 +1,13 @@
+<div id="dictionaryDefinitionsBody">
+
+<% definitions.forEach((definition) => { %>
+<div class="dictionaryDefinition">
+    Keys: <%= definition.keys.join("; ") %> <br/>
+    Glosses: <%= definition.glosses.join("; ") %><br/>
+</div>
+<% }) %>
+
+</div>
+<div class="fixedFooter">
+    <a id="closePopupButton" href="#" onClick="hideCharacterDetails(); return false">BACK</a>
+</div>

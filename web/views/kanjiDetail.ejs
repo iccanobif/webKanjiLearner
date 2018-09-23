@@ -1,4 +1,3 @@
-
 <div id="kanjiDetailBody">
     <h1><%=character%></h1>
     <h2>Readings:</h2>
@@ -25,7 +24,7 @@
         <div class="jpn">
         <%- sentence
                 .splits
-                .map(word => "<a name='kanjiDetail_word'>word</a>".replace(/word/g, word))
+                .map(word => "<a href='#' name='kanjiDetail_word' onclick='showDictionaryDefinition(\"word\"); return false;'>word</a>".replace(/word/g, word))
                 .join("")
         %></div>
         <div class="kana"><%= sentence.kana %></div>
