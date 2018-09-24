@@ -65,12 +65,16 @@ describe('edict', function ()
       assert.equal(definitions.length, 1)
       assert.ok(definitions[0].keys.includes("泳ぐ"))
     })
-    it("should get more than one definition for ambiguous pronouciations", () =>
+    it("should get more than one definition for ambiguous pronounciations", () =>
     {
       let definitions = edict.getDefinitions("かんじょう")
       assert.ok(definitions.length > 1)
       assert.ok(definitions.filter((x) => x.keys.includes("感情")).length = 1)
       assert.ok(definitions.filter((x) => x.keys.includes("勘定")).length = 1)
+    })
+    it("should return an empty array when asked for a word that's not in the dictionary", () =>
+    {
+      assert.deepStrictEqual([], edict.getDefinitions("this is not a word"))
     })
   })
 })

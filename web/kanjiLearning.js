@@ -214,6 +214,7 @@ app.get("/dictionaryDefinition/:word", (req, res) =>
         ut.log("Requested dictionary Definition for character " + word)
 
         res.render("dictionaryDefinition.ejs", {
+            word: word,
             definitions: edict.getDefinitions(word)
         })
     }

@@ -1,5 +1,9 @@
 <div id="dictionaryDefinitionsBody">
 
+<% if (definitions.length == 0) { %>
+    NOTHING TO SEE HERE FOR WORD <%= word %>
+<% } %>
+
 <% definitions.forEach((definition) => { %>
 <div class="dictionaryDefinition">
     Keys: <%= definition.keys.join("; ") %> <br/>

@@ -52,6 +52,8 @@ function conjugate(words, partOfSpeech)
             case "v1":
                 add("") // stem
                 add("ます") // masu-form
+                add("ました") // masu-form
+                add("ません") // masu-form
                 add("ない") // negative
                 add("た") // past
                 add("なかった") // past negative
@@ -174,7 +176,8 @@ readline
             currentEntryData.keys = Array
                 .from(currentEntryData.partOfSpeech) // convert to array
                 .filter((partOfSpeech) => partOfSpeechWhitelist.has(partOfSpeech)) // only consider the relevant types of part of speech for conjugations
-                .reduce((acc, partOfSpeech) => { 
+                .reduce((acc, partOfSpeech) =>
+                {
                     // Get the conjugations for this verb considering every type of part of speech and aggregate them
                     return acc.concat(conjugate(currentEntryData.keys, partOfSpeech))
                 }, currentEntryData.keys)
@@ -211,7 +214,10 @@ module.exports.isJapaneseWord = (word) =>
 
 module.exports.getDefinitions = (word) =>
 {
-    return entireDictionary[word]
+    if (word in entireDictionary)
+        return entireDictionary[word]
+    else
+        return []
 }
 
 module.exports.addLoadedCallback = (callback) =>
