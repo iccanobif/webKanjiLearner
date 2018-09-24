@@ -6,7 +6,7 @@
 
 <% definitions.forEach((definition) => { %>
 <div class="dictionaryDefinition">
-    Keys: <%= definition.keys.join("; ") %> <br/>
+    Word: <%= definition.dictionaryForms.join("; ") %> <br/>
     Glosses: <%= definition.glosses.join("; ") %><br/>
 </div>
 <% }) %>

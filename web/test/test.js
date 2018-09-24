@@ -76,5 +76,12 @@ describe('edict', function ()
     {
       assert.deepStrictEqual([], edict.getDefinitions("this is not a word"))
     })
+    it("the definition objects have both a 'keys' property with all possible conjugations and a 'dictionaryForms' one with only the base forms", () =>
+    {
+      let definitions = edict.getDefinitions("食べる")
+      assert.ok(definitions[0].keys.includes("食べた"))
+      assert.ok(definitions[0].dictionaryForms.includes("食べる"))
+      assert.ok(!definitions[0].dictionaryForms.includes("食べた"))
+    })
   })
 })

@@ -12,7 +12,12 @@ let callbacks = []
 
 function makeNewDictionaryEntry()
 {
-    return { keys: [], partOfSpeech: new Set(), glosses: [] }
+    return {
+        keys: [],
+        dictionaryForms: [],
+        partOfSpeech: new Set(),
+        glosses: []
+    }
 }
 
 let currentEntryData = makeNewDictionaryEntry()
@@ -153,7 +158,7 @@ readline
     {
         if (line.startsWith("<keb>") || line.startsWith("<reb>"))
         {
-            currentEntryData.keys.push(line.substring("<keb>".length, line.length - "</keb>".length))
+            currentEntryData.dictionaryForms.push(line.substring("<keb>".length, line.length - "</keb>".length))
         }
         if (line.startsWith("<pos>"))
         {
@@ -179,8 +184,8 @@ readline
                 .reduce((acc, partOfSpeech) =>
                 {
                     // Get the conjugations for this verb considering every type of part of speech and aggregate them
-                    return acc.concat(conjugate(currentEntryData.keys, partOfSpeech))
-                }, currentEntryData.keys)
+                    return acc.concat(conjugate(currentEntryData.dictionaryForms, partOfSpeech))
+                }, currentEntryData.dictionaryForms)
                 .uniq() // remove duplicates
 
             currentEntryData.keys.forEach((x) =>
