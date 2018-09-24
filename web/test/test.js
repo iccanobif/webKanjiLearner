@@ -45,6 +45,11 @@ describe('edict', function ()
       assert.ok(edict.isJapaneseWord("湿気た"))
       assert.ok(edict.isJapaneseWord("湿気った"))
     })
+    it("should conjugate ぬ (negative) verb forms too", () => {
+      assert.ok(edict.isJapaneseWord("知らぬ"))
+      assert.ok(edict.isJapaneseWord("出来ぬ"))
+      assert.ok(edict.isJapaneseWord("食べぬ"))
+    })
   })
   describe("#getDefinition()", () =>
   {

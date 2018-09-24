@@ -64,6 +64,7 @@ function conjugate(words, partOfSpeech)
                 add("たい") // tai-form
                 add("ず") // zu-form
                 add("ろ") // imperative
+                add("ぬ") // archaic negative
                 break;
             case "v5s":
                 add("した") // past
@@ -130,9 +131,12 @@ function conjugate(words, partOfSpeech)
             add(firstNegativeKana + "せる")  // causative
             add(firstNegativeKana + "れる")  // passive
             add(firstNegativeKana + "ず")  // zu-form
+            add(firstNegativeKana + "ぬ")  // archaic negative
             add(stemKana) // stem
             add(stemKana + "たい") // tai-form
             add(stemKana + "ます") // masu-form
+            add(stemKana + "ました") // masu-form (past)
+            add(stemKana + "ません") // masu-form (negative)
         }
     })
 
