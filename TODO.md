@@ -1,4 +1,4 @@
 - Fix sql injection problem.
 - switch to another kanji -> kana library.
 - Show only uninflected forms in the "Example words" list
-- Render every sentence as split words, each being a link; when clicked, show a popup with the definitions from EDICT for that word
+- Fix: when clicking the "Load new sentence" button, the new sentence isn't split or clickable
