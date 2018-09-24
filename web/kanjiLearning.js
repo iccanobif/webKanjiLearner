@@ -128,7 +128,12 @@ app.get("/sentences", (req, res) =>
                         return !hiddenCharacters.has(x["char"])
                     })
                     .slice(0, 100)
-                    .shuffle(), // TODO make some real pagination
+                    .shuffle() // TODO make some real pagination
+                    .map((x) =>
+                    {
+                        x.splits = sentenceSplitter.split(x.jpn)
+                        return x
+                    }),
             userName: req.query.userName
         })
     })

@@ -31,7 +31,12 @@
                     name="<%= sentence.char %>"
                     onclick="hideCharacter('<%=sentence.char%>')" />
             </div>
-            <div class="jpn"><%= sentence.jpn %></div>
+            <div class="jpn">
+            <%- sentence
+                    .splits
+                    .map(word => "<a href='#' onclick='showDictionaryDefinition(\"word\"); return false;'>word</a>".replace(/word/g, word))
+                    .join("")
+            %></div>
             <div class="kana"><%= sentence.kana %></div>
             <div class="eng"><%= sentence.eng %></div>
         </div>
