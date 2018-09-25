@@ -50,6 +50,10 @@ describe('edict', function ()
       assert.ok(edict.isJapaneseWord("出来ぬ"))
       assert.ok(edict.isJapaneseWord("食べぬ"))
     })
+    it("Conjugate verbs to their 未然形 form too, so that something like 言わなければならない at least gets the 言わ part clickable and pointing to 言う", () =>
+    {
+      assert.ok(edict.isJapaneseWord("言わ"))
+    })
   })
   describe("#getDefinition()", () =>
   {

@@ -139,6 +139,8 @@ function conjugate(words, partOfSpeech)
             add(firstNegativeKana + "れる")  // passive
             add(firstNegativeKana + "ず")  // zu-form
             add(firstNegativeKana + "ぬ")  // archaic negative
+            add(firstNegativeKana)  // 未然形
+            
             add(stemKana) // stem
             add(stemKana + "たい") // tai-form
             add(stemKana + "ます") // masu-form
