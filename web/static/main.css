@@ -90,7 +90,9 @@ a:visited {
 #closePopupButton
 {
     font-size: 2em;
-    float: right;
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
 }
 
 #loaderText {
