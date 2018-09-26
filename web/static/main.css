@@ -84,7 +84,9 @@ a:visited {
 #scrollToTop
 {
     font-size: 2em;
-    float: left;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
 }
 
 #closePopupButton
