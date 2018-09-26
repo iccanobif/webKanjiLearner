@@ -14,6 +14,10 @@ a:visited {
     color: lightgray
 }
 
+.wordLink {
+    padding-right: 2px;
+}
+
 .sentenceBlock
 {
     border-bottom-style: solid;
@@ -125,4 +129,9 @@ a:visited {
     border-bottom-style: solid;
     border-bottom-color: lightgray;
     margin: 10px auto 10px auto;
+}
+
+#dictionaryDefinitionsBody
+{
+    padding-bottom: 2em; /* Same as fixedFooter's height */
 }
