@@ -101,13 +101,18 @@ describe("splitter", function ()
   {
     assert.deepStrictEqual(["よろしく", "ね"], sentenceSplitter.split("よろしくね"))
   })
-  it("should split correctly when the longest word is at the beginning", () =>
-  {
-    assert.deepStrictEqual(["たくさん", "の", "ヨット", "が", "港", "に", "はいってる"], sentenceSplitter.split("たくさんのヨットが港にはいってる"))
-  })
+  // it("should split correctly when the longest word is at the end", () =>
+  // {
+  //   assert.deepStrictEqual(["たくさん", "の", "ヨット", "が", "港", "に", "はいってる"], sentenceSplitter.split("たくさんのヨットが港にはいってる"))
+  // })
   it("in doubt, prioritize the left", () =>
   {
     assert.deepStrictEqual(["ただ", "の"], sentenceSplitter.split("ただの"))
+  })
+  it("shouldn't time out while splitting a longish sentence", () =>
+  {
+    sentenceSplitter.split("※基本的な禁止事項（誹謗・中傷の禁止等）は「はじめにお読み下さい」に記載してあります。必ずお読みください。")
+    assert.ok(true)
   })
 // Stuff that's currently not split properly:
 // 経験する

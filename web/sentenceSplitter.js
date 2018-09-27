@@ -2,9 +2,10 @@ const edict = require("./edict.js")
 
 module.exports.split = (function split(sentence)
 {
-
+    console.log(sentence)
     if (sentence.length == 0)
         return []
+    return splitPrioritizeLeft(sentence)
 
     let leftPrioritizedSplits = splitPrioritizeLeft(sentence)
     let rightPrioritizedSplits = splitPrioritizeRight(sentence)
