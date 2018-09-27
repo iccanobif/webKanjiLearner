@@ -1,6 +1,7 @@
 const assert = require("assert")
 const edict = require("../edict.js")
 const ut = require("../utils.js")
+const sentenceSplitter = require("../sentenceSplitter.js")
 
 describe("utils", function ()
 {
@@ -89,3 +90,27 @@ describe('edict', function ()
     })
   })
 })
+
+describe("splitter", function ()
+{
+  before((done) =>
+  {
+    edict.addLoadedCallback(done)
+  })
+  it("should split correctly when the longest word is at the beginning", () =>
+  {
+    assert.deepStrictEqual(["よろしく", "ね"], sentenceSplitter.split("よろしくね"))
+  })
+  it("should split correctly when the longest word is at the beginning", () =>
+  {
+    assert.deepStrictEqual(["たくさん", "の", "ヨット", "が", "港", "に", "はいってる"], sentenceSplitter.split("たくさんのヨットが港にはいってる"))
+  })
+  it("in doubt, prioritize the left", () =>
+  {
+    assert.deepStrictEqual(["ただ", "の"], sentenceSplitter.split("ただの"))
+  })
+// Stuff that's currently not split properly:
+// 経験する
+})
+
+
