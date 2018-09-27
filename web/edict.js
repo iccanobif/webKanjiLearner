@@ -46,6 +46,7 @@ function conjugate(words, partOfSpeech)
                 add("すぎる") // too much
                 add("すぎ") // too much
                 add("そう") // looks like it's...
+                add("さ") // nominalization
                 break;
             case "adj-ix":
                 newWords.push(word.slice(0, word.length - 2) + "よくない") // negative
