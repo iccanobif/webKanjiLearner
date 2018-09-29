@@ -1,10 +1,12 @@
 const edict = require("./edict.js")
+const ut = require("./utils.js")
 
 module.exports.split = (function split(sentence)
 {
-    // console.log(sentence)
     if (sentence.length == 0)
         return []
+    // Splitting running both splitPrioritizeLeft() and splitPrioritizeRight() as following is just too slow...
+    // I'll bypass that for now and keep using only splitPrioritizeLeft()
     return splitPrioritizeLeft(sentence)
 
     let leftPrioritizedSplits = splitPrioritizeLeft(sentence)
@@ -46,3 +48,16 @@ function getMaxLenght(arrayOfStrings)
         return val.length > acc ? val.length : acc
     }, 0)
 }
+
+// edict.addLoadedCallback(() =>
+// {
+//     let stringona = "※基本的な禁止事項（誹謗・中傷の禁止等）は「はじめにお読み下さい」に記載してあります。必ずお読みください。"
+//     ut.log("Start splitting")
+
+//     for (let i = 1; i <= stringona.length; i++)
+//     {
+//         ut.log(module.exports.split(stringona.substring(0, i)))
+//     }
+
+//     ut.log("Done splitting")
+// })
