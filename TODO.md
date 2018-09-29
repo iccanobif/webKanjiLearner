@@ -10,3 +10,5 @@
 
 Grammars to add:
 っちゃう (informal て+しまう)
+
+- Rotating 実行中 isn't well centered

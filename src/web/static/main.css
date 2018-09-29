@@ -99,10 +99,14 @@ a:visited {
 
 #loaderText {
     animation: spin 2s linear infinite;
-    position: absolute;
+    z-index: 100;
+    position: fixed;
     top: 50%;
     left: 50%;
-    z-index: 100;
+    width: 3em;
+    margin-left: -1.5em;
+    height: 1.5em;
+    margin-top: -0.75em;
 }
 
 @keyframes spin {
