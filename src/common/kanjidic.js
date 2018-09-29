@@ -14,6 +14,7 @@ class KanjiInfo
 
 let kanjiInfoCollection = {}
 let isLoaded = false
+let callbacks = []
 
 ut.log("Start loading kanjidic")
 
@@ -44,6 +45,8 @@ readline
     {
         ut.log("Finished loading kanjidic")
         isLoaded = true
+        callbacks.forEach(callback => callback())
+        callbacks = null
     })
 
 module.exports.isLoaded = () =>
@@ -61,4 +64,12 @@ module.exports.getKanjiMeanings = (kanji) =>
 {
     ut.log("Getting kanji meanings for " + kanji)
     return kanjiInfoCollection[kanji].meanings
+}
+
+module.exports.addLoadedCallback = (callback) =>
+{
+    if (isLoaded)
+        callback()
+    else
+        callbacks.push(callback)
 }

@@ -2,14 +2,29 @@ const assert = require("assert")
 const edict = require("../common/edict.js")
 const ut = require("../common/utils.js")
 const sentenceSplitter = require("../common/sentenceSplitter.js")
+const kanjidic = require("../common/kanjidic.js")
 
 describe("utils", function ()
 {
-  describe("#uniq()", () =>
+  describe("uniq()", () =>
   {
     it("should work lol", () => {
       assert.deepStrictEqual([1,2,3], [2,2,1,3].uniq())
     })
+  })
+})
+
+describe("kanjidic", function() 
+{
+  before((done) =>
+  {
+    kanjidic.addLoadedCallback(done)
+  })
+  it("should get kanji readings", () => {
+    assert.deepEqual(kanjidic.getKanjiReadings("逢"), "ホウ あ.う むか.える あい おう".split(" "))
+  })
+  it("should get kanji meanings", () => {
+    assert.deepEqual(kanjidic.getKanjiMeanings("逢"), "meeting tryst date rendezvous".split(" "))
   })
 })
 
@@ -20,7 +35,7 @@ describe('edict', function ()
   {
     edict.addLoadedCallback(done)
   })
-  describe('#isJapaneseWord()', () =>
+  describe('isJapaneseWord()', () =>
   {
     it('should recognize base forms ', () => { assert.ok(edict.isJapaneseWord("食べる")) })
     it('should recognize past forms ', () => { assert.ok(edict.isJapaneseWord("食べた")) })
@@ -56,7 +71,7 @@ describe('edict', function ()
       assert.ok(edict.isJapaneseWord("言わ"))
     })
   })
-  describe("#getDefinition()", () =>
+  describe("getDefinition()", () =>
   {
     it("should get the definitions of unconjugated words", () =>
     {

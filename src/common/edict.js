@@ -7,7 +7,7 @@ const partOfSpeechWhitelist = new Set("v1|v5aru|v5b|v5g|v5k-s|v5k|v5m|v5n|v5r-i|
 const unsupportedConjugations = new Set(["v5", "v5aru", "v5r-i", "v5u-s", "v5uru"])
 
 let entireDictionary = {}
-let isFullyLoaded = false
+let isLoaded = false
 let callbacks = []
 
 function makeNewDictionaryEntry()
@@ -205,14 +205,14 @@ readline
     .on("close", () =>
     {
         ut.log("Finished loading edict")
-        isFullyLoaded = true
+        isLoaded = true
         callbacks.forEach(callback => callback())
         callbacks = null
     })
 
 module.exports.isLoaded = () =>
 {
-    return isFullyLoaded
+    return isLoaded
 }
 
 module.exports.isJapaneseWord = (word) =>
@@ -230,7 +230,7 @@ module.exports.getDefinitions = (word) =>
 
 module.exports.addLoadedCallback = (callback) =>
 {
-    if (isFullyLoaded)
+    if (isLoaded)
         callback()
     else
         callbacks.push(callback)
