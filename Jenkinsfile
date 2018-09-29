@@ -11,11 +11,11 @@ pipeline {
                 sh 'cd src && npm install'
             }
         }
-        // stage('test') {
-        //     steps {
-        //         sh 'cd src && npm test'
-        //     }
-        // }
+        stage('test') {
+            steps {
+                sh 'cd src && npm test'
+            }
+        }
         stage('deploy') {
             steps {
                 sh 'pm2 delete kanjiLearning || true'
