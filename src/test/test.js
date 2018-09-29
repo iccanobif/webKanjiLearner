@@ -131,6 +131,7 @@ describe("splitter", function ()
   })
 // Stuff that's currently not split properly:
 // 経験する
+// 大きな蜘蛛が部屋にいるの！早く退治してちょうだい！ (should be に/いる instead of にい/る)
 })
 
 
