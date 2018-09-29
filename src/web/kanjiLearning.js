@@ -166,6 +166,7 @@ app.get("/getRandomSentence/:character", (req, res) =>
     else
     {
         res.type("application/json")
+        randomSentence.splits = sentenceSplitter.split(randomSentence.jpn)
         res.end(JSON.stringify(randomSentence))
         ut.log("Sent new sentence for character " + req.params.character)
     }
