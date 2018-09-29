@@ -1,4 +1,4 @@
-import libs.kanji_to_kana
+import kanji_to_kana
 
 with open("inputs/sentences.csv", "r", encoding="utf8") as input:
     with open("intermediateFiles/sentencesWithKana.csv", "w", encoding="utf8") as output:

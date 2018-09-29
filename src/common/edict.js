@@ -156,7 +156,7 @@ function conjugate(words, partOfSpeech)
 ut.log("Start loading edict")
 
 readline
-    .createInterface({ input: fs.createReadStream("JMdict_e") })
+    .createInterface({ input: fs.createReadStream("../datasets/JMdict_e") })
     .on("line", (line) =>
     {
         if (line.startsWith("<keb>") || line.startsWith("<reb>"))

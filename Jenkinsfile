@@ -4,15 +4,23 @@ pipeline {
         stage('build') {
             steps {
                 // Would be nice to also install pm2
-                // And here there should be tests!
-                sh 'cd web && pwd && npm install'
+
+                // download tatoeba datasets 
+                // generate kana sentences
+                // aggregate sentences into allSentences.csv
+                sh 'cd src && npm install'
             }
         }
+        // stage('test') {
+        //     steps {
+        //         sh 'cd src && npm test'
+        //     }
+        // }
         stage('deploy') {
             steps {
                 sh 'pm2 delete kanjiLearning || true'
                 sh 'cd ~/webKanjiLearner && git pull && npm install'
-                sh 'cd ~/webKanjiLearner/web && pm2 start kanjiLearning.js'
+                sh 'cd ~/webKanjiLearner/src && pm2 npm start'
             }
         }
     }

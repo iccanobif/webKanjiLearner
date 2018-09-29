@@ -3,3 +3,4 @@
 - Show only uninflected forms in the "Example words" list
 - Fix: when clicking the "Load new sentence" button, the new sentence isn't split or clickable
 - When clicking on a word in the "Example words" list, jump at the beginning of the example sentence and not merely at the word
+- add unit tests for kanjidic

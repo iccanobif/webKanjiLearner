@@ -1,7 +1,7 @@
 const assert = require("assert")
-const edict = require("../edict.js")
-const ut = require("../utils.js")
-const sentenceSplitter = require("../sentenceSplitter.js")
+const edict = require("../common/edict.js")
+const ut = require("../common/utils.js")
+const sentenceSplitter = require("../common/sentenceSplitter.js")
 
 describe("utils", function ()
 {

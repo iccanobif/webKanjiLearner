@@ -3,11 +3,11 @@ const app = express()
 const http = require("http").Server(app)
 const sqlite3 = require("sqlite3")
 const bodyParser = require("body-parser");
-const kanjidic = require("./kanjidic.js")
-const ut = require("./utils.js")
-const sentenceRepository = require("./sentenceRepository.js")
-const sentenceSplitter = require("./sentenceSplitter.js")
-const edict = require("./edict.js")
+const kanjidic = require("../common/kanjidic.js")
+const ut = require("../common/utils.js")
+const sentenceRepository = require("../common/sentenceRepository.js")
+const sentenceSplitter = require("../common/sentenceSplitter.js")
+const edict = require("../common/edict.js")
 
 function readCookie(cookies, cookieName)
 {
@@ -25,7 +25,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 let HiddenCharacterRepository = function ()
 {
-    let db = new sqlite3.Database('db.db');
+    let db = new sqlite3.Database('web/db.db');
     db.serialize(() =>
     {
         db.run("CREATE TABLE IF NOT EXISTS HIDDEN_CHARACTERS (USER_ID, CHARACTER)")
@@ -108,6 +108,7 @@ function canOpenPage(req, res)
 }
 
 app.set("view engine", "ejs")
+app.set("views", "web/views")
 //PAGES
 app.get("/", (req, res) =>
 {
@@ -232,6 +233,6 @@ app.post("/unhideCharacter", (req, res) =>
     res.end("OK")
 })
 
-app.use(express.static('static'))
+app.use(express.static('web/static'))
 http.listen(8081, "0.0.0.0")
 ut.log("Server running")
