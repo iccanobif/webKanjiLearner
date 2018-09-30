@@ -8,22 +8,25 @@ describe("utils", function ()
 {
   describe("uniq()", () =>
   {
-    it("should work lol", () => {
-      assert.deepStrictEqual([1,2,3], [2,2,1,3].uniq())
+    it("should work lol", () =>
+    {
+      assert.deepStrictEqual([1, 2, 3], [2, 2, 1, 3].uniq())
     })
   })
 })
 
-describe("kanjidic", function() 
+describe("kanjidic", function () 
 {
   before((done) =>
   {
     kanjidic.addLoadedCallback(done)
   })
-  it("should get kanji readings", () => {
+  it("should get kanji readings", () =>
+  {
     assert.deepEqual(kanjidic.getKanjiReadings("逢"), "ホウ あ.う むか.える あい おう".split(" "))
   })
-  it("should get kanji meanings", () => {
+  it("should get kanji meanings", () =>
+  {
     assert.deepEqual(kanjidic.getKanjiMeanings("逢"), "meeting tryst date rendezvous".split(" "))
   })
 })
@@ -61,7 +64,8 @@ describe('edict', function ()
       assert.ok(edict.isJapaneseWord("湿気た"))
       assert.ok(edict.isJapaneseWord("湿気った"))
     })
-    it("should conjugate ぬ (negative) verb forms too", () => {
+    it("should conjugate ぬ (negative) verb forms too", () =>
+    {
       assert.ok(edict.isJapaneseWord("知らぬ"))
       assert.ok(edict.isJapaneseWord("出来ぬ"))
       assert.ok(edict.isJapaneseWord("食べぬ"))
@@ -78,6 +82,12 @@ describe('edict', function ()
       let definitions = edict.getDefinitions("食べる")
       assert.equal(definitions.length, 1)
       assert.ok(definitions[0].kanjiElements.includes("食べる"))
+    })
+    describe("should return an object with the following properties (that are used elsewhere in the program):", () =>
+    {
+      it("kanjiElements", () => { assert.ok("kanjiElements" in edict.getDefinitions("食べる")[0]) })
+      it("readingElements", () => { assert.ok("readingElements" in edict.getDefinitions("食べる")[0]) })
+      it("glosses", () => { assert.ok("glosses" in edict.getDefinitions("食べる")[0]) })
     })
     it("should get the definitions of conjugated words", () =>
     {
@@ -131,9 +141,9 @@ describe("splitter", function ()
     sentenceSplitter.split("※基本的な禁止事項（誹謗・中傷の禁止等）は「はじめにお読み下さい」に記載してあります。必ずお読みください。")
     assert.ok(true)
   })
-// Stuff that's currently not split properly:
-// 経験する
-// 大きな蜘蛛が部屋にいるの！早く退治してちょうだい！ (should be に/いる instead of にい/る)
+  // Stuff that's currently not split properly:
+  // 経験する
+  // 大きな蜘蛛が部屋にいるの！早く退治してちょうだい！ (should be に/いる instead of にい/る)
 })
 
 
