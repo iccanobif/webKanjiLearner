@@ -23,8 +23,14 @@
     <div class="sentenceBlock">
         <div class="jpn">
         <%- sentence
+            .splits
+            .filter(x => x.match(new RegExp(character, "g"))) // Words that don't contain the kanji can't be jumped to anyway.
+            .map(word => "<a name='kanjiDetail_word'></a>".replace(/word/g, word))
+            .join("")
+        %>
+        <%- sentence
                 .splits
-                .map(word => "<a href='#' name='kanjiDetail_word' onclick='showDictionaryDefinition(\"word\"); return false;'>word</a>".replace(/word/g, word))
+                .map(word => "<a href='#' onclick='showDictionaryDefinition(\"word\"); return false;'>word</a>".replace(/word/g, word))
                 .join("")
         %></div>
         <div class="kana"><%= sentence.kana %></div>
