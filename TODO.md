@@ -9,5 +9,4 @@
 Grammars to add:
 っちゃう (informal て+しまう)
 
-- Properly handle all errors (ex. no network connection) during ajax calls
 - Remove neko* packages, that tokenizer sucks
