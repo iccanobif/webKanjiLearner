@@ -77,33 +77,35 @@ describe('edict', function ()
     {
       let definitions = edict.getDefinitions("食べる")
       assert.equal(definitions.length, 1)
-      assert.ok(definitions[0].keys.includes("食べる"))
+      assert.ok(definitions[0].kanjiElements.includes("食べる"))
     })
     it("should get the definitions of conjugated words", () =>
     {
       let definitions = edict.getDefinitions("泳いだ")
       assert.equal(definitions.length, 1)
-      assert.ok(definitions[0].keys.includes("泳ぐ"))
+      assert.ok(definitions[0].kanjiElements.includes("泳ぐ"))
     })
     it("should get more than one definition for ambiguous pronounciations", () =>
     {
       let definitions = edict.getDefinitions("かんじょう")
       assert.ok(definitions.length > 1)
-      assert.ok(definitions.filter((x) => x.keys.includes("感情")).length = 1)
-      assert.ok(definitions.filter((x) => x.keys.includes("勘定")).length = 1)
+      assert.ok(definitions.filter((x) => x.kanjiElements.includes("感情")).length = 1)
+      assert.ok(definitions.filter((x) => x.kanjiElements.includes("勘定")).length = 1)
     })
     it("should return an empty array when asked for a word that's not in the dictionary", () =>
     {
       assert.deepStrictEqual([], edict.getDefinitions("this is not a word"))
     })
-    it("the definition objects have both a 'keys' property with all possible conjugations and a 'dictionaryForms' one with only the base forms", () =>
-    {
-      let definitions = edict.getDefinitions("食べる")
-      assert.ok(definitions[0].keys.includes("食べた"))
-      assert.ok(definitions[0].dictionaryForms.includes("食べる"))
-      assert.ok(!definitions[0].dictionaryForms.includes("食べた"))
-    })
   })
+  // describe("getReadings()", () =>
+  // {
+  //   it("should convert uninflected kanji words to kana correctly", () =>
+  //   {
+  //     let readings = edict.getReadings("食べる")
+  //     assert.equal(readings.length, 1)
+  //     assert.equal(readings[0], "たべる")
+  //   })
+  // })
 })
 
 describe("splitter", function ()

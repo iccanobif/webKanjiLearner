@@ -6,17 +6,17 @@ const ut = require("./utils.js")
 const partOfSpeechWhitelist = new Set("v1|v5aru|v5b|v5g|v5k-s|v5k|v5m|v5n|v5r-i|v5r|v5s|v5t|v5u-s|v5uru|v5u|v5|adj-ix|adj-i".split("|"))
 const unsupportedConjugations = new Set(["v5", "v5aru", "v5r-i", "v5u-s", "v5uru"])
 
-let entireDictionary = {}
+let dictionary = {}
 let isLoaded = false
 let callbacks = []
 
 function makeNewDictionaryEntry()
 {
     return {
-        keys: [],
-        dictionaryForms: [],
+        kanjiElements: [],
+        readingElements: [],
         partOfSpeech: new Set(),
-        glosses: []
+        glosses: [] // Meanings
     }
 }
 
@@ -141,7 +141,7 @@ function conjugate(words, partOfSpeech)
             add(firstNegativeKana + "ず")  // zu-form
             add(firstNegativeKana + "ぬ")  // archaic negative
             add(firstNegativeKana)  // 未然形
-            
+
             add(stemKana) // stem
             add(stemKana + "たい") // tai-form
             add(stemKana + "ます") // masu-form
@@ -159,9 +159,13 @@ readline
     .createInterface({ input: fs.createReadStream("../datasets/JMdict_e") })
     .on("line", (line) =>
     {
-        if (line.startsWith("<keb>") || line.startsWith("<reb>"))
+        if (line.startsWith("<keb>"))
         {
-            currentEntryData.dictionaryForms.push(line.substring("<keb>".length, line.length - "</keb>".length))
+            currentEntryData.kanjiElements.push(line.substring("<keb>".length, line.length - "</keb>".length))
+        }
+        if (line.startsWith("<reb>"))
+        {
+            currentEntryData.readingElements.push(line.substring("<reb>".length, line.length - "</reb>".length))
         }
         if (line.startsWith("<pos>"))
         {
@@ -181,23 +185,23 @@ readline
             // I have collected all relevant data for this entry, can add it to the dictionary
 
             // Alas, some verbs (very few) can behave both as v1 and as v5r...
-            currentEntryData.keys = Array
+            Array
                 .from(currentEntryData.partOfSpeech) // convert to array
                 .filter((partOfSpeech) => partOfSpeechWhitelist.has(partOfSpeech)) // only consider the relevant types of part of speech for conjugations
                 .reduce((acc, partOfSpeech) =>
                 {
                     // Get the conjugations for this verb considering every type of part of speech and aggregate them
-                    return acc.concat(conjugate(currentEntryData.dictionaryForms, partOfSpeech))
-                }, currentEntryData.dictionaryForms)
+                    let formsToConjugate = currentEntryData.kanjiElements.concat(currentEntryData.readingElements)
+                    return acc.concat(conjugate(formsToConjugate, partOfSpeech))
+                }, currentEntryData.kanjiElements.concat(currentEntryData.readingElements))
                 .uniq() // remove duplicates
-
-            currentEntryData.keys.forEach((x) =>
-            {
-                if (x in entireDictionary)
-                    entireDictionary[x].push(currentEntryData)
-                else
-                    entireDictionary[x] = [currentEntryData]
-            })
+                .forEach((x) => // For each "key" adds the entry in the dictionary
+                {
+                    if (x in dictionary)
+                        dictionary[x].push(currentEntryData)
+                    else
+                        dictionary[x] = [currentEntryData]
+                })
 
             currentEntryData = makeNewDictionaryEntry()
         }
@@ -217,15 +221,20 @@ module.exports.isLoaded = () =>
 
 module.exports.isJapaneseWord = (word) =>
 {
-    return word in entireDictionary
+    return word in dictionary
 }
 
 module.exports.getDefinitions = (word) =>
 {
-    if (word in entireDictionary)
-        return entireDictionary[word]
+    if (word in dictionary)
+        return dictionary[word]
     else
         return []
+}
+
+module.exports.getReadings = (word) =>
+{
+    throw new Error("Not implemented")
 }
 
 module.exports.addLoadedCallback = (callback) =>
