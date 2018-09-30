@@ -91,6 +91,12 @@ function showCharacterDetails(character)
             $(newPage).html(data)
             loader.hide()
         })
+        .fail(() =>
+        {
+            alert("Failed")
+            loader.hide()
+            navigationHandler.back()
+        })
 }
 
 function showDictionaryDefinition(word)
@@ -102,6 +108,12 @@ function showDictionaryDefinition(word)
         {
             $(newPage).html(data)
             loader.hide()
+        })
+        .fail(() =>
+        {
+            alert("Failed")
+            loader.hide()
+            navigationHandler.back()
         })
 }
 
