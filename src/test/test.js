@@ -107,6 +107,25 @@ describe('edict', function ()
       assert.deepStrictEqual([], edict.getDefinitions("this is not a word"))
     })
   })
+  describe("getBaseForm", () =>
+  {
+    it("should get the base form of a conjugated verb (kanji)", () =>
+    {
+      assert.deepStrictEqual(["食べる"], edict.getBaseForm("食べられる"))
+    })
+    it("should get the base form of a conjugated verb (kana)", () =>
+    {
+      assert.deepStrictEqual(["たべる"], edict.getBaseForm("たべられる"))
+    })
+    it("should get all possible base forms in case of ambiguity", () =>
+    {
+      let baseForms = edict.getBaseForm("いった")
+      assert.equal(3, baseForms.length)
+      assert.ok(baseForms.includes("いく"))
+      assert.ok(baseForms.includes("いう"))
+      assert.ok(baseForms.includes("いる"))
+    })
+  })
   // describe("getReadings()", () =>
   // {
   //   it("should convert uninflected kanji words to kana correctly", () =>
