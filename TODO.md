@@ -1,6 +1,8 @@
 - Fix sql injection problem.
 - switch to another kanji -> kana library.
 - Show only uninflected forms in the "Example words" list
+- in the Example words list show the number of times each word appears (COUNT(1) on GROUP BY)
+
 
 - Improvements to splitter:
     - Maybe I could improve accuracy considering the kana versions of words that have kanji as "low priority" compared to purely kana ones

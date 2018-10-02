@@ -3,15 +3,15 @@
     <h2>Readings:</h2>
     <%= readings.join(" / ") %><br />
 
-    <h2>Meanings:</h2>
-    <%= meanings.join(" / ") %><br />
-
     <h2>Example words:</h2>
 
     <%- exampleWords
         .map(x => "<a href='#kanjiDetail_word'>word</a>".replace(/word/g, x))
         .join(" / ") 
     %><br />
+
+    <h2>Meanings:</h2>
+    <%= meanings.join(" / ") %><br />
 
     <h2>Sentences:</h2>
 
