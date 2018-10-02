@@ -200,7 +200,17 @@ app.get("/kanjiDetail/:character", (req, res) =>
                 .map(x => x.splits) // Extract the kanji text (split in words) from each sentence object
                 .reduce((acc, val) => acc.concat(val), []) // Flatten into an array of arrays
                 .filter(x => x.match(new RegExp(req.params.character))) // Only keep the strings containing the relevant character
-                .uniq() // Remove duplicates
+                // Do a "GROUP BY" (sort, and then aggregate every adjacent element equal to each other, keeping count)
+                .sort((a, b) => { return a.localeCompare(b) })
+                .reduce((acc, val) =>
+                {
+                    if (acc.length == 0 || val != acc[acc.length - 1].word)
+                        acc.push({ word: val, count: 1 })
+                    else
+                        acc[acc.length - 1].count += 1
+                    return acc
+                }, [])
+                .sort((a, b) => { return b.count - a.count })
         })
     }
 })
