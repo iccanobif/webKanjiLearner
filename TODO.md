@@ -10,3 +10,7 @@ Grammars to add:
 - Remove "kana" attribute to allSentences.csv
 - Automate the generation of allSentences.csv from the tatoeba files
 
+- Sentences that currently aren't properly split:
+    - その男は頑としてその職にしがみつき、決して退職しようとはしなかった。
+    - 証人が事実を隠せば刑法の罪に問われる。
+    - 彼女の行動はしだいに攻撃的になってくるだろう。

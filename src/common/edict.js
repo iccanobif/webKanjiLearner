@@ -1,6 +1,5 @@
 const fs = require("fs")
 const readline = require("readline")
-const assert = require("assert")
 const ut = require("./utils.js")
 
 const partOfSpeechWhitelist = new Set("v1|v5aru|v5b|v5g|v5k-s|v5k|v5m|v5n|v5r-i|v5r|v5s|v5t|v5u-s|v5uru|v5u|v5|adj-ix|adj-i".split("|"))

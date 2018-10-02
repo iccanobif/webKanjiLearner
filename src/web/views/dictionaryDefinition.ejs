@@ -6,8 +6,9 @@
 
 <% definitions.forEach((definition) => { %>
 <div class="dictionaryDefinition">
-    Word: <%= definition.kanjiElements.concat(definition.readingElements).join("; ") %> 
-    Meaning: <%= definition.glosses.join("; ") %><br/>
+    Word: <%= definition.kanjiElements.join("; ") %> <br />
+    Reading: <%= definition.readingElements.join("; ") %>  <br />
+    Meaning: <%= definition.glosses.join("; ") %>
 </div>
 <% }) %>
 
