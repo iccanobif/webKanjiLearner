@@ -6,5 +6,4 @@
     - for example in 大きな蜘蛛が部屋にいるの！早く退治してちょうだい！, ni/iru/no should have priority compared to nii/ru/no because にい could have been 兄 (but what about stuff that has a kanji that's rarely used, like 只?)
 Grammars to add:
 っちゃう (informal て+しまう)
-- Remove neko* packages, that tokenizer sucks
 - For each conjugated word, keep the original string (be it with a kanji or not), needed to get the dictionary form of a word starting from its conjugated form
