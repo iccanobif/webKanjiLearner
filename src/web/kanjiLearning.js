@@ -128,7 +128,7 @@ app.get("/sentences", (req, res) =>
                     {
                         return !hiddenCharacters.has(x["char"])
                     })
-                    .slice(0, 100)
+                    .slice(0, 50)
                     .shuffle() // TODO make some real pagination
                     .map((x) =>
                     {
