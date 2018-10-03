@@ -33,7 +33,7 @@ describe("kanjidic", function ()
 
 describe('edict', function ()
 {
-  this.timeout(10000)
+  this.timeout(20000)
   before((done) =>
   {
     edict.addLoadedCallback(done)
