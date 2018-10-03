@@ -107,34 +107,34 @@ describe('edict', function ()
       assert.deepStrictEqual([], edict.getDefinitions("this is not a word"))
     })
   })
-  describe("getBaseForm", () =>
+  describe("getBaseForms", () =>
   {
     it("should get the base form of a conjugated verb (kanji)", () =>
     {
-      assert.deepStrictEqual(["食べる"], edict.getBaseForm("食べられる"))
+      assert.deepStrictEqual(["食べる"], edict.getBaseForms("食べられる"))
     })
     it("should get the base form of a conjugated verb (kana)", () =>
     {
-      assert.deepStrictEqual(["たべる"], edict.getBaseForm("たべられる"))
+      assert.deepStrictEqual(["たべる"], edict.getBaseForms("たべられる"))
     })
     it("should get all possible base forms in case of ambiguity", () =>
     {
-      let baseForms = edict.getBaseForm("いった")
+      let baseForms = edict.getBaseForms("いった")
       assert.equal(3, baseForms.length)
       assert.ok(baseForms.includes("いく"))
       assert.ok(baseForms.includes("いう"))
       assert.ok(baseForms.includes("いる"))
     })
   })
-  // describe("getReadings()", () =>
-  // {
-  //   it("should convert uninflected kanji words to kana correctly", () =>
-  //   {
-  //     let readings = edict.getReadings("食べる")
-  //     assert.equal(readings.length, 1)
-  //     assert.equal(readings[0], "たべる")
-  //   })
-  // })
+  describe("getReadings()", () =>
+  {
+    it("should convert uninflected kanji words to kana correctly", () =>
+    {
+      let readings = edict.getReadings("食べる")
+      assert.equal(readings.length, 1)
+      assert.equal(readings[0], "たべる")
+    })
+  })
 })
 
 describe("splitter", function ()

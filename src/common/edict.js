@@ -7,6 +7,7 @@ const unsupportedConjugations = new Set(["v5", "v5aru", "v5r-i", "v5u-s", "v5uru
 
 let dictionary = {}
 let conjugatedToUnconjugatedFormsDictionary = {}
+let kanjiToReadingsDictionary = {}
 let isLoaded = false
 let callbacks = []
 
@@ -182,6 +183,17 @@ readline
         {
             // I have collected all relevant data for this entry, can add it to the dictionary
 
+            currentEntryData.readingElements.forEach((reading) =>
+            {
+                currentEntryData.kanjiElements.forEach((kanji) =>
+                {
+                    if (kanji in kanjiToReadingsDictionary)
+                        kanjiToReadingsDictionary[kanji].push(reading)
+                    else
+                        kanjiToReadingsDictionary[kanji] = [reading]
+                })
+            })
+
             // Alas, some verbs (very few) can behave both as v1 and as v5r...
             Array
                 .from(currentEntryData.partOfSpeech) // convert to array
@@ -247,15 +259,25 @@ module.exports.getDefinitions = (word) =>
 
 module.exports.getReadings = (word) =>
 {
-    throw new Error("Not implemented")
+    return module.exports.getBaseForms(word)
+        .reduce((acc, val) =>
+        {
+            if (val in kanjiToReadingsDictionary)
+                return acc.concat(kanjiToReadingsDictionary[val])
+            else
+            {
+                acc.push(val)
+                return acc
+            }
+        }, [])
 }
 
-module.exports.getBaseForm = (conjugatedWord) =>
+module.exports.getBaseForms = (conjugatedWord) =>
 {
     if (conjugatedWord in conjugatedToUnconjugatedFormsDictionary)
         return Array.from(conjugatedToUnconjugatedFormsDictionary[conjugatedWord])
     else
-        return conjugatedWord // It's not really conjugated, after all
+        return [conjugatedWord] // It's not really conjugated, after all
 }
 
 module.exports.addLoadedCallback = (callback) =>
