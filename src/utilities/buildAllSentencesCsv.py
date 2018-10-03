@@ -4,10 +4,9 @@ blacklist = "︎ 　_-－—―〜・･,，、､；:：!！‼?？.．…。�
             + "ぬヌねネのノはハばバぱパひヒびビぴピふフぶブぷプへヘべベぺペほホぼボぽポまマみミむムﾑめメもモゃやャヤゅゆュユょよョヨらラりリるルれレろロわワゐヸゑヱをヲんン​"
 
 class Frase:
-    def __init__(self, fraseInGiapponese, fraseInKana, traduzioni):
+    def __init__(self, fraseInGiapponese, traduzioni):
         self.fraseInGiapponese = fraseInGiapponese
         self.traduzioni = traduzioni
-        self.fraseInGiapponeseInKana = fraseInKana
         self.frequenzaMinima = None
 
 def preparaFrasi():
@@ -17,12 +16,12 @@ def preparaFrasi():
     frequenzaCaratteri = dict() # La chiave è un carattere giapponese, il valore è il numero di occorrenze nel dataset
 
     print("Parso sentences.csv")
-    with open("intermediateFiles/sentencesWithKana.csv", "r", encoding="utf8") as f:
+    with open("../inputs/sentences.csv", "r", encoding="utf8") as f:
         for line in f.readlines():
-            sentenceId, language, sentenceText, sentenceKana = line.split("\t")
-            sentenceKana = sentenceKana.strip()
+            sentenceId, language, sentenceText = line.split("\t")
+            sentenceText = sentenceText.strip()
             if language == "jpn":
-                japaneseSentences[sentenceId] = Frase(sentenceText, sentenceKana, [])
+                japaneseSentences[sentenceId] = Frase(sentenceText, [])
 
                 for c in sentenceText:
                     if c in blacklist:
@@ -36,7 +35,7 @@ def preparaFrasi():
                 englishSentences[sentenceId] = sentenceText
 
     print("Parso links.csv")
-    with open("inputs/links.csv", "r", encoding="utf8") as links:
+    with open("../inputs/links.csv", "r", encoding="utf8") as links:
         for line in links.readlines():
             id1, id2 = line.strip().split("\t")
             if id1 in japaneseSentences and id2 in englishSentences:
@@ -55,15 +54,15 @@ def preparaFrasi():
 frasi, frequenzaCaratteri = preparaFrasi()
 # Le frasi di un carattere sono tutte le frasi in cui quel carattere è il piu' difficile che hanno
 
-def makeJson(carattere, fraseGiapponese, fraseInGiapponeseInKana, traduzione):
-    return """{"char": "%s", "freq": %d, "jpn": "%s", "kana": "%s", "eng": "%s"}""" \
-            % (carattere, frequenzaCaratteri[carattere], fraseGiapponese.replace("\"", "\\\""), fraseInGiapponeseInKana.replace("\"", "\\\""), traduzione.replace("\"", "\\\""))
+def makeJson(carattere, fraseGiapponese, traduzione):
+    return """{"char": "%s", "freq": %d, "jpn": "%s", "eng": "%s"}""" \
+            % (carattere, frequenzaCaratteri[carattere], fraseGiapponese.replace("\"", "\\\""), traduzione.replace("\"", "\\\""))
 
 print("Preparing mapping")
-with open("output/allSentences.csv", "w", encoding="utf8") as f:
+with open("../output/allSentences.csv", "w", encoding="utf8") as f:
     for c in sorted(frequenzaCaratteri.keys(), key=lambda x: frequenzaCaratteri[x]):
         print("Doing character", c, frequenzaCaratteri[c])
-        f.write("\n".join([makeJson(c, frase.fraseInGiapponese, frase.fraseInGiapponeseInKana, traduzione) \
+        f.write("\n".join([makeJson(c, frase.fraseInGiapponese, traduzione) \
                            for frase \
                            in frasi \
                            if frase.fraseInGiapponese.find(c) >= 0 and frase.frequenzaMinima == frequenzaCaratteri[c] \

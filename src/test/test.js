@@ -163,6 +163,7 @@ describe("splitter", function ()
   // Stuff that's currently not split properly:
   // 経験する
   // 大きな蜘蛛が部屋にいるの！早く退治してちょうだい！ (should be に/いる instead of にい/る)
+  // その男は頑としてその職にしがみつき、決して退職しようとはしなかった。
+  // 証人が事実を隠せば刑法の罪に問われる。
+  // 彼女の行動はしだいに攻撃的になってくるだろう。
 })
-
-
