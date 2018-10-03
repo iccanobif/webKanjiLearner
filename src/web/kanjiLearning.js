@@ -185,6 +185,7 @@ app.get("/kanjiDetail/:character", (req, res) =>
             {
                 return a.jpn.localeCompare(b.jpn)
             })
+            .shuffle()
             .map((x) =>
             {
                 x.splits = sentenceSplitter.split(x.jpn)
