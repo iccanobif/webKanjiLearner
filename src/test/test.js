@@ -112,6 +112,7 @@ describe('edict', function ()
     it("should get the base form of a conjugated verb (kanji)", () =>
     {
       assert.deepStrictEqual(["食べる"], edict.getBaseForms("食べられる"))
+      assert.deepStrictEqual(["食べる"], edict.getBaseForms("食べた"))
     })
     it("should get the base form of a conjugated verb (kana)", () =>
     {
@@ -128,12 +129,24 @@ describe('edict', function ()
   })
   describe("getReadings()", () =>
   {
+    function checkKanjiWithOnlyOnePossibleReading(word, reading)
+    {
+      let readings = edict.getReadings(word)
+      assert.equal(readings.length, 1)
+      assert.equal(readings[0], reading)
+    }
     it("should convert uninflected kanji words to kana correctly", () =>
     {
-      let readings = edict.getReadings("食べる")
-      assert.equal(readings.length, 1)
-      assert.equal(readings[0], "たべる")
+      checkKanjiWithOnlyOnePossibleReading("食べる", "たべる")
     })
+    // it("should convert inflected kanji words to kana correctly", () =>
+    // {
+    //   checkKanjiWithOnlyOnePossibleReading("食べた", "たべた")
+    // })
+    // it("should use re_restr to map each reading to the correct kanji form", () =>
+    // {
+    //   checkKanjiWithOnlyOnePossibleReading("この上なく", "このうえなく")
+    // })
   })
 })
 

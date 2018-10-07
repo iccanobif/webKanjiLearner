@@ -14,3 +14,6 @@ Grammars to add:
     - その男は頑としてその職にしがみつき、決して退職しようとはしなかった。
     - 証人が事実を隠せば刑法の罪に問われる。
     - 彼女の行動はしだいに攻撃的になってくるだろう。
+
+- Conjugate vs-s verbs (面する->面した)
+- Use re_restr to map each reading to the correct kanji form (test with この上なく)
