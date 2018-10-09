@@ -9,6 +9,22 @@ module.exports.printError = function printError(e)
     module.exports.log(e.message + " " + e.stack)
 }
 
+module.exports.addToDictionaryOfLists = function (dictionary, key, value)
+{
+    if (key in dictionary)
+        dictionary[key].push(value)
+    else
+        dictionary[key] = [value]
+}
+
+module.exports.addToDictionaryOfSets = function (dictionary, key, value)
+{
+    if (key in dictionary)
+        dictionary[key].add(value)
+    else
+        dictionary[key] = new Set([value])
+}
+
 Array.prototype.shuffle = function ()
 {
     let output = this.slice(0)

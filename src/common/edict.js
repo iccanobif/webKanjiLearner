@@ -6,24 +6,27 @@ const partOfSpeechWhitelist = new Set("v1|v5aru|v5b|v5g|v5k-s|v5k|v5m|v5n|v5r-i|
 const unsupportedConjugations = new Set(["v5", "v5aru", "v5r-i", "v5u-s", "v5uru"])
 
 let dictionary = {}
-let conjugatedToUnconjugatedFormsDictionary = {}
+let conjugatedToUnconjugatedFormsDictionary = {} // keys are strings, values are Set
 let kanjiToReadingsDictionary = {}
 let isLoaded = false
 let callbacks = []
 
-function makeNewDictionaryEntry()
+function makeCleanParsingStatus() 
 {
     return {
         kanjiElements: [],
         readingElements: [],
+        kanjiReadingLinks: [], // each "link" is an array [kanji, reading]
+        keys: new Set(),
         partOfSpeech: new Set(),
-        glosses: [] // Meanings
+        glosses: [],
+        re_restr: []
     }
 }
 
-let currentEntryData = makeNewDictionaryEntry()
+let currentParsingStatus = makeCleanParsingStatus()
 
-function conjugate(word, partOfSpeech)
+function conjugate(kanjiWord, kanaWord, partOfSpeech)
 {
     if (partOfSpeech == null)
         return []
@@ -32,8 +35,17 @@ function conjugate(word, partOfSpeech)
 
     let newWords = []
 
-    let root = word.slice(0, word.length - 1)
-    let add = (w) => { newWords.push(root + w) }
+    function add(suffix, charactersToTrim)
+    {
+        // Add to the output the original word replacing the last charactersToTrim characters with the suffix provided
+        if (typeof charactersToTrim === "undefined")
+            charactersToTrim = 1
+
+        newWords.push({
+            kanjiElement: kanjiWord == null ? null : kanjiWord.slice(0, kanjiWord.length - charactersToTrim) + suffix,
+            readingElement: kanaWord == null ? null : kanaWord.slice(0, kanaWord.length - charactersToTrim) + suffix
+        })
+    }
 
     switch (partOfSpeech)
     {
@@ -49,11 +61,11 @@ function conjugate(word, partOfSpeech)
             add("さ") // nominalization
             break;
         case "adj-ix":
-            newWords.push(word.slice(0, word.length - 2) + "よくない") // negative
-            newWords.push(word.slice(0, word.length - 2) + "よく") // adverbial form
-            newWords.push(word.slice(0, word.length - 2) + "よかった") // past
-            newWords.push(word.slice(0, word.length - 2) + "よくなかった") // past negative
-            newWords.push(word.slice(0, word.length - 2) + "よくて") // te-form
+            add("よくない", 2) // negative
+            add("よく", 2) // adverbial form
+            add("よかった", 2) // past
+            add("よくなかった", 2) // past negative
+            add("よくて", 2) // te-form
             break;
         case "v1":
             add("") // stem
@@ -154,17 +166,49 @@ function conjugate(word, partOfSpeech)
 
 ut.log("Start loading edict")
 
+const dirtyOpeningTag = new RegExp("<(pos|misc|ke_inf|dial|re_inf|field)>&", "g")
+const dirtyClosingTag = new RegExp(";</(pos|misc|ke_inf|dial|re_inf|field)>", "g")
+
 readline
     .createInterface({ input: fs.createReadStream("../datasets/JMdict_e") })
     .on("line", (line) =>
     {
         if (line.startsWith("<keb>"))
         {
-            currentEntryData.kanjiElements.push(line.substring("<keb>".length, line.length - "</keb>".length))
+            let keb = line.substring("<keb>".length, line.length - "</keb>".length)
+            currentParsingStatus.kanjiElements.push(keb)
+            currentParsingStatus.keys.add(keb)
         }
         if (line.startsWith("<reb>"))
         {
-            currentEntryData.readingElements.push(line.substring("<reb>".length, line.length - "</reb>".length))
+            let reb = line.substring("<reb>".length, line.length - "</reb>".length)
+            currentParsingStatus.readingElements.push(reb)
+            currentParsingStatus.keys.add(reb)
+        }
+        if (line.startsWith("<re_restr>"))
+        {
+            // This element is used to indicate when the reading only applies
+            // to a subset of the keb elements in the entry. In its absence, all
+            // readings apply to all kanji elements. The contents of this element 
+            // must exactly match those of one of the keb elements.
+            currentParsingStatus.re_restr.push(line.substring("<re_restr>".length, line.length - "</re_restr>".length))
+        }
+        if (line.startsWith("</r_ele>"))
+        {
+            // I assume that all kanjiElements for this entry have been loaded (all <k_ele> tags come before the <r_ele> ones)
+
+            (currentParsingStatus.re_restr.length == 0
+                ? currentParsingStatus.kanjiElements
+                : currentParsingStatus.re_restr)
+                .forEach((kanjiElement) =>
+                {
+                    currentParsingStatus.kanjiReadingLinks.push({
+                        kanjiElement: kanjiElement,
+                        readingElement: currentParsingStatus.readingElements[currentParsingStatus.readingElements.length - 1]
+                    })
+                })
+
+            currentParsingStatus.re_restr = []
         }
         if (line.startsWith("<pos>"))
         {
@@ -173,62 +217,75 @@ readline
             let type = line.substring("<pos>".length + 1, line.length - "</pos>".length - 1)
 
             if (partOfSpeechWhitelist.has(type))
-                currentEntryData.partOfSpeech.add(type)
+                currentParsingStatus.partOfSpeech.add(type)
         }
         if (line.startsWith("<gloss>"))
         {
-            currentEntryData.glosses.push(line.substring("<gloss>".length, line.length - "</gloss>".length))
+            currentParsingStatus.glosses.push(line.substring("<gloss>".length, line.length - "</gloss>".length))
         }
         if (line.startsWith("</entry>"))
         {
             // I have collected all relevant data for this entry, can add it to the dictionary
 
-            currentEntryData.readingElements.forEach((reading) =>
-            {
-                currentEntryData.kanjiElements.forEach((kanji) =>
+            // Add unconjugated forms to the kanjiToReadingsDictionary
+            currentParsingStatus
+                .kanjiReadingLinks
+                .forEach(link =>
                 {
-                    if (kanji in kanjiToReadingsDictionary)
-                        kanjiToReadingsDictionary[kanji].push(reading)
-                    else
-                        kanjiToReadingsDictionary[kanji] = [reading]
+                    ut.addToDictionaryOfSets(kanjiToReadingsDictionary,
+                        link.kanjiElement,
+                        link.readingElement)
                 })
-            })
 
-            // Alas, some verbs (very few) can behave both as v1 and as v5r...
+            // Conjugate all words I can conjugate, and at the same time populate the data
+            // structures needed for converting kanji to kana etc..
+            // Alas, some verbs (very few) can behave both as v1 and as v5r, so I have to loop through the the possible PoS's...
             Array
-                .from(currentEntryData.partOfSpeech) // convert to array
+                .from(currentParsingStatus.partOfSpeech) // convert to array
                 .filter((partOfSpeech) => partOfSpeechWhitelist.has(partOfSpeech)) // only consider the relevant types of part of speech for conjugations
-                .reduce((acc, partOfSpeech) =>
+                .forEach(partOfSpeech =>
                 {
-                    // Get the conjugations for this verb considering every type of part of speech and aggregate them
-                    let newConjugations = currentEntryData.kanjiElements
-                        .concat(currentEntryData.readingElements)
-                        .map((word) => 
+                    currentParsingStatus
+                        .kanjiReadingLinks
+                        .forEach(link =>
                         {
-                            let conjugations = conjugate(word, partOfSpeech)
-                            conjugations.forEach((x) =>
+                            let conjugations = conjugate(link.kanjiElement, link.readingElement, partOfSpeech)
+                            conjugations.forEach(conjugatedLink =>
                             {
-                                if (x in conjugatedToUnconjugatedFormsDictionary)
-                                    conjugatedToUnconjugatedFormsDictionary[x].add(word)
-                                else
-                                    conjugatedToUnconjugatedFormsDictionary[x] = new Set([word])
+                                ut.addToDictionaryOfSets(kanjiToReadingsDictionary,
+                                    conjugatedLink.kanjiElement,
+                                    conjugatedLink.readingElement)
+                                ut.addToDictionaryOfSets(conjugatedToUnconjugatedFormsDictionary,
+                                    conjugatedLink.kanjiElement,
+                                    link.kanjiElement)
+                                ut.addToDictionaryOfSets(conjugatedToUnconjugatedFormsDictionary,
+                                    conjugatedLink.readingElement,
+                                    link.readingElement)
+                                currentParsingStatus.kanjiReadingLinks.push(conjugatedLink)
+                                currentParsingStatus.keys.add(conjugatedLink.kanjiElement)
+                                currentParsingStatus.keys.add(conjugatedLink.readingElement)
                             })
-                            return conjugations
                         })
-                        .reduce((acc, val) => acc.concat(val), []) // Flatten
+                });
 
-                    return acc.concat(newConjugations)
-                }, currentEntryData.kanjiElements.concat(currentEntryData.readingElements))
-                .uniq() // remove duplicates
-                .forEach((x) => // For each "key" adds the entry in the dictionary
+            // Now that I have enriched the kanjiReadingLinks with all the conjugated forms, it's time to add
+            // this entry to the dictionary
+
+            let entryData = {
+                kanjiElements: currentParsingStatus.kanjiElements,
+                readingElements: currentParsingStatus.readingElements,
+                partOfSpeech: currentParsingStatus.partOfSpeech,
+                glosses: currentParsingStatus.glosses
+            }
+
+            // console.log("kek", currentParsingStatus.keys)
+            Array.from(currentParsingStatus.keys)
+                .forEach((key) => // For each "key" adds the entry in the dictionary
                 {
-                    if (x in dictionary)
-                        dictionary[x].push(currentEntryData)
-                    else
-                        dictionary[x] = [currentEntryData]
+                    ut.addToDictionaryOfLists(dictionary, key, entryData)
                 })
 
-            currentEntryData = makeNewDictionaryEntry()
+            currentParsingStatus = makeCleanParsingStatus()
         }
     })
     .on("close", () =>
@@ -259,17 +316,11 @@ module.exports.getDefinitions = (word) =>
 
 module.exports.getReadings = (word) =>
 {
-    return module.exports.getBaseForms(word)
-        .reduce((acc, val) =>
-        {
-            if (val in kanjiToReadingsDictionary)
-                return acc.concat(kanjiToReadingsDictionary[val])
-            else
-            {
-                acc.push(val)
-                return acc
-            }
-        }, [])
+    console.log(word)
+    if (word in kanjiToReadingsDictionary)
+        return Array.from(kanjiToReadingsDictionary[word])
+    else
+        return [word]
 }
 
 module.exports.getBaseForms = (conjugatedWord) =>

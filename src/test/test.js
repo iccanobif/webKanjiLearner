@@ -13,6 +13,46 @@ describe("utils", function ()
       assert.deepStrictEqual([1, 2, 3], [2, 2, 1, 3].uniq())
     })
   })
+  describe("addToDictionaryOfLists()", () =>
+  {
+    it("should add values for new keys", () =>
+    {
+      let dictionary = {}
+      ut.addToDictionaryOfLists(dictionary, "key", "value")
+      assert.deepStrictEqual(dictionary["key"], ["value"])
+    })
+    it("should add values for existing keys", () =>
+    {
+      let dictionary = {}
+      ut.addToDictionaryOfLists(dictionary, "key", "value1")
+      ut.addToDictionaryOfLists(dictionary, "key", "value2")
+      assert.deepStrictEqual(dictionary["key"], ["value1", "value2"])
+    })
+  })
+  describe("addToDictionaryOfSets()", () =>
+  {
+    it("should add values for new keys", () =>
+    {
+      let set = new Set()
+      assert.ok(!("key" in set))
+      ut.addToDictionaryOfSets(set, "key", "value")
+      assert.ok(("key" in set))
+    })
+    it("should add values for existing keys", () =>
+    {
+      let set = new Set()
+      ut.addToDictionaryOfSets(set, "key", "value1")
+      ut.addToDictionaryOfSets(set, "key", "value2")
+      assert.deepStrictEqual(Array.from(set["key"]).sort(), ["value1", "value2"])
+    })
+    it("should keep only one copy of a value added more than once", () =>
+    {
+      let set = new Set()
+      ut.addToDictionaryOfSets(set, "key", "value1")
+      ut.addToDictionaryOfSets(set, "key", "value1")
+      assert.deepStrictEqual(Array.from(set["key"]), ["value1"])
+    })
+  })
 })
 
 describe("kanjidic", function () 
@@ -81,13 +121,6 @@ describe('edict', function ()
     {
       let definitions = edict.getDefinitions("食べる")
       assert.equal(definitions.length, 1)
-      assert.ok(definitions[0].kanjiElements.includes("食べる"))
-    })
-    describe("should return an object with the following properties (that are used elsewhere in the program):", () =>
-    {
-      it("kanjiElements", () => { assert.ok("kanjiElements" in edict.getDefinitions("食べる")[0]) })
-      it("readingElements", () => { assert.ok("readingElements" in edict.getDefinitions("食べる")[0]) })
-      it("glosses", () => { assert.ok("glosses" in edict.getDefinitions("食べる")[0]) })
     })
     it("should get the definitions of conjugated words", () =>
     {
@@ -106,17 +139,32 @@ describe('edict', function ()
     {
       assert.deepStrictEqual([], edict.getDefinitions("this is not a word"))
     })
+    it("should return a definition object with a kanjiElements property ", () =>
+    {
+      let definitions = edict.getDefinitions("食べる")
+      assert.ok(definitions[0].kanjiElements.includes("食べる"))
+    })
+    it("should return a definition object with a readingElements property ", () =>
+    {
+      let definitions = edict.getDefinitions("食べる")
+      assert.ok(definitions[0].readingElements.includes("たべる"))
+    })
+    it("should return a definition object with a glosses property ", () =>
+    {
+      let definitions = edict.getDefinitions("食べる")
+      assert.ok(definitions[0].glosses.includes("to eat"))
+    })
   })
   describe("getBaseForms", () =>
   {
     it("should get the base form of a conjugated verb (kanji)", () =>
     {
-      assert.deepStrictEqual(["食べる"], edict.getBaseForms("食べられる"))
-      assert.deepStrictEqual(["食べる"], edict.getBaseForms("食べた"))
+      assert.deepStrictEqual(edict.getBaseForms("食べられる"), ["食べる"])
+      assert.deepStrictEqual(edict.getBaseForms("食べた"), ["食べる"])
     })
     it("should get the base form of a conjugated verb (kana)", () =>
     {
-      assert.deepStrictEqual(["たべる"], edict.getBaseForms("たべられる"))
+      assert.deepStrictEqual(edict.getBaseForms("たべられる"), ["たべる"])
     })
     it("should get all possible base forms in case of ambiguity", () =>
     {
@@ -139,14 +187,14 @@ describe('edict', function ()
     {
       checkKanjiWithOnlyOnePossibleReading("食べる", "たべる")
     })
-    // it("should convert inflected kanji words to kana correctly", () =>
-    // {
-    //   checkKanjiWithOnlyOnePossibleReading("食べた", "たべた")
-    // })
-    // it("should use re_restr to map each reading to the correct kanji form", () =>
-    // {
-    //   checkKanjiWithOnlyOnePossibleReading("この上なく", "このうえなく")
-    // })
+    it("should convert inflected kanji words to kana correctly", () =>
+    {
+      checkKanjiWithOnlyOnePossibleReading("食べた", "たべた")
+    })
+    it("should use re_restr to map each reading to the correct kanji form", () =>
+    {
+      checkKanjiWithOnlyOnePossibleReading("この上なく", "このうえなく")
+    })
   })
 })
 
