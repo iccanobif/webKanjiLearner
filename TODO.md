@@ -1,4 +1,4 @@
-- Fix sql injection problem.
+- Fix sql injection problem. For making cookie based authentication I can use the node-session or express-session middlewares
 - switch to another kanji -> kana library.
 - Show only uninflected forms in the "Example words" list
 - Improvements to splitter:
