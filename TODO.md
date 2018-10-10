@@ -17,3 +17,4 @@ Grammars to add:
 
 - Conjugate vs-s verbs (面する->面した)
 - Use re_restr to map each reading to the correct kanji form (test with この上なく)
+- The code that calls edict.getReadings() from kanjiLearning.js is copy-pasted three times... Refactor that

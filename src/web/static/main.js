@@ -42,6 +42,7 @@ function loadNewSentence(character)
                 .splits
                 .map(word => "<a href='#' onclick='showDictionaryDefinition(\"word\"); return false;'>word</a>".replace(/word/g, word))
                 .join(""))
+            $("#" + character + " > .kana").text(data.kana)
             $("#" + character + " > .eng").text(data.eng)
             button.prop("value", originalLabel)
         })

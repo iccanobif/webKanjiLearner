@@ -121,7 +121,7 @@ app.get("/sentences", (req, res) =>
 
     hiddenCharacterRepository.getHiddenCharacters(req.query.userName, (hiddenCharacters) =>
     {
-        res.render("sentences.ejs", {
+        res.render("mainPage.ejs", {
             firstBatchOfRandomSentences:
                 sentenceRepository.getFullListOfRandomSentences()
                     .filter((x) =>
@@ -133,6 +133,16 @@ app.get("/sentences", (req, res) =>
                     .map((x) =>
                     {
                         x.splits = sentenceSplitter.split(x.jpn)
+                        x.kana = x.splits
+                            .map(x =>
+                            {
+                                let readings = edict.getReadings(x)
+                                if (readings.length == 1)
+                                    return readings[0]
+                                else
+                                    return "[" + readings.join("/") + "]"
+                            })
+                            .join("")
                         return x
                     }),
             userName: req.query.userName
@@ -167,6 +177,16 @@ app.get("/getRandomSentence/:character", (req, res) =>
     {
         res.type("application/json")
         randomSentence.splits = sentenceSplitter.split(randomSentence.jpn)
+        randomSentence.kana = randomSentence.splits
+        .map(x =>
+        {
+            let readings = edict.getReadings(x)
+            if (readings.length == 1)
+                return readings[0]
+            else
+                return "[" + readings.join("/") + "]"
+        })
+        .join("")
         res.end(JSON.stringify(randomSentence))
         ut.log("Sent new sentence for character " + req.params.character)
     }
@@ -189,6 +209,16 @@ app.get("/kanjiDetail/:character", (req, res) =>
             .map((x) =>
             {
                 x.splits = sentenceSplitter.split(x.jpn)
+                x.kana = x.splits
+                .map(x =>
+                {
+                    let readings = edict.getReadings(x)
+                    if (readings.length == 1)
+                        return readings[0]
+                    else
+                        return "[" + readings.join("/") + "]"
+                })
+                .join("")
                 return x
             })
 

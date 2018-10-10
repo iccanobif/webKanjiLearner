@@ -278,7 +278,6 @@ readline
                 glosses: currentParsingStatus.glosses
             }
 
-            // console.log("kek", currentParsingStatus.keys)
             Array.from(currentParsingStatus.keys)
                 .forEach((key) => // For each "key" adds the entry in the dictionary
                 {
@@ -316,7 +315,6 @@ module.exports.getDefinitions = (word) =>
 
 module.exports.getReadings = (word) =>
 {
-    console.log(word)
     if (word in kanjiToReadingsDictionary)
         return Array.from(kanjiToReadingsDictionary[word])
     else
