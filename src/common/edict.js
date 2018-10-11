@@ -56,6 +56,7 @@ function conjugate(kanjiWord, kanaWord, partOfSpeech)
             add("くなかった") // past negative
             add("くて") // te-form
             add("すぎる") // too much
+            add("過ぎる") // too much
             add("すぎ") // too much
             add("そう") // looks like it's...
             add("さ") // nominalization
