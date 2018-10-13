@@ -47,3 +47,20 @@ Array.prototype.uniq = function ()
             return acc
         }, [])
 }
+
+module.exports.katakanaToHiragana = function (str) 
+{
+    // In unicode, katakana is from 12449 to 12533, hiragana from 12353, 12435
+
+    return str
+        .split("")
+        .map((c) =>
+        {
+            let codePoint = c.codePointAt(0)
+            if (codePoint >= 12449 && codePoint <= 12534)
+                return String.fromCodePoint(codePoint - 96)
+            else
+                return c
+        })
+        .join("")
+}

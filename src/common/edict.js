@@ -235,7 +235,7 @@ readline
                 {
                     ut.addToDictionaryOfSets(kanjiToReadingsDictionary,
                         link.kanjiElement,
-                        link.readingElement)
+                        ut.katakanaToHiragana(link.readingElement))
                 })
 
             // Conjugate all words I can conjugate, and at the same time populate the data
@@ -255,7 +255,7 @@ readline
                             {
                                 ut.addToDictionaryOfSets(kanjiToReadingsDictionary,
                                     conjugatedLink.kanjiElement,
-                                    conjugatedLink.readingElement)
+                                    ut.katakanaToHiragana(conjugatedLink.readingElement))
                                 ut.addToDictionaryOfSets(conjugatedToUnconjugatedFormsDictionary,
                                     conjugatedLink.kanjiElement,
                                     link.kanjiElement)
@@ -316,6 +316,14 @@ module.exports.getDefinitions = (word) =>
 
 module.exports.getReadings = (word) =>
 {
+    // For a few very common words that happen to also have a lot of uncommon readings (私 probably being 
+    // the worst offender) or that have many common readings but that are unlikely to be the right ones
+    // when looking for that word by itself (物 for example wouldn't normally be ぶつ, when alone) ignore
+    // the dictionary and just return some hardcoded readings.
+    if (word == "私") return ["わたし"]
+    if (word == "彼") return ["かれ"]
+    if (word == "物") return ["もの"]
+
     if (word in kanjiToReadingsDictionary)
         return Array.from(kanjiToReadingsDictionary[word])
     else

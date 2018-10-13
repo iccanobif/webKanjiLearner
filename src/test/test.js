@@ -53,6 +53,16 @@ describe("utils", function ()
       assert.deepStrictEqual(Array.from(set["key"]), ["value1"])
     })
   })
+  describe("katakanaToHiragana()", () =>
+  {
+    it("should convert all katakana in a sentence to hiragana", () =>
+    {
+      assert.equal(ut.katakanaToHiragana("English 漢字　カタカナ　ひらがな"), "English 漢字　かたかな　ひらがな")
+      let allKatakana = "ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶ"
+      let allHiragana = "ぁあぃいぅうぇえぉおかがきぎくぐけげこごさざしじすずせぜそぞただちぢっつづてでとどなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもゃやゅゆょよらりるれろゎわゐゑをんゔゕゖ"
+      assert.equal(ut.katakanaToHiragana(allKatakana + allHiragana), allHiragana + allHiragana)
+    })
+  })
 })
 
 describe("kanjidic", function () 
@@ -194,6 +204,14 @@ describe('edict', function ()
     it("should use re_restr to map each reading to the correct kanji form", () =>
     {
       checkKanjiWithOnlyOnePossibleReading("この上なく", "このうえなく")
+    })
+    it("should just return わたし for 私", () =>
+    {
+      checkKanjiWithOnlyOnePossibleReading("私", "わたし")
+    })
+    it("should return only hiragana readings, even if edict also lists a katakana one", () =>
+    {
+      checkKanjiWithOnlyOnePossibleReading("犬", "いぬ")
     })
   })
 })

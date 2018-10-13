@@ -4,6 +4,7 @@
 - Improvements to splitter:
     - Maybe I could improve accuracy considering the kana versions of words that have kanji as "low priority" compared to purely kana ones
     - for example in 大きな蜘蛛が部屋にいるの！早く退治してちょうだい！, ni/iru/no should have priority compared to nii/ru/no because にい could have been 兄 (but what about stuff that has a kanji that's rarely used, like 只?)
+    - Another idea: often the splitter screws up when there's a one character particle + a word in kana, so make it so that when splitting "ABCDEF" i try "A" + "BCDEF" as well instead of looking only for the longest word at the beginning.
 Grammars to add:
 っちゃう (informal て+しまう)
 - For each conjugated word, keep the original string (be it with a kanji or not), needed to get the dictionary form of a word starting from its conjugated form
