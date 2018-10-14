@@ -1,5 +1,4 @@
 - Fix sql injection problem. For making cookie based authentication I can use the node-session or express-session middlewares
-- switch to another kanji -> kana library.
 - Show only uninflected forms in the "Example words" list
 - Improvements to splitter:
     - Maybe I could improve accuracy considering the kana versions of words that have kanji as "low priority" compared to purely kana ones
@@ -16,6 +15,5 @@ Grammars to add:
     - 証人が事実を隠せば刑法の罪に問われる。
     - 彼女の行動はしだいに攻撃的になってくるだろう。
 
-- Conjugate vs-s verbs (面する->面した)
-- Use re_restr to map each reading to the correct kanji form (test with この上なく)
+- Add conjugation for "v5", "v5aru", "v5r-i", "v5u-s", "v5uru" 
 - The code that calls edict.getReadings() from kanjiLearning.js is copy-pasted three times... Refactor that

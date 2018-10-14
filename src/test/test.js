@@ -124,6 +124,10 @@ describe('edict', function ()
     {
       assert.ok(edict.isJapaneseWord("言わ"))
     })
+    it("should conjugate vs-s verbs", () =>
+    {
+      assert.ok(edict.isJapaneseWord("面した"))
+    })
   })
   describe("getDefinition()", () =>
   {

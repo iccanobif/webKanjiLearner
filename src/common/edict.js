@@ -2,7 +2,7 @@ const fs = require("fs")
 const readline = require("readline")
 const ut = require("./utils.js")
 
-const partOfSpeechWhitelist = new Set("v1|v5aru|v5b|v5g|v5k-s|v5k|v5m|v5n|v5r-i|v5r|v5s|v5t|v5u-s|v5uru|v5u|v5|adj-ix|adj-i".split("|"))
+const partOfSpeechWhitelist = new Set("v1|v5aru|v5b|v5g|v5k-s|v5k|v5m|v5n|v5r-i|v5r|v5s|v5t|v5u-s|v5uru|v5u|v5|adj-ix|adj-i|vs-s".split("|"))
 const unsupportedConjugations = new Set(["v5", "v5aru", "v5r-i", "v5u-s", "v5uru"])
 
 let dictionary = {}
@@ -45,6 +45,14 @@ function conjugate(kanjiWord, kanaWord, partOfSpeech)
             kanjiElement: kanjiWord == null ? null : kanjiWord.slice(0, kanjiWord.length - charactersToTrim) + suffix,
             readingElement: kanaWord == null ? null : kanaWord.slice(0, kanaWord.length - charactersToTrim) + suffix
         })
+    }
+
+    if (partOfSpeech == "vs-s")
+    {
+        "し、します、しました、しません、しない、すれば、しよう、して、している、してる、しなかった、される、させる、しろ、した、したい、せず、しぬ"
+            .split("、")
+            .forEach(suffix => add(suffix, 2))
+        return newWords
     }
 
     switch (partOfSpeech)
@@ -141,7 +149,7 @@ function conjugate(kanjiWord, kanaWord, partOfSpeech)
         case "v5n": add("ねる"); add("のう"); add("ね"); stemKana = "に"; firstNegativeKana = "な"; break;
         case "v5r": add("れる"); add("ろう"); add("れ"); stemKana = "り"; firstNegativeKana = "ら"; break;
         case "v5t": add("てる"); add("とう"); add("て"); stemKana = "ち"; firstNegativeKana = "た"; break;
-        case "v5u": add("える"); add("おう");　/* ???? */ stemKana = "い"; firstNegativeKana = "わ"; break;
+        case "v5u": add("える"); add("おう"); add("え"); stemKana = "い"; firstNegativeKana = "わ"; break;
         case "v5s": add("せる"); add("そう"); add("せ"); stemKana = "し"; firstNegativeKana = "さ"; break;
     }
 
