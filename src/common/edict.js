@@ -94,6 +94,7 @@ function conjugate(kanjiWord, kanaWord, partOfSpeech)
             add("ず") // zu-form
             add("ろ") // imperative
             add("ぬ") // archaic negative
+            add("ちゃう");add("ちゃった");add("ちゃって"); // contraction of て+しまう
             break;
         case "v5s":
             add("した") // past
@@ -168,6 +169,7 @@ function conjugate(kanjiWord, kanaWord, partOfSpeech)
         add(stemKana + "ます") // masu-form
         add(stemKana + "ました") // masu-form (past)
         add(stemKana + "ません") // masu-form (negative)
+        add(stemKana + "ちゃう");add(stemKana + "ちゃった");add(stemKana + "ちゃって")
     }
 
     return newWords
