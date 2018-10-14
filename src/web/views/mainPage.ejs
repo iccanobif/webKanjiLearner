@@ -10,6 +10,7 @@
 
 <body>
     <div id="mainPage">
+        <h2>Hi, <%=userName%></h2>
         <h2><a href="hiddenCharacters?userName=<%=userName%>">Show hidden characters list</a></h2>
         <% firstBatchOfRandomSentences.forEach((sentence) => { %>
         <div id="<%=sentence.char%>" class="sentenceBlock">
