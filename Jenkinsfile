@@ -21,6 +21,7 @@ pipeline {
                 sh 'pm2 delete kanjiLearning || true'
                 sh 'cd ~/webKanjiLearner && git pull && cd src && npm install'
                 sh 'cd ~/webKanjiLearner/src && pm2 start "npm start"'
+                telegramSend 'Deployed!'
             }
         }
     }
