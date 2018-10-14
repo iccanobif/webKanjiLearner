@@ -143,3 +143,10 @@ a:visited {
 {
     padding-bottom: 2em; /* Same as fixedFooter's height */
 }
+
+#GoBackToLoginPageLink
+{
+    position: absolute;
+    top:0px;
+    right:0px;
+}
