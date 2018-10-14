@@ -3,7 +3,6 @@ pipeline {
     stages {
         stage('build') {
             steps {
-                telegramSend 'Starting build'
                 // Would be nice to also install pm2
 
                 // download tatoeba datasets 
