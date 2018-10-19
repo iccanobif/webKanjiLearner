@@ -209,9 +209,12 @@ describe('edict', function ()
     {
       checkKanjiWithOnlyOnePossibleReading("この上なく", "このうえなく")
     })
-    it("should just return わたし for 私", () =>
+    it("should just return わたし for 私, when asking for filtered readings", () =>
     {
-      checkKanjiWithOnlyOnePossibleReading("私", "わたし")
+      let readings = edict.getReadings("私", true)
+      assert.equal(readings.length, 1)
+      assert.equal(readings[0], "わたし")
+      assert.ok(edict.getReadings("私", false).length > 1)
     })
     it("should return only hiragana readings, even if edict also lists a katakana one", () =>
     {

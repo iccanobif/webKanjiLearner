@@ -136,7 +136,7 @@ app.get("/sentences", (req, res) =>
                         x.kana = x.splits
                             .map(x =>
                             {
-                                let readings = edict.getReadings(x)
+                                let readings = edict.getReadings(x, true)
                                 if (readings.length == 1)
                                     return readings[0]
                                 else
@@ -180,7 +180,7 @@ app.get("/getRandomSentence/:character", (req, res) =>
         randomSentence.kana = randomSentence.splits
         .map(x =>
         {
-            let readings = edict.getReadings(x)
+            let readings = edict.getReadings(x, true)
             if (readings.length == 1)
                 return readings[0]
             else
@@ -212,7 +212,7 @@ app.get("/kanjiDetail/:character", (req, res) =>
                 x.kana = x.splits
                 .map(x =>
                 {
-                    let readings = edict.getReadings(x)
+                    let readings = edict.getReadings(x.filter, true)
                     if (readings.length == 1)
                         return readings[0]
                     else
@@ -236,7 +236,7 @@ app.get("/kanjiDetail/:character", (req, res) =>
                 .reduce((acc, val) =>
                 {
                     if (acc.length == 0 || val != acc[acc.length - 1].word)
-                        acc.push({ word: val, count: 1, readings: edict.getReadings(val) })
+                        acc.push({ word: val, count: 1, readings: edict.getReadings(val, false) })
                     else
                         acc[acc.length - 1].count += 1
                     return acc

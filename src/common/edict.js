@@ -94,7 +94,7 @@ function conjugate(kanjiWord, kanaWord, partOfSpeech)
             add("ず") // zu-form
             add("ろ") // imperative
             add("ぬ") // archaic negative
-            add("ちゃう");add("ちゃった");add("ちゃって"); // contraction of て+しまう
+            add("ちゃう"); add("ちゃった"); add("ちゃって"); // contraction of て+しまう
             break;
         case "v5s":
             add("した") // past
@@ -169,7 +169,7 @@ function conjugate(kanjiWord, kanaWord, partOfSpeech)
         add(stemKana + "ます") // masu-form
         add(stemKana + "ました") // masu-form (past)
         add(stemKana + "ません") // masu-form (negative)
-        add(stemKana + "ちゃう");add(stemKana + "ちゃった");add(stemKana + "ちゃって")
+        add(stemKana + "ちゃう"); add(stemKana + "ちゃった"); add(stemKana + "ちゃって")
     }
 
     return newWords
@@ -324,15 +324,20 @@ module.exports.getDefinitions = (word) =>
         return []
 }
 
-module.exports.getReadings = (word) =>
+module.exports.getReadings = (word, doFiltering) =>
 {
-    // For a few very common words that happen to also have a lot of uncommon readings (私 probably being 
-    // the worst offender) or that have many common readings but that are unlikely to be the right ones
-    // when looking for that word by itself (物 for example wouldn't normally be ぶつ, when alone) ignore
-    // the dictionary and just return some hardcoded readings.
-    if (word == "私") return ["わたし"]
-    if (word == "彼") return ["かれ"]
-    if (word == "物") return ["もの"]
+
+    if (doFiltering)
+    {
+        // For a few very common words that happen to also have a lot of uncommon readings (私 probably being 
+        // the worst offender) or that have many common readings but that are unlikely to be the right ones
+        // when looking for that word by itself (物 for example wouldn't normally be ぶつ, when alone) ignore
+        // the dictionary and just return some hardcoded readings.    
+        if (word == "私") return ["わたし"]
+        if (word == "彼") return ["かれ"]
+        if (word == "彼の") return ["かれの"]
+        if (word == "物") return ["もの"]
+    }
 
     if (word in kanjiToReadingsDictionary)
         return Array.from(kanjiToReadingsDictionary[word])
