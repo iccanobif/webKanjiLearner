@@ -7,11 +7,12 @@
 
     <%- exampleWords
         .map((x) => {
-            return "<a href='#kanjiDetail_word'>word</a>(count)"
+            return "<a href='#kanjiDetail_word'>word（readings）</a>(count)"
                     .replace(/word/g, x.word)
                     .replace(/count/g, x.count)
+                    .replace(/readings/g, x.readings.join("／"))
         })
-        .join(" / ") 
+        .join("<br/>") 
     %><br />
 
     <h2>Meanings:</h2>

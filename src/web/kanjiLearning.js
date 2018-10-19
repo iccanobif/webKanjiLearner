@@ -236,7 +236,7 @@ app.get("/kanjiDetail/:character", (req, res) =>
                 .reduce((acc, val) =>
                 {
                     if (acc.length == 0 || val != acc[acc.length - 1].word)
-                        acc.push({ word: val, count: 1 })
+                        acc.push({ word: val, count: 1, readings: edict.getReadings(val) })
                     else
                         acc[acc.length - 1].count += 1
                     return acc
