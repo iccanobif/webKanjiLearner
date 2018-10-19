@@ -193,7 +193,7 @@ describe('edict', function ()
   {
     function checkKanjiWithOnlyOnePossibleReading(word, reading)
     {
-      let readings = edict.getReadings(word)
+      let readings = edict.getReadings(word, true)
       assert.equal(readings.length, 1)
       assert.equal(readings[0], reading)
     }
@@ -211,14 +211,20 @@ describe('edict', function ()
     })
     it("should just return わたし for 私, when asking for filtered readings", () =>
     {
-      let readings = edict.getReadings("私", true)
-      assert.equal(readings.length, 1)
-      assert.equal(readings[0], "わたし")
+      checkKanjiWithOnlyOnePossibleReading("私", "わたし")
       assert.ok(edict.getReadings("私", false).length > 1)
     })
     it("should return only hiragana readings, even if edict also lists a katakana one", () =>
     {
       checkKanjiWithOnlyOnePossibleReading("犬", "いぬ")
+    })
+    it("should return numbers when fed numbers", () =>
+    {
+      for (let i = 0; i < 10; i++)
+      {
+        let num = String.fromCodePoint("１".codePointAt(0) + i)
+        checkKanjiWithOnlyOnePossibleReading(num, num)
+      }
     })
   })
 })

@@ -324,6 +324,23 @@ module.exports.getDefinitions = (word) =>
         return []
 }
 
+let exceptions = {
+    "私": ["わたし"],
+    "彼": ["かれ"],
+    "彼の": ["かれの"],
+    "物": ["もの"],
+    "０": ["０"],
+    "１": ["１"],
+    "２": ["２"],
+    "３": ["３"],
+    "４": ["４"],
+    "５": ["５"],
+    "６": ["６"],
+    "７": ["７"],
+    "８": ["８"],
+    "９": ["９"]
+}
+
 module.exports.getReadings = (word, doFiltering) =>
 {
 
@@ -333,10 +350,7 @@ module.exports.getReadings = (word, doFiltering) =>
         // the worst offender) or that have many common readings but that are unlikely to be the right ones
         // when looking for that word by itself (物 for example wouldn't normally be ぶつ, when alone) ignore
         // the dictionary and just return some hardcoded readings.    
-        if (word == "私") return ["わたし"]
-        if (word == "彼") return ["かれ"]
-        if (word == "彼の") return ["かれの"]
-        if (word == "物") return ["もの"]
+        if (word in exceptions) return exceptions[word]
     }
 
     if (word in kanjiToReadingsDictionary)
