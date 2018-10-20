@@ -1,10 +1,15 @@
 const edict = require("./edict.js")
 const ut = require("./utils.js")
 
+let particles = new Set(["は", "が", "を", "に", "で"])
+
 module.exports.split = (function split(sentence)
 {
     if (sentence.length == 0)
         return []
+    if (sentence.length == 1)
+        return [sentence]
+        
     // Splitting running both splitPrioritizeLeft() and splitPrioritizeRight() as following is just too slow...
     // I'll bypass that for now and keep using only splitPrioritizeLeft()
     return splitPrioritizeLeft(sentence)
@@ -23,8 +28,15 @@ function splitPrioritizeLeft(sentence)
     for (i = sentence.length; i > 0; i--)
     {
         let firstWord = sentence.substring(0, i)
+
         if (edict.isJapaneseWord(firstWord))
             return [firstWord].concat(module.exports.split(sentence.substring(i)))
+
+        // if "firstWord" is not a word, also check whether it's a particle + a word
+        if (particles.has(sentence.charAt(0))
+            && edict.isJapaneseWord(firstWord.substring(1)))
+            return [firstWord.charAt(0), firstWord.substring(1)]
+                .concat(module.exports.split(sentence.substring(i)))
     }
     return [sentence.charAt(0)].concat(module.exports.split(sentence.substring(1)))
 }

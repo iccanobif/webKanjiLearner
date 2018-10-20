@@ -127,6 +127,7 @@ describe('edict', function ()
     it("should conjugate vs-s verbs", () =>
     {
       assert.ok(edict.isJapaneseWord("面した"))
+      assert.ok(edict.isJapaneseWord("しなかった"))
     })
   })
   describe("getDefinition()", () =>
@@ -252,10 +253,22 @@ describe("splitter", function ()
     sentenceSplitter.split("※基本的な禁止事項（誹謗・中傷の禁止等）は「はじめにお読み下さい」に記載してあります。必ずお読みください。")
     assert.ok(true)
   })
+  it("shouldn't mix a particle with the following word (usually happens when the word is in hiragana)", () =>
+  {
+    assert.deepStrictEqual(sentenceSplitter.split("大災害をもたらした。"),
+      ["大災害", "を", "もたらした", "。"])
+    assert.deepStrictEqual(sentenceSplitter.split("蜘蛛が部屋にいるの！早く退治してちょうだい！"),
+      ["蜘蛛", "が", "部屋", "に", "いる", "の", "！", "早く", "退治", "して", "ちょうだい", "！"])
+    assert.deepStrictEqual(sentenceSplitter.split("彼女の行動はしだいに攻撃的になってくるだろう。"),
+      ["彼女", "の", "行動", "は", "しだいに", "攻撃的", "になって", "くる", "だろう", "。"])
+    assert.deepStrictEqual(sentenceSplitter.split("その男は頑としてその職にしがみつき、決して退職しようとはしなかった。"),
+      ["その", "男", "は", "頑として", "その", "職", "に", "しがみつき", "、", "決して", "退職", "しよう", "とは", "しなかった", "。"])
+  })
+  it("should split 経験する correctly (can't remember why, but it used to be split wrong)", () =>
+  {
+    assert.deepStrictEqual(sentenceSplitter.split("経験する"),
+      ["経験", "する"])
+  })
   // Stuff that's currently not split properly:
-  // 経験する
-  // 大きな蜘蛛が部屋にいるの！早く退治してちょうだい！ (should be に/いる instead of にい/る)
-  // その男は頑としてその職にしがみつき、決して退職しようとはしなかった。
   // 証人が事実を隠せば刑法の罪に問われる。
-  // 彼女の行動はしだいに攻撃的になってくるだろう。
 })
