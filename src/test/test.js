@@ -169,6 +169,11 @@ describe('edict', function ()
       let definitions = edict.getDefinitions("食べる")
       assert.ok(definitions[0].glosses.includes("to eat"))
     })
+    it("should provide readings in the correct order (the more common first, the least common last)", () =>
+    {
+      let definitions = edict.getDefinitions("輸出")
+      assert.deepStrictEqual(definitions[0].readingElements, ["ゆしゅつ", "しゅしゅつ"])
+    })
   })
   describe("getBaseForms", () =>
   {
