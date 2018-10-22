@@ -212,7 +212,7 @@ app.get("/kanjiDetail/:character", (req, res) =>
                 x.kana = x.splits
                 .map(x =>
                 {
-                    let readings = edict.getReadings(x.filter, true)
+                    let readings = edict.getReadings(x, true)
                     if (readings.length == 1)
                         return readings[0]
                     else

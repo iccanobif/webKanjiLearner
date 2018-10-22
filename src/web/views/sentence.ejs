@@ -1,0 +1,7 @@
+<div class="jpn">
+<%- splits
+    .map(word => "<a href='#' onclick='showDictionaryDefinition(\"word\"); return false;'>word</a>".replace(/word/g, word))
+    .join("")
+%></div>
+<div class="kana"><%= kana %></div>
+<div class="eng"><%= eng %></div>

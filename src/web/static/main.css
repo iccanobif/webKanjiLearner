@@ -150,3 +150,11 @@ a:visited {
     top:0px;
     right:0px;
 }
+
+.hiddenAnchor
+{
+    position: relative;
+    float: left;
+    width: 0px;
+    height: 0px;
+}
