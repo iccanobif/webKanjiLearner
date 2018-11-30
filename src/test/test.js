@@ -3,6 +3,7 @@ const edict = require("../common/edict.js")
 const ut = require("../common/utils.js")
 const sentenceSplitter = require("../common/sentenceSplitter.js")
 const kanjidic = require("../common/kanjidic.js")
+const jigen = require("../common/jigen.js")
 
 describe("utils", function ()
 {
@@ -276,4 +277,19 @@ describe("splitter", function ()
   })
   // Stuff that's currently not split properly:
   // 証人が事実を隠せば刑法の罪に問われる。
+})
+describe('jigen', function ()
+{
+  this.timeout(20000)
+  before((done) =>
+  {
+    jigen.addLoadedCallback(done)
+  })
+  describe('getJigen()', () =>
+  {
+    it("should return the jigen description", () =>
+    {
+      assert.strictEqual(jigen.getJigen("水"), "[[象形文字|象形]]。水流を象る。")
+    })
+  })
 })

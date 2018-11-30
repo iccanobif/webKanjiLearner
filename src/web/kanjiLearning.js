@@ -8,6 +8,7 @@ const ut = require("../common/utils.js")
 const sentenceRepository = require("../common/sentenceRepository.js")
 const sentenceSplitter = require("../common/sentenceSplitter.js")
 const edict = require("../common/edict.js")
+const jigen = require("../common/jigen.js")
 
 function readCookie(cookies, cookieName)
 {
@@ -99,7 +100,7 @@ function canOpenPage(req, res)
         res.redirect("/?invalidLogin=true")
         return false
     }
-    if (!sentenceRepository.isLoaded() || !edict.isLoaded() || !kanjidic.isLoaded()) 
+    if (!sentenceRepository.isLoaded() || !edict.isLoaded() || !kanjidic.isLoaded() || !jigen.isLoaded()) 
     {
         res.render("stillLoading.ejs")
         return false
@@ -178,15 +179,15 @@ app.get("/getRandomSentence/:character", (req, res) =>
         res.type("application/json")
         randomSentence.splits = sentenceSplitter.split(randomSentence.jpn)
         randomSentence.kana = randomSentence.splits
-        .map(x =>
-        {
-            let readings = edict.getReadings(x, true)
-            if (readings.length == 1)
-                return readings[0]
-            else
-                return "[" + readings.join("/") + "]"
-        })
-        .join("")
+            .map(x =>
+            {
+                let readings = edict.getReadings(x, true)
+                if (readings.length == 1)
+                    return readings[0]
+                else
+                    return "[" + readings.join("/") + "]"
+            })
+            .join("")
         res.end(JSON.stringify(randomSentence))
         ut.log("Sent new sentence for character " + req.params.character)
     }
@@ -210,23 +211,25 @@ app.get("/kanjiDetail/:character", (req, res) =>
             {
                 x.splits = sentenceSplitter.split(x.jpn)
                 x.kana = x.splits
-                .map(x =>
-                {
-                    let readings = edict.getReadings(x, true)
-                    if (readings.length == 1)
-                        return readings[0]
-                    else
-                        return "[" + readings.join("/") + "]"
-                })
-                .join("")
+                    .map(x =>
+                    {
+                        let readings = edict.getReadings(x, true)
+                        if (readings.length == 1)
+                            return readings[0]
+                        else
+                            return "[" + readings.join("/") + "]"
+                    })
+                    .join("")
                 return x
             })
+        let thisJigen = jigen.getJigen(req.params.character)
 
         res.render("kanjiDetail.ejs", {
             character: req.params.character,
             sentences: sentences,
             readings: kanjidic.getKanjiReadings(req.params.character),
             meanings: kanjidic.getKanjiMeanings(req.params.character),
+            splitJigen: thisJigen == undefined ? undefined : sentenceSplitter.split(thisJigen),
             exampleWords: sentences
                 .map(x => x.splits) // Extract the kanji text (split in words) from each sentence object
                 .reduce((acc, val) => acc.concat(val), []) // Flatten into an array of arrays
