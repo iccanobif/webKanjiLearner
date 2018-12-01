@@ -9,6 +9,7 @@ const sentenceRepository = require("../common/sentenceRepository.js")
 const sentenceSplitter = require("../common/sentenceSplitter.js")
 const edict = require("../common/edict.js")
 const jigen = require("../common/jigen.js")
+const cedict = require("../common/cedict.js")
 
 function readCookie(cookies, cookieName)
 {
@@ -100,7 +101,11 @@ function canOpenPage(req, res)
         res.redirect("/?invalidLogin=true")
         return false
     }
-    if (!sentenceRepository.isLoaded() || !edict.isLoaded() || !kanjidic.isLoaded() || !jigen.isLoaded()) 
+    if (!sentenceRepository.isLoaded()
+        || !edict.isLoaded()
+        || !kanjidic.isLoaded()
+        || !jigen.isLoaded()
+        || !cedict.isLoaded()) 
     {
         res.render("stillLoading.ejs")
         return false
@@ -261,7 +266,8 @@ app.get("/dictionaryDefinition/:word", (req, res) =>
 
         res.render("dictionaryDefinition.ejs", {
             word: word,
-            definitions: edict.getDefinitions(word)
+            definitions: edict.getDefinitions(word),
+            chineseDefinitions: cedict.getDefinitions(word)
         })
     }
 })

@@ -4,6 +4,7 @@ const ut = require("../common/utils.js")
 const sentenceSplitter = require("../common/sentenceSplitter.js")
 const kanjidic = require("../common/kanjidic.js")
 const jigen = require("../common/jigen.js")
+const cedict = require("../common/cedict.js")
 
 describe("utils", function ()
 {
@@ -290,6 +291,36 @@ describe('jigen', function ()
     it("should return the jigen description", () =>
     {
       assert.strictEqual(jigen.getJigen("水"), "成り立ち象形文字です。「流れる水」の象形から、「みず」を意味する「水」という漢字が成り立ちました。")
+    })
+  })
+})
+
+describe('cedict', function ()
+{
+  this.timeout(20000)
+  before((done) =>
+  {
+    cedict.addLoadedCallback(done)
+  })
+  describe('getDefinitions()', () =>
+  {
+    it("should return the definition of a certain kanji ", () =>
+    {
+      const definitions = cedict.getDefinitions("誰")
+      assert.equal(definitions.length, 1)
+      assert.strictEqual(definitions[0], "誰 谁 [shei2] /who/also pr. [shui2]/")
+    })
+    it("should also work with words of more than one character", () =>
+    {
+      const definitions = cedict.getDefinitions("電話")
+      assert.equal(definitions.length, 1)
+      assert.strictEqual(definitions[0], "電話 电话 [dian4 hua4] /telephone/CL:部[bu4]/phone call/CL:通[tong1]/phone number/")
+    })
+    it("should work with simplified characters", () =>
+    {
+      const definitions = cedict.getDefinitions("电话")
+      assert.equal(definitions.length, 1)
+      assert.strictEqual(definitions[0], "電話 电话 [dian4 hua4] /telephone/CL:部[bu4]/phone call/CL:通[tong1]/phone number/")
     })
   })
 })

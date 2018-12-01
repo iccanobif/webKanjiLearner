@@ -1,16 +1,22 @@
 <div id="dictionaryDefinitionsBody">
 
-<% if (definitions.length == 0) { %>
-    NOTHING TO SEE HERE FOR WORD <%= word %>
-<% } %>
+    <% if (definitions.length == 0 && chineseDefinitions.length == 0) { %>
+        NOTHING TO SEE HERE FOR WORD <%= word %>
+    <% } %>
 
-<% definitions.forEach((definition) => { %>
-<div class="dictionaryDefinition">
-    Word: <%= definition.kanjiElements.join("; ") %> <br />
-    Reading: <%= definition.readingElements.join("; ") %>  <br />
-    Meaning: <%= definition.glosses.join("; ") %>
-</div>
-<% }) %>
+    <% definitions.forEach((definition) => { %>
+    <div class="dictionaryDefinition">
+        Word: <%= definition.kanjiElements.join("; ") %> <br />
+        Reading: <%= definition.readingElements.join("; ") %>  <br />
+        Meaning: <%= definition.glosses.join("; ") %>
+    </div>
+    <% }) %>
+
+    <% chineseDefinitions.forEach((definition) => { %>
+    <div class="dictionaryDefinition">
+        <%= definition %>
+    </div>
+    <% }) %>
 
 </div>
 <div class="fixedFooter">
