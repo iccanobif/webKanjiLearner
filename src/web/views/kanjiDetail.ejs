@@ -19,7 +19,7 @@
     <%= meanings.join(" / ") %><br />
 
     <% if (splitJigen != undefined) { %>
-        <h2>字源:</h2>
+        <h2>「<%=character%>」の字源:</h2>
         <%-  include("sentence.ejs", {splits: splitJigen, kana: null, eng: null}) %>
     <% } %>
     
