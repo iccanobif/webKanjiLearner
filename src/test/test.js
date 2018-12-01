@@ -289,7 +289,7 @@ describe('jigen', function ()
   {
     it("should return the jigen description", () =>
     {
-      assert.strictEqual(jigen.getJigen("水"), "[[象形文字|象形]]。水流を象る。")
+      assert.strictEqual(jigen.getJigen("水"), "成り立ち象形文字です。「流れる水」の象形から、「みず」を意味する「水」という漢字が成り立ちました。")
     })
   })
 })
