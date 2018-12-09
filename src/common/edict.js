@@ -340,7 +340,8 @@ let exceptions = {
     "６": ["６"],
     "７": ["７"],
     "８": ["８"],
-    "９": ["９"]
+    "９": ["９"],
+    "・": ["・"]
 }
 
 module.exports.getReadings = (word, doFiltering) =>
