@@ -2,7 +2,7 @@ class Loader
 {
     constructor()
     {
-        this.loaderElement = $("<div id='loader' class='overlay'><div id='loaderText'>実行中</div></div>")
+        this.loaderElement = $("<div id='loader' class='overlay'><div id='loaderText'>Loading...</div></div>")
         $("body").append(this.loaderElement)
         // this.hide()
     }
