@@ -9,12 +9,12 @@
         coloredSplits.push({
             word: word,
             color: 
-                currentColor == 0 ? "lightgray" :
+                currentColor == 0 ? "inherit" :
                 currentColor == 1 ? "red" :
                 currentColor == 2 ? "green" :
                 currentColor == 3 ? "yellow" :
                 currentColor == 4 ? "purple" :
-                "white"
+                "inherit"
         })
         if (word == "」" || word == ")")
             currentColor -= 1
@@ -23,7 +23,7 @@
 <%- 
     coloredSplits
     .map(split => 
-            "<a href='#' onclick='showDictionaryDefinition(\"word\"); return false;' style='color: thisColor'>word</a>"
+    "<a href='#' onclick='showDictionaryDefinition(\"word\"); return false;' style='color: thisColor'>word</a>"
             .replace(/word/g, split.word)
             .replace(/thisColor/g, split.color)
         )
