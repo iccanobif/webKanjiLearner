@@ -1,25 +1,42 @@
-<!DOCTYPE html>
-<html>
+<%- include("header.ejs") -%>
+    <div id="mainPage">
+        <h1>INSERT USERNAME</h1>
+        <% if(invalidLogin) { %>
+            <h2 class="insultForImproperLogin">Login properly, you dipshit</h2>
+        <% } %>
+        <form method="GET" action="sentences">
+            <input type="text" name="userName">
+            <input type="submit" value="go">
+        </form>
 
-<head>
-    <meta charset="utf-8" />
-    <title>Knaji</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-        crossorigin="anonymous"></script>
+        <h1>Kanji detail</h1>
+        <form id="frmOpenKanjiDetail" method="GET">
+            <input id="txtCharacterForDetail" type="text" name="character">
+            <input type="submit" value="go">
+            <h2 id="openKanjiDetailValidator" class="insultForImproperLogin">input one character pls</h2>
+        </form>
+    </div>
     <script src="main.js"></script>
-</head>
+    <script>
+        const frmOpenKanjiDetail = document.getElementById("frmOpenKanjiDetail")
+        const openKanjiDetailValidator = document.getElementById("openKanjiDetailValidator")
 
-<body>
-    <h1>INSERT USERNAME</h1>
-    <% if(invalidLogin) { %>
-        <h2 class="insultForImproperLogin">Login properly, you dipshit</h2>
-    <% } %>
-    <form method="GET" action="sentences">
-        <input type="text" name="userName">
-        <input type="submit" value="go">
-    </form>
-</body>
+        openKanjiDetailValidator.style.display = "none"
 
-</html>
+        frmOpenKanjiDetail.addEventListener("submit", (ev) =>
+        {
+            const character = document.getElementById("txtCharacterForDetail").value
+
+            if (character.length != 1)
+            {
+                openKanjiDetailValidator.style.display = "block"
+                ev.preventDefault()
+            }
+            else 
+            {
+                frmOpenKanjiDetail.action = "kanjiDetail/" + character
+            }
+        })
+    </script>
+
+<%- include("footer.ejs") -%>

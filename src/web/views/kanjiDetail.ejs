@@ -1,5 +1,9 @@
 <div id="kanjiDetailBody">
     <h1><%=character%></h1>
+
+    <% if (sentences.length == 0) { %>
+    nothing to see here....
+    <% } else { %>
     <h2>Readings:</h2>
     <%= readings.join(" / ") %><br />
 
@@ -25,10 +29,6 @@
     
     <h2>Sentences:</h2>
 
-    <% if (sentences.length == 0) { %>
-    nothing to see here....
-    <% } %>
-
     <% sentences.forEach((sentence) => { %>
     <div class="sentenceBlock">
         <%- sentence
@@ -41,7 +41,7 @@
                                        eng: sentence.eng,
                                     splits: sentence.splits}) %>
     </div>
-    <% }); %>
+    <% }); } %>
 </div>
 
 <div class="fixedFooter">
