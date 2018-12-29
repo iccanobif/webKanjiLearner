@@ -57,13 +57,21 @@ module.exports.isLoaded = () =>
 module.exports.getKanjiReadings = (kanji) =>
 {
     ut.log("Getting kanji readings for " + kanji)
-    return kanjiInfoCollection[kanji].readings
+    const kanjiInfo = kanjiInfoCollection[kanji]
+    if (kanjiInfo == undefined)
+        return []
+    else
+        return kanjiInfo.readings
 }
 
 module.exports.getKanjiMeanings = (kanji) => 
 {
     ut.log("Getting kanji meanings for " + kanji)
-    return kanjiInfoCollection[kanji].meanings
+    const kanjiInfo = kanjiInfoCollection[kanji]
+    if (kanjiInfo == undefined)
+        return []
+    else
+        return kanjiInfo.meanings
 }
 
 module.exports.addLoadedCallback = (callback) =>
