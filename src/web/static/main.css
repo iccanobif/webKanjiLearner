@@ -127,7 +127,7 @@ a:visited {
     border-top-color: lightgray;
 }
 
-#kanjiDetailBody
+.divWithSpaceForFooter
 {
     margin-bottom: 2em; /* Same as .fixedFooter's height */
 }
@@ -137,11 +137,6 @@ a:visited {
     border-bottom-style: solid;
     border-bottom-color: lightgray;
     margin: 10px auto 10px auto;
-}
-
-#dictionaryDefinitionsBody
-{
-    padding-bottom: 2em; /* Same as fixedFooter's height */
 }
 
 #GoBackToLoginPageLink

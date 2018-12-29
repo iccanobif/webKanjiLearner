@@ -8,17 +8,22 @@ class NavigationHandler
         }]
     }
 
-    goToNextPage()
+    goToNextPage(html)
     {
         this.pages[this.pages.length - 1].scrollPosition = window.scrollY
         $(this.pages[this.pages.length - 1].element).hide()
-        let newPage = document.body.appendChild(document.createElement("div"))
+        const newPage = document.body.appendChild(document.createElement("div"))
+        newPage.classList.add("divWithSpaceForFooter")
+        $(newPage).html(html +
+            `<div class="fixedFooter">
+                <a id="scrollToTop" href="#" onClick="scrollToTop(); return false">TO TOP</a>
+                <a id="closePopupButton" href="#" onClick="hideCharacterDetails(); return false">BACK</a>
+            </div>`)
 
         this.pages.push({
             element: newPage,
             scrollPosition: 0
         })
-        return newPage
     }
 
     back()
@@ -83,37 +88,33 @@ function hideCharacterDetails()
 
 function showCharacterDetails(character)
 {
-    let newPage = navigationHandler.goToNextPage()
     loader.show()
     $.get("kanjiDetail/" + character)
         .done((data) =>
         {
-            $(newPage).html(data)
+            navigationHandler.goToNextPage(data)
             loader.hide()
         })
         .fail(() =>
         {
             alert("Failed")
             loader.hide()
-            navigationHandler.back()
         })
 }
 
 function showDictionaryDefinition(word)
 {
-    let newPage = navigationHandler.goToNextPage()
     loader.show()
     $.get("dictionaryDefinition/" + word)
         .done((data) =>
         {
-            $(newPage).html(data)
+            navigationHandler.goToNextPage(data)
             loader.hide()
         })
         .fail(() =>
         {
             alert("Failed")
             loader.hide()
-            navigationHandler.back()
         })
 }
 

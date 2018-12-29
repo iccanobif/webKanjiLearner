@@ -1,50 +1,43 @@
-<div id="kanjiDetailBody">
-    <h1><%=character%></h1>
+<h1><%=character%></h1>
 
-    <% if (sentences.length == 0) { %>
-    nothing to see here....
-    <% } else { %>
-    <h2>Readings:</h2>
-    <%= readings.join(" / ") %><br />
+<% if (sentences.length == 0) { %>
+nothing to see here....
+<% } else { %>
+<h2>Readings:</h2>
+<%= readings.join(" / ") %><br />
 
-    <h2>Example words:</h2>
+<h2>Example words:</h2>
 
-    <%- exampleWords
-        .map((x) => {
-            return "<a href='#kanjiDetail_word'>word（readings）</a>(count)"
-                    .replace(/word/g, x.word)
-                    .replace(/count/g, x.count)
-                    .replace(/readings/g, x.readings.join("／"))
-        })
-        .join("<br/>") 
-    %><br />
+<%- exampleWords
+    .map((x) => {
+        return "<a href='#kanjiDetail_word'>word（readings）</a>(count)"
+                .replace(/word/g, x.word)
+                .replace(/count/g, x.count)
+                .replace(/readings/g, x.readings.join("／"))
+    })
+    .join("<br/>") 
+%><br />
 
-    <h2>Meanings:</h2>
-    <%= meanings.join(" / ") %><br />
+<h2>Meanings:</h2>
+<%= meanings.join(" / ") %><br />
 
-    <% if (splitJigen != undefined) { %>
-        <h2>「<%=character%>」の字源:</h2>
-        <%-  include("sentence.ejs", {splits: splitJigen, kana: null, eng: null}) %>
-    <% } %>
-    
-    <h2>Sentences:</h2>
+<% if (splitJigen != undefined) { %>
+    <h2>「<%=character%>」の字源:</h2>
+    <%-  include("sentence.ejs", {splits: splitJigen, kana: null, eng: null}) %>
+<% } %>
 
-    <% sentences.forEach((sentence) => { %>
-    <div class="sentenceBlock">
-        <%- sentence
-            .splits
-            .filter(x => x.match(new RegExp(character, "g"))) // Words that don't contain the kanji can't be jumped to anyway.
-            .map(word => "<a name='kanjiDetail_word' class='hiddenAnchor'>&nbsp;</a>".replace(/word/g, word))
-            .join("")
-        %>
-        <%-  include("sentence.ejs", {kana: sentence.kana,
-                                       eng: sentence.eng,
-                                    splits: sentence.splits}) %>
-    </div>
-    <% }); } %>
+<h2>Sentences:</h2>
+
+<% sentences.forEach((sentence) => { %>
+<div class="sentenceBlock">
+    <%- sentence
+        .splits
+        .filter(x => x.match(new RegExp(character, "g"))) // Words that don't contain the kanji can't be jumped to anyway.
+        .map(word => "<a name='kanjiDetail_word' class='hiddenAnchor'>&nbsp;</a>".replace(/word/g, word))
+        .join("")
+    %>
+    <%-  include("sentence.ejs", {kana: sentence.kana,
+                                    eng: sentence.eng,
+                                splits: sentence.splits}) %>
 </div>
-
-<div class="fixedFooter">
-    <a id="scrollToTop" href="#" onClick="scrollToTop(); return false">TO TOP</a>
-    <a id="closePopupButton" href="#" onClick="hideCharacterDetails(); return false">BACK</a>
-</div>
+<% }); } %>
