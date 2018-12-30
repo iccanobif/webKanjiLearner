@@ -24,6 +24,7 @@ class NavigationHandler
             element: newPage,
             scrollPosition: 0
         })
+        scrollToTop()
     }
 
     back()
