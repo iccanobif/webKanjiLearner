@@ -16,8 +16,8 @@ class NavigationHandler
         newPage.classList.add("divWithSpaceForFooter")
         $(newPage).html(html +
             `<div class="fixedFooter">
-                <a id="scrollToTop" href="#" onClick="scrollToTop(); return false">TO TOP</a>
                 <a id="closePopupButton" href="#" onClick="hideCharacterDetails(); return false">BACK</a>
+                <a id="scrollToTop" href="#" onClick="scrollToTop(); return false">TO TOP</a>
             </div>`)
 
         this.pages.push({
