@@ -21,23 +21,23 @@ nothing to see here....
 <h2>Meanings:</h2>
 <%= meanings.join(" / ") %><br />
 
-<% if (splitJigen != undefined) { %>
+<% if (jigen != undefined) { %>
     <h2>「<%=character%>」の字源:</h2>
-    <%-  include("sentence.ejs", {splits: splitJigen, kana: null, eng: null}) %>
+    <%-  include("sentence.ejs", {jpn: jigen, 
+                                  eng: null, 
+                                  character: undefined,
+                                  sentenceSplitter: sentenceSplitter, 
+                                  edict: edict}) %>
 <% } %>
 
 <h2>Sentences:</h2>
 
 <% sentences.forEach((sentence) => { %>
 <div class="sentenceBlock">
-    <%- sentence
-        .splits
-        .filter(x => x.match(new RegExp(character, "g"))) // Words that don't contain the kanji can't be jumped to anyway.
-        .map(word => "<a name='kanjiDetail_word' class='hiddenAnchor'>&nbsp;</a>".replace(/word/g, word))
-        .join("")
-    %>
-    <%-  include("sentence.ejs", {kana: sentence.kana,
-                                    eng: sentence.eng,
-                                splits: sentence.splits}) %>
+    <%-  include("sentence.ejs", {jpn: sentence.jpn,
+                                  eng: sentence.eng,
+                                  character: character,
+                                  sentenceSplitter: sentenceSplitter,
+                                  edict: edict}) %>
 </div>
 <% }); } %>

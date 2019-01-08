@@ -1,5 +1,13 @@
+<%# Expected inputs: 
+ - jpn: a kanji string 
+ - eng: an english string
+ - character: the character used if sentence.ejs is rendered inside kanjiDetail.ejs (otherwise undefined)
+ %>
+
 <div class="jpn">
 <%
+    const splits = sentenceSplitter.split(jpn)
+
     let currentColor = 0
     let coloredSplits = []
 
@@ -19,13 +27,29 @@
         if (word == "」" || word == ")")
             currentColor -= 1
     })
+
+    const kana = splits
+        .map(x =>
+        {
+            let readings = edict.getReadings(x, true)
+            if (readings.length == 1)
+                return readings[0]
+            else
+                return "[" + readings.join("/") + "]"
+        })
+        .join("")
 %>
 <%- 
     coloredSplits
     .map(split => 
-    "<a href='#' onclick='showDictionaryDefinition(\"word\"); return false;' style='color: thisColor'>word</a>"
+        (
+            (typeof character === "undefined" 
+            ? "" 
+            : "<a name='kanjiDetail_word' class='hiddenAnchor'>&nbsp;</a>")
+        + "<a href='#' onclick='showDictionaryDefinition(\"word\"); return false;' style='color: thisColor'>word</a>")
             .replace(/word/g, split.word)
             .replace(/thisColor/g, split.color)
+        
         )
     .join("")
 %></div>

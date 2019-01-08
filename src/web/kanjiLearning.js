@@ -151,7 +151,9 @@ app.get("/sentences", (req, res) =>
                             .join("")
                         return x
                     }),
-            userName: req.query.userName
+            userName: req.query.userName,
+            sentenceSplitter: sentenceSplitter,
+            edict: edict
         })
     })
 })
@@ -227,14 +229,13 @@ app.get("/kanjiDetail/:character", (req, res) =>
                     .join("")
                 return x
             })
-        let thisJigen = jigen.getJigen(req.params.character)
 
         res.render("kanjiDetail.ejs", {
             character: req.params.character,
             sentences: sentences,
             readings: kanjidic.getKanjiReadings(req.params.character),
             meanings: kanjidic.getKanjiMeanings(req.params.character),
-            splitJigen: thisJigen == undefined ? undefined : sentenceSplitter.split(thisJigen),
+            jigen: jigen.getJigen(req.params.character),
             exampleWords: sentences
                 .map(x => x.splits) // Extract the kanji text (split in words) from each sentence object
                 .reduce((acc, val) => acc.concat(val), []) // Flatten into an array of arrays
@@ -249,7 +250,9 @@ app.get("/kanjiDetail/:character", (req, res) =>
                         acc[acc.length - 1].count += 1
                     return acc
                 }, [])
-                .sort((a, b) => { return b.count - a.count })
+                .sort((a, b) => { return b.count - a.count }),
+            sentenceSplitter: sentenceSplitter,
+            edict: edict
         })
     }
 })
