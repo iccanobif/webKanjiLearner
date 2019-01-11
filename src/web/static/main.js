@@ -123,3 +123,12 @@ function scrollToTop()
 {
     window.scrollTo(0, 0);
 }
+
+function expandWord(clickedLink)
+{
+    const ul = $(clickedLink).prevAll("ul")[0]
+    if ($(ul).css("display") == "none")
+        $(ul).css("display", "inline-block")
+    else
+        $(ul).css("display", "none")
+}

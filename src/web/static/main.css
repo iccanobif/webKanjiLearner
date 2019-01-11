@@ -1,3 +1,8 @@
+*
+{
+    box-sizing: border-box;
+}
+
 body
 {
     background-color: black;
@@ -154,4 +159,24 @@ a:visited {
     float: left;
     width: 0px;
     height: 0px;
+}
+
+.expandibleWord {
+    color: darkred;
+}
+
+.expandibleWord ul
+{
+    display: none; /* gets toggled with inline-block */
+    background-color: black;
+    border-style: solid;
+    position: absolute;
+    padding: 0;
+    list-style: none;
+    margin-top: 1.5em;
+}
+
+.expandibleWord a
+{
+    color: darkred;
 }

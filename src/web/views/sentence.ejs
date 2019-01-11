@@ -28,16 +28,6 @@
             currentColor -= 1
     })
 
-    const kana = splits
-        .map(x =>
-        {
-            let readings = edict.getReadings(x, true)
-            if (readings.length == 1)
-                return readings[0]
-            else
-                return "[" + readings.join("/") + "]"
-        })
-        .join("")
 %>
 <%- 
     coloredSplits
@@ -54,9 +44,30 @@
     .join("")
 %></div>
 
-<% if (kana != null) { %>
-    <div class="kana"><%= kana %></div>
-<% } %>
+<div class="kana">
+<%- 
+    splits
+    .map(x =>
+    {
+        let readings = edict.getReadings(x, true)
+        if (readings.length == 1)
+            return readings[0]
+        else
+        {
+            return `<span class='expandibleWord'>`
+                            + `<ul><li>` 
+                            + readings.join("</li><li>") 
+                            + `</li></ul>` 
+                            + `<a onclick='expandWord(this); return false;' href="#">`
+                            + readings[0] 
+                            + `</a>`
+                            + `</span>`
+        }
+    })
+    .join("") 
+%>
+</div>
+
 <% if (eng != null) { %>
     <div class="eng"><%= eng %></div>
 <% } %>
