@@ -23,11 +23,13 @@
                     name="<%= sentence.char %>"
                     onclick="hideCharacter('<%=sentence.char%>')" />
             </div>
-            <%-  include("sentence.ejs", {jpn: sentence.jpn,
-                                           eng: sentence.eng,
-                                           character: undefined,
-                                          sentenceSplitter: sentenceSplitter,
-                                         edict: edict}) %>
+            <div class="sentenceContainer">
+                <%-  include("sentence.ejs", {jpn: sentence.jpn,
+                                            eng: sentence.eng,
+                                            character: undefined,
+                                            sentenceSplitter: sentenceSplitter,
+                                            edict: edict}) %>
+            </div>
         </div>
         <% }); %>
     </div>

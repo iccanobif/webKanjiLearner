@@ -44,12 +44,7 @@ function loadNewSentence(character)
     $.ajax("/getRandomSentence/" + character)
         .done((data) =>
         {
-            $("#" + character + " > .jpn").html(data
-                .splits
-                .map(word => "<a href='#' onclick='showDictionaryDefinition(\"word\"); return false;'>word</a>".replace(/word/g, word))
-                .join(""))
-            $("#" + character + " > .kana").text(data.kana)
-            $("#" + character + " > .eng").text(data.eng)
+            $("#" + character + " .sentenceContainer").html(data)
             button.prop("value", originalLabel)
         })
         .fail(() =>

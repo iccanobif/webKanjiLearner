@@ -175,7 +175,7 @@ app.get("/hiddenCharacters", (req, res) =>
 app.get("/getRandomSentence/:character", (req, res) =>
 {
     ut.log("Requested new sentence for character " + req.params.character)
-    let randomSentence = sentenceRepository.getRandomSentence(req.params.character)
+    const randomSentence = sentenceRepository.getRandomSentence(req.params.character)
     if (randomSentence == null)
     {
         res.type("text/plain")
@@ -183,19 +183,13 @@ app.get("/getRandomSentence/:character", (req, res) =>
     }
     else
     {
-        res.type("application/json")
-        randomSentence.splits = sentenceSplitter.split(randomSentence.jpn)
-        randomSentence.kana = randomSentence.splits
-            .map(x =>
-            {
-                let readings = edict.getReadings(x, true)
-                if (readings.length == 1)
-                    return readings[0]
-                else
-                    return "[" + readings.join("/") + "]"
-            })
-            .join("")
-        res.end(JSON.stringify(randomSentence))
+        res.render("sentence.ejs", {
+            jpn: randomSentence.jpn,
+            eng: randomSentence.eng,
+            character: req.params.character,
+            sentenceSplitter: sentenceSplitter,
+            edict: edict
+        })
         ut.log("Sent new sentence for character " + req.params.character)
     }
 })
