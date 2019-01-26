@@ -171,3 +171,8 @@ a:visited {
 .eng {
     display: none;
 }
+
+.showTranslationButton
+{
+    height: 1.5em;
+}

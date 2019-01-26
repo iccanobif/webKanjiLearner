@@ -16,6 +16,7 @@ Grammars to add:
     - その男は頑としてその職にしがみつき、決して退職しようとはしなかった。
     - 証人が事実を隠せば刑法の罪に問われる。
     - 彼女の行動はしだいに攻撃的になってくるだろう。
+    - この 規則 は いく通り も 解釈 が あります 。
 
 - Add conjugation for "v5", "v5aru", "v5r-i", "v5u-s", "v5uru" 
 - The code that calls edict.getReadings() from kanjiLearning.js is copy-pasted three times... Refactor that
