@@ -1,10 +1,8 @@
-*
-{
+* {
     box-sizing: border-box;
 }
 
-body
-{
+body {
     background-color: black;
     color: lightgray;
     font-size: 1.5em;
@@ -23,40 +21,34 @@ a:visited {
     padding-right: 2px;
 }
 
-.sentenceBlock
-{
+.sentenceBlock {
     border-bottom-style: solid;
     border-bottom-color: lightgray;
 }
 
-.updatingSentenceBlock
-{
+.updatingSentenceBlock {
     background-color: green;
 }
 
-.char
-{
+.char {
     display: inline-block;
     font-size: 2em;
     vertical-align: bottom;
     font-family: MS Gothic;
 }
 
-.freq
-{
+.freq {
     display: inline-block;
     font-size: 0.7em;
     vertical-align: bottom;
 }
 
-.buttons
-{
+.buttons {
     display: inline-block;
     vertical-align: bottom;
 }
 
-.buttons input
-{
+.buttons input {
     width: 80px;
     height: 50px;
     border: 0;
@@ -64,13 +56,11 @@ a:visited {
     vertical-align: bottom;
 }
 
-.insultForImproperLogin
-{
+.insultForImproperLogin {
     color: red;
 }
 
-.overlay
-{
+.overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -81,21 +71,18 @@ a:visited {
     display: none;
 }
 
-#popupCharacterDetails
-{
+#popupCharacterDetails {
     display: none;
 }
 
-#scrollToTop
-{
+#scrollToTop {
     font-size: 2em;
     position: absolute;
     bottom: 0px;
     right: 0px;
 }
 
-#closePopupButton
-{
+#closePopupButton {
     font-size: 2em;
     position: absolute;
     bottom: 0px;
@@ -117,9 +104,13 @@ a:visited {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-} 
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
 
 .fixedFooter {
     position: fixed;
@@ -134,27 +125,24 @@ a:visited {
     border-top-color: lightgray;
 }
 
-.divWithSpaceForFooter
-{
-    margin-bottom: 2em; /* Same as .fixedFooter's height */
+.divWithSpaceForFooter {
+    margin-bottom: 2em;
+    /* Same as .fixedFooter's height */
 }
 
-.dictionaryDefinition
-{
+.dictionaryDefinition {
     border-bottom-style: solid;
     border-bottom-color: lightgray;
     margin: 10px auto 10px auto;
 }
 
-#GoBackToLoginPageLink
-{
+#GoBackToLoginPageLink {
     position: absolute;
-    top:0px;
-    right:0px;
+    top: 0px;
+    right: 0px;
 }
 
-.hiddenAnchor
-{
+.hiddenAnchor {
     position: relative;
     float: left;
     width: 0px;
@@ -165,9 +153,9 @@ a:visited {
     color: darkred;
 }
 
-.expandibleWord ul
-{
-    display: none; /* gets toggled with inline-block */
+.expandibleWord ul {
+    display: none;
+    /* gets toggled with inline-block */
     background-color: black;
     border-style: solid;
     position: absolute;
@@ -176,7 +164,10 @@ a:visited {
     margin-top: 1.5em;
 }
 
-.expandibleWord a
-{
+.expandibleWord a {
     color: darkred;
+}
+
+.eng {
+    display: none;
 }

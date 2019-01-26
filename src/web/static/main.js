@@ -127,3 +127,10 @@ function expandWord(clickedLink)
     else
         $(ul).css("display", "none")
 }
+
+function showEnglishTranslation(sender)
+{
+    console.log(sender)
+    $(sender).next(".eng").show()
+    $(sender).hide()
+}

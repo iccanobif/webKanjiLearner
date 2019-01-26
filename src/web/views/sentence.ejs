@@ -71,5 +71,11 @@
 </div>
 
 <% if (eng != null) { %>
+    <input
+        type="button"
+        class="showTranslationButton"
+        value="Show translation"
+        onclick="showEnglishTranslation(this)"
+        />
     <div class="eng"><%= eng %></div>
 <% } %>
