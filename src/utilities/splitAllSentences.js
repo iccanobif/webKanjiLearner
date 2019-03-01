@@ -1,4 +1,4 @@
-// This script isn't actually used in the app, it's here just for testing the splitter on all the availab esentences
+// This script isn't actually used in the app, it's here just for testing the splitter on all the available sentences
 
 const sentenceSplitter = require("../common/sentenceSplitter.js")
 const edict = require("../common/edict.js")

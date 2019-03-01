@@ -1,3 +1,9 @@
+import requests
+import os
+import bz2
+
+tmpDir = "../../inputs/"
+
 blacklist = "︎ 　_-－—―〜・･,，、､；:：!！‼?？.．…。｡'‘’\"“”(（)）[]{}〈〉「｢」｣『』【】〔〕@*/／＼＆＃%％•※^゜°℃→∈+＋×=＝≠>~～−√∠⊂○♪⨯々ゝゞー$＄₪€0〇０1１①¹2２②²₂3３³4４5５6６7７8８9９" \
             + "AaａＡBbｂＢcCｃＣdDｄＤeEＥｅéFfＦｆgGｇＧhHＨｈIiＩｉJjｊＪkKＫｋlLｌＬMmｍＭNnＮｎOoｏＯºPpｐＰqQｑＱrRｒＲℝSsＳｓßTtＴｔuUｕＵÚvVｖＶwWｗＷXxｘＸyYＹｙzZＺｚαβ" \
             + "ぁあァアぃいィイぅうゥウヴぇえェエぉおォオかヵカがガきキぎギ㌔くクぐグ㌘けヶケげゲこコごゴさサざザしシじジ〆すスずズせセぜゼそソぞゾたタだダちチぢヂっつッツづヅてテでデとトどドなナにニ" \
@@ -15,10 +21,14 @@ def preparaFrasi():
 
     frequenzaCaratteri = dict() # La chiave è un carattere giapponese, il valore è il numero di occorrenze nel dataset
 
-    print("Parso sentences.csv")
-    with open("../inputs/sentences.csv", "r", encoding="utf8") as f:
+    print("Parso sentences.tar.bz2")
+    with bz2.open(tmpDir + "sentences.tar.bz2", "rt", encoding="utf8") as f:
         for line in f.readlines():
-            sentenceId, language, sentenceText = line.split("\t")
+            splits = line.split("\t")
+            if len(splits) != 3:
+                print("skipping line " + line)
+                continue
+            sentenceId, language, sentenceText = splits
             sentenceText = sentenceText.strip()
             if language == "jpn":
                 japaneseSentences[sentenceId] = Frase(sentenceText, [])
@@ -34,9 +44,13 @@ def preparaFrasi():
             if language == "eng":
                 englishSentences[sentenceId] = sentenceText
 
-    print("Parso links.csv")
-    with open("../inputs/links.csv", "r", encoding="utf8") as links:
+    print("Parso links.tar.bz2")
+    with bz2.open(tmpDir + "links.tar.bz2", "rt", encoding="utf8") as links:
         for line in links.readlines():
+            splits = line.strip().split("\t")
+            if len(splits) != 2:
+                print("skipping line " + line)
+                continue
             id1, id2 = line.strip().split("\t")
             if id1 in japaneseSentences and id2 in englishSentences:
                 japaneseSentences[id1].traduzioni.append(englishSentences[id2])
@@ -51,6 +65,25 @@ def preparaFrasi():
                 frase.frequenzaMinima = frequenzaCaratteri[c]
     return japaneseSentences.values(), frequenzaCaratteri
 
+# Download raw datasets from tatoeba
+
+try:
+    os.mkdir(tmpDir)
+except:
+    pass
+
+for file in [("http://downloads.tatoeba.org/exports/sentences.tar.bz2", "sentences.tar.bz2"),\
+             ("http://downloads.tatoeba.org/exports/links.tar.bz2", "links.tar.bz2")]:
+    if os.path.exists(tmpDir + file[1]):
+        print(file[1] + " already exists... not downloading.")
+        continue
+
+    print("downloading " + file[0])
+    r = requests.get(file[0])
+    f = open(tmpDir + file[1],"wb")
+    f.write(r.content)
+    f.close
+
 frasi, frequenzaCaratteri = preparaFrasi()
 # Le frasi di un carattere sono tutte le frasi in cui quel carattere è il piu' difficile che hanno
 
@@ -59,7 +92,7 @@ def makeJson(carattere, fraseGiapponese, traduzione):
             % (carattere, frequenzaCaratteri[carattere], fraseGiapponese.replace("\"", "\\\""), traduzione.replace("\"", "\\\""))
 
 print("Preparing mapping")
-with open("../output/allSentences.csv", "w", encoding="utf8") as f:
+with open("../../datasets/allSentences.csv", "w", encoding="utf8") as f:
     for c in sorted(frequenzaCaratteri.keys(), key=lambda x: frequenzaCaratteri[x]):
         print("Doing character", c, frequenzaCaratteri[c])
         f.write("\n".join([makeJson(c, frase.fraseInGiapponese, traduzione) \

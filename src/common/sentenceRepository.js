@@ -8,7 +8,7 @@ let isLoaded = false
 ut.log("Start loading sentences")
 
 readline
-    .createInterface({ input: fs.createReadStream("../output/allSentences.csv") })
+    .createInterface({ input: fs.createReadStream("../datasets/allSentences.csv") })
     .on("line", (line) =>
     {
         if (line.trim() == "")

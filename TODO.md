@@ -7,9 +7,6 @@
 Grammars to add:
 っちゃう (informal て+しまう)
 - For each conjugated word, keep the original string (be it with a kanji or not), needed to get the dictionary form of a word starting from its conjugated form
-- Remove "kana" attribute to allSentences.csv
-- Automate the generation of allSentences.csv from the tatoeba files
-
 - first proposed reading of 干物 should be ひもの
 
 - Sentences that currently aren't properly split:
