@@ -6,7 +6,7 @@ body {
     background-color: black;
     color: lightgray;
     font-size: 1.5em;
-    font-family: MS Gothic;
+    font-family: "MS Gothic", TakaoGothic;
 }
 
 a {
