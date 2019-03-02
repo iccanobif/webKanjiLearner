@@ -4,6 +4,7 @@ const ut = require("./utils.js")
 
 let sentences = {}
 let isLoaded = false
+let callbacks = []
 
 ut.log("Start loading sentences")
 
@@ -25,6 +26,8 @@ readline
     {
         ut.log("Finished loading sentences")
         isLoaded = true
+        callbacks.forEach(callback => callback())
+        callbacks = null
     })
     
 module.exports.getFullListOfRandomSentences = () =>
@@ -61,4 +64,12 @@ module.exports.getAllSentences = (char) =>
 module.exports.isLoaded = () =>
 {
     return isLoaded
+}
+
+module.exports.addLoadedCallback = (callback) =>
+{
+    if (isLoaded)
+        callback()
+    else
+        callbacks.push(callback)
 }

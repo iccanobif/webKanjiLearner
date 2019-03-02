@@ -5,6 +5,7 @@ const sentenceSplitter = require("../common/sentenceSplitter.js")
 const kanjidic = require("../common/kanjidic.js")
 const jigen = require("../common/jigen.js")
 const cedict = require("../common/cedict.js")
+const sentenceRepository = require("../common/sentenceRepository.js")
 
 describe("utils", function ()
 {
@@ -321,6 +322,27 @@ describe('cedict', function ()
       const definitions = cedict.getDefinitions("电话")
       assert.equal(definitions.length, 1)
       assert.strictEqual(definitions[0], "電話 电话 [dian4 hua4] /telephone/CL:部[bu4]/phone call/CL:通[tong1]/phone number/")
+    })
+  })
+})
+
+describe('sentenceRepository', function ()
+{
+  this.timeout(20000)
+  before((done) =>
+  {
+    sentenceRepository.addLoadedCallback(done)
+    
+  })
+  describe('getRandomSentence()', () =>
+  {
+    it("should return one sentence", () =>
+    {
+      const sentence = sentenceRepository.getRandomSentence("人")
+      assert.strictEqual(sentence.char, "人")
+      assert.ok("freq" in sentence)
+      assert.ok("jpn" in sentence)
+      assert.ok("eng" in sentence)
     })
   })
 })
