@@ -41,7 +41,7 @@ function loadNewSentence(character)
     let button = $("#" + character + " >> .loadNewSentenceButton")
     let originalLabel = button.prop("value")
     button.prop("value", "Loading...")
-    $.ajax("/getRandomSentence/" + character)
+    $.ajax("getRandomSentence/" + character)
         .done((data) =>
         {
             $("#" + character + " .sentenceContainer").html(data)
