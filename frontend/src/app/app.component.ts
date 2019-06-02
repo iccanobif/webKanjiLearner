@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+// import { Sentence } from "../model/sentence.ts";
+
 
 @Component({
   selector: 'app-root',
@@ -7,4 +9,8 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'webKanjiLearnerFrontend';
+
+  ngOnInit() {
+
+  }
 }

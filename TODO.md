@@ -1,3 +1,7 @@
+Angular:
+- Move datasets directory inside of backend (the frontend doesn't need that stuff)
+
+
 - Fix sql injection problem. For making cookie based authentication I can use the node-session or express-session middlewares
 - Show only uninflected forms in the "Example words" list
 - Improvements to splitter:
