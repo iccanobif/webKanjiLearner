@@ -185,13 +185,13 @@ app.get("/getRandomSentence/:character", (req, res) =>
     }
     else
     {
-        res.render("sentence.ejs", {
-            jpn: randomSentence.jpn,
-            eng: randomSentence.eng,
-            character: req.params.character,
-            sentenceSplitter: sentenceSplitter,
-            edict: edict
-        })
+        res.type("application/json")
+        res.end(JSON.stringify({
+            kanji: req.params.character,
+            kanjiText: randomSentence.jpn,
+            englishText: randomSentence.eng,
+            kanaText: "N/A"
+        }))
         ut.log("Sent new sentence for character " + req.params.character)
     }
 })

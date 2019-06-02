@@ -1,21 +1,23 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
+import { Observable, of } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
+
 import { Sentence } from 'src/model/sentence';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class SentencesService {
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
-  getRandomSentence()
-  {
-    const sentence = new Sentence();
-    sentence.kanji = "人";
-    sentence.kanaText = "text in kana";
-    sentence.englishText = "text in english";
-    sentence.kanjiText = "text in kanji";
+  getRandomSentence(): Observable<Sentence> {
 
-    return sentence;
+    return this.http
+      .get<Sentence>("http://localhost:4200/api/getRandomSentence/人")
+      // TODO HANDLE ERRORS
   }
 }

@@ -12,7 +12,8 @@ export class SentenceComponent implements OnInit {
   constructor(private sentencesService: SentencesService) { }
 
   ngOnInit() {
-    this.thisSentence = this.sentencesService.getRandomSentence();
+    this.sentencesService.getRandomSentence()
+    .subscribe(sentence => this.thisSentence = sentence);
   }
 
 }
