@@ -190,7 +190,7 @@ app.get("/getRandomSentence/:character", (req, res) =>
             kanji: req.params.character,
             kanjiText: randomSentence.jpn,
             englishText: randomSentence.eng,
-            kanaText: "N/A"
+            kanaText: null
         }))
         ut.log("Sent new sentence for character " + req.params.character)
     }

@@ -1,7 +1,19 @@
-<h2>ciao</h2>
 <ul *ngIf="thisSentence">
   <li>{{thisSentence.kanji}}</li>
   <li>{{thisSentence.kanjiText}}</li>
-  <li>{{thisSentence.kanaText}}</li>
-  <li>{{thisSentence.englishText}}</li>
+  <li *ngIf="thisSentence.kanaText">
+    {{thisSentence.kanaText}}
+  </li>
+  <li>
+    <button *ngIf="!translationVisible" (click)="showTranslation()">
+      Show translation
+    </button>
+    <span *ngIf="translationVisible">
+      {{thisSentence.englishText}}
+    </span>
+  </li>
 </ul>
+<p *ngIf="error">
+  An error occured:
+  {{ error.message || error }}
+</p>
