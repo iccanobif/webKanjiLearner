@@ -5,13 +5,13 @@ const app = express()
 const http = require("http").Server(app)
 const sqlite3 = require("sqlite3")
 const bodyParser = require("body-parser");
-const kanjidic = require("../common/kanjidic.js")
-const ut = require("../common/utils.js")
-const sentenceRepository = require("../common/sentenceRepository.js")
-const sentenceSplitter = require("../common/sentenceSplitter.js")
-const edict = require("../common/edict.js")
-const jigen = require("../common/jigen.js")
-const cedict = require("../common/cedict.js")
+const kanjidic = require("./common/kanjidic.js")
+const ut = require("./common/utils.js")
+const sentenceRepository = require("./common/sentenceRepository.js")
+const sentenceSplitter = require("./common/sentenceSplitter.js")
+const edict = require("./common/edict.js")
+const jigen = require("./common/jigen.js")
+const cedict = require("./common/cedict.js")
 
 function readCookie(cookies, cookieName)
 {
@@ -29,7 +29,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 let HiddenCharacterRepository = function ()
 {
-    let db = new sqlite3.Database('web/db.db');
+    let db = new sqlite3.Database('db.db');
     db.serialize(() =>
     {
         db.run("CREATE TABLE IF NOT EXISTS HIDDEN_CHARACTERS (USER_ID, CHARACTER)")
