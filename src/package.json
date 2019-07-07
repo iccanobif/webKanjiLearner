@@ -18,6 +18,7 @@
   },
   "scripts": {
     "test": "mocha",
-    "start": "node web/kanjiLearning.js"
+    "start": "node web/kanjiLearning.js",
+    "build": "cd utilities && python3 buildAllSentences.csv"
   }
 }
