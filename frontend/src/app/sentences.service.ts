@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
 import { Sentence } from 'src/model/sentence';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -13,11 +14,11 @@ export class SentencesService {
 
   getRandomSentence(kanji: string): Observable<Sentence> {
     return this.http
-      .get<Sentence>("http://localhost:4200/api/iccanobif/random-sentence/" + kanji)
+      .get<Sentence>(environment.apiURL + "/iccanobif/random-sentence/" + kanji)
   }
 
   getRandomSentences(): Observable<Sentence[]> {
     return this.http
-      .get<Sentence[]>("http://localhost:4200/api/iccanobif/random-sentence")
+      .get<Sentence[]>(environment.apiURL + "/iccanobif/random-sentence")
   }
 }

@@ -17,6 +17,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 const hiddenCharacterRepository = new HiddenCharacterRepository()
 
+app.use((req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*")
+    next()
+})
+
 app.get("/:username/random-sentence", (req, res) =>
 {
     if (!sentenceRepository.isLoaded()
