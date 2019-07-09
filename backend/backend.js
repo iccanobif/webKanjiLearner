@@ -77,12 +77,23 @@ app.get("/:username/random-sentence/:character", (req, res) =>
     }
     else
     {
+        const splits = sentenceSplitter.split(randomSentence.jpn)
+
         res.type("application/json")
         res.end(JSON.stringify({
             kanji: req.params.character,
             kanjiText: randomSentence.jpn,
             englishText: randomSentence.eng,
-            kanaText: null
+            kanaText: splits
+                .map(x =>
+                {
+                    let readings = edict.getReadings(x, true)
+                    if (readings.length == 1)
+                        return readings[0]
+                    else
+                        return "[" + readings.join("/") + "]"
+                })
+                .join(""),
         }))
         ut.log("Sent new sentence for character " + req.params.character)
     }

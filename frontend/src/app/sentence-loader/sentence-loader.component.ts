@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Sentence } from 'src/model/sentence';
+import { SentencesService } from '../sentences.service';
 
 @Component({
   selector: 'app-sentence-loader',
@@ -9,14 +10,18 @@ import { Sentence } from 'src/model/sentence';
 export class SentenceLoaderComponent implements OnInit {
   @Input() sentence: Sentence;
 
-  constructor() { }
+  constructor(private sentenceService: SentencesService) { }
 
   ngOnInit() {
   }
 
   loadNewSentence()
   {
-    alert("oh yeah")
+    this.sentenceService.getRandomSentence(this.sentence.kanji)
+    .subscribe(s => 
+      {
+        this.sentence = s
+      })
   }
 
   hideCharacter()
