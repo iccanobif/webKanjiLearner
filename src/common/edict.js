@@ -346,7 +346,6 @@ let exceptions = {
 
 module.exports.getReadings = (word, doFiltering) =>
 {
-
     if (doFiltering)
     {
         // For a few very common words that happen to also have a lot of uncommon readings (私 probably being 

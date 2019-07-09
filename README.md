@@ -4,7 +4,7 @@ To run:
 
 ```
 $ cd src
-$ yarn build
+$ yarn build-sentences
 $ yarn install
 $ yarn test
 $ yarn start

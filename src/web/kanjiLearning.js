@@ -1,3 +1,5 @@
+const PORT = 8081
+
 const express = require("express")
 const app = express()
 const http = require("http").Server(app)
@@ -282,5 +284,5 @@ app.post("/unhideCharacter", (req, res) =>
 })
 
 app.use(express.static('web/static'))
-http.listen(8081, "0.0.0.0")
-ut.log("Server running")
+http.listen(PORT, "0.0.0.0")
+ut.log("Server running on port " + PORT)
