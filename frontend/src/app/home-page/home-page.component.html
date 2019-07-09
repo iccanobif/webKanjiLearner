@@ -1,6 +1,11 @@
-
 <h1>
   Welcome to Knaji learner!
 </h1>
 
-<app-sentence-loader *ngFor="let sentence of sentenceList" [sentence]="sentence"></app-sentence-loader>
+
+<div *ngFor="let sentence of sentenceList; let i = index">
+  <div class="kanji">{{sentence.kanji}}</div>
+  <button (click)="loadNewSentence(i)">Load new sentence</button>
+  <button (click)="hideCharacter(i)">Hide character</button>
+  <app-sentence [sentence]="sentence"></app-sentence>
+</div>

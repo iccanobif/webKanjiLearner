@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SentencesService } from '../sentences.service';
+import { Sentence } from 'src/model/sentence';
 
 @Component({
   selector: 'app-home-page',
@@ -9,7 +10,7 @@ import { SentencesService } from '../sentences.service';
 export class HomePageComponent implements OnInit {
 
   title = 'webKanjiLearnerFrontend';
-  sentenceList = [];
+  sentenceList : Sentence[] = [];
 
   constructor(private sentencesService: SentencesService) { }
 
@@ -19,5 +20,19 @@ export class HomePageComponent implements OnInit {
       .subscribe(sentenceList => {
         this.sentenceList = sentenceList;
       });
+  }
+
+  loadNewSentence(i: number)
+  {
+    this.sentencesService.getRandomSentence(this.sentenceList[i].kanji)
+    .subscribe(s => 
+      {
+        this.sentenceList[i] = s
+      })
+  }
+
+  hideCharacter(i: number)
+  {
+    alert("hiding character " + this.sentenceList[i].kanji)
   }
 }
