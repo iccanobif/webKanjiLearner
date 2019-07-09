@@ -3,7 +3,6 @@ const PORT = 8081
 const express = require("express")
 const app = express()
 const http = require("http").Server(app)
-const sqlite3 = require("sqlite3")
 const bodyParser = require("body-parser");
 const kanjidic = require("./kanjidic.js")
 const ut = require("./utils.js")
@@ -12,75 +11,11 @@ const sentenceSplitter = require("./sentenceSplitter.js")
 const edict = require("./edict.js")
 const jigen = require("./jigen.js")
 const cedict = require("./cedict.js")
+const { HiddenCharacterRepository } = require("./hiddenCharacterRepository.js")
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
-let HiddenCharacterRepository = function ()
-{
-    let db = new sqlite3.Database('db.db');
-    db.serialize(() =>
-    {
-        db.run("CREATE TABLE IF NOT EXISTS HIDDEN_CHARACTERS (USER_ID, CHARACTER)")
-    })
-    this.hideCharacter = (user, character) =>
-    {
-        if (user == "" || user == undefined || user == null)
-        {
-            ut.log("Tried to hide character " + character + " for empty or null user. Won't do anything.")
-            return
-        }
-        ut.log("Hiding character " + character + " for user " + user)
-        db.run("INSERT INTO HIDDEN_CHARACTERS (USER_ID, CHARACTER) VALUES (?, ?)",
-            [user, character],
-            (err) =>
-            {
-                if (err) ut.printError(err)
-            })
-    }
-    this.unhideCharacter = (user, character) =>
-    {
-        if (user == "" || user == undefined || user == null)
-        {
-            ut.log("Tried to unhide character " + character + " for empty or null user. Won't do anything.")
-            return
-        }
-        ut.log("Unhiding character " + character + " for user " + user)
-        db.run("DELETE FROM HIDDEN_CHARACTERS WHERE USER_ID = ? AND CHARACTER = ?",
-            [user, character],
-            (err) =>
-            {
-                if (err) ut.printError(err)
-            })
-    }
-    this.unhideAllCharacters = (user) =>
-    {
-        db.run("DELETE FROM HIDDEN_CHARACTERS WHERE USER_ID = ?",
-            [user],
-            (err) =>
-            {
-                if (err) ut.printError(err)
-            })
-    }
-    this.getHiddenCharacters = (user, callback) =>
-    {
-        db.all("SELECT CHARACTER FROM HIDDEN_CHARACTERS WHERE USER_ID = ?",
-            [user],
-            (err, rows) =>
-            {
-                if (err)
-                {
-                    ut.printError(err)
-                    callback(new Set())
-                }
-                else 
-                {
-                    callback(new Set(rows.map((row) => row["CHARACTER"])))
-                }
-            })
-    }
-}
-
-let hiddenCharacterRepository = new HiddenCharacterRepository()
+const hiddenCharacterRepository = new HiddenCharacterRepository()
 
 // Check "authentication" and whether the datasets are all loaded. If necessary, redirects to the login page or
 // renders an error page and returns false.
@@ -103,13 +38,7 @@ function canOpenPage(req, res)
     return true
 }
 
-app.set("view engine", "ejs")
-app.set("views", "web/views")
 //PAGES
-app.get("/", (req, res) =>
-{
-    res.render("login.ejs", { invalidLogin: req.query.invalidLogin == "true" ? true : false })
-})
 app.get("/sentences", (req, res) =>
 {
     if (!canOpenPage(req, res))
@@ -162,7 +91,7 @@ app.get("/hiddenCharacters", (req, res) =>
 })
 
 //REST API
-app.get("/getRandomSentence/:character", (req, res) =>
+app.get("/:username/random-sentence/:character", (req, res) =>
 {
     ut.log("Requested new sentence for character " + req.params.character)
     const randomSentence = sentenceRepository.getRandomSentence(req.params.character)
@@ -183,7 +112,7 @@ app.get("/getRandomSentence/:character", (req, res) =>
         ut.log("Sent new sentence for character " + req.params.character)
     }
 })
-app.get("/kanjiDetail/:character", (req, res) =>
+app.get("/kanji/:character", (req, res) =>
 {
     if (!sentenceRepository.isLoaded() || !kanjidic.isLoaded() || !edict.isLoaded())
     {
@@ -240,7 +169,7 @@ app.get("/kanjiDetail/:character", (req, res) =>
         })
     }
 })
-app.get("/dictionaryDefinition/:word", (req, res) =>
+app.get("/dictionary/:word", (req, res) =>
 {
     if (!sentenceRepository.isLoaded() || !kanjidic.isLoaded() || !edict.isLoaded())
     {
@@ -258,19 +187,47 @@ app.get("/dictionaryDefinition/:word", (req, res) =>
         })
     }
 })
-app.post("/hideCharacter", (req, res) =>
+app.get("/:username/hidden-characters", (req, res) => 
 {
-    hiddenCharacterRepository.hideCharacter(req.body.userId, req.body.character)
-    res.type("text/plain")
-    res.end("OK")
+    hiddenCharacterRepository.getHiddenCharacters(req.params.username, (hiddenCharacters) =>
+    {
+        console.log(hiddenCharacters)
+        res.type("application/json")
+        res.end(JSON.stringify(hiddenCharacters))
+    })
 })
-app.post("/unhideCharacter", (req, res) =>
+app.post("/:username/hidden-characters/:character", (req, res) =>
 {
-    hiddenCharacterRepository.unhideCharacter(req.body.userId, req.body.character)
+    const username = req.params.username
+    const character = req.params.character
+
+    hiddenCharacterRepository.hideCharacter(username, character)
+    
     res.type("text/plain")
-    res.end("OK")
+    res.end("OK, hidden " + character + " for user " + username)
+})
+app.delete("/:username/hidden-characters/:character", (req, res) =>
+{
+    const username = req.params.username
+    const character = req.params.character
+
+    hiddenCharacterRepository.unhideCharacter(username, character)
+
+    res.type("text/plain")
+    res.end("OK, unhidden " + character + " for user " + username)
 })
 
 app.use(express.static('web/static'))
 http.listen(PORT, "0.0.0.0")
 ut.log("Server running on port " + PORT)
+
+
+// endpoints:
+
+// GET /:username/random-sentence
+// GET /:username/random-sentence/:character
+// GET /kanji/:character
+// GET /dictionary/:word
+// GET /:username/hidden-characters -> returns list of all hidden characters
+// POST /:username/hidden-characters/:character -> hides a character
+// DELETE /:username/hidden-characters/:character -> unhides a character
