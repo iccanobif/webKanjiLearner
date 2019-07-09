@@ -13,18 +13,6 @@ const edict = require("./common/edict.js")
 const jigen = require("./common/jigen.js")
 const cedict = require("./common/cedict.js")
 
-function readCookie(cookies, cookieName)
-{
-    c = cookies.split(";");
-    for (var i = 0; i < c.length; i++)
-    {
-        s = c[i].trim().split("=")
-        if (s[0] == cookieName)
-            return s[1];
-    }
-    return null;
-}
-
 app.use(bodyParser.urlencoded({ extended: false }));
 
 let HiddenCharacterRepository = function ()
