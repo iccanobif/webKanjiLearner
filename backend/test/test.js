@@ -1,11 +1,11 @@
 const assert = require("assert")
-const edict = require("../common/edict.js")
-const ut = require("../common/utils.js")
-const sentenceSplitter = require("../common/sentenceSplitter.js")
-const kanjidic = require("../common/kanjidic.js")
-const jigen = require("../common/jigen.js")
-const cedict = require("../common/cedict.js")
-const sentenceRepository = require("../common/sentenceRepository.js")
+const edict = require("../edict.js")
+const ut = require("../utils.js")
+const sentenceSplitter = require("../sentenceSplitter.js")
+const kanjidic = require("../kanjidic.js")
+const jigen = require("../jigen.js")
+const cedict = require("../cedict.js")
+const sentenceRepository = require("../sentenceRepository.js")
 
 describe("utils", function ()
 {

@@ -5,13 +5,13 @@ const app = express()
 const http = require("http").Server(app)
 const sqlite3 = require("sqlite3")
 const bodyParser = require("body-parser");
-const kanjidic = require("./common/kanjidic.js")
-const ut = require("./common/utils.js")
-const sentenceRepository = require("./common/sentenceRepository.js")
-const sentenceSplitter = require("./common/sentenceSplitter.js")
-const edict = require("./common/edict.js")
-const jigen = require("./common/jigen.js")
-const cedict = require("./common/cedict.js")
+const kanjidic = require("./kanjidic.js")
+const ut = require("./utils.js")
+const sentenceRepository = require("./sentenceRepository.js")
+const sentenceSplitter = require("./sentenceSplitter.js")
+const edict = require("./edict.js")
+const jigen = require("./jigen.js")
+const cedict = require("./cedict.js")
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
