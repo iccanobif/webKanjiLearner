@@ -171,21 +171,14 @@ app.get("/kanji/:character", (req, res) =>
 })
 app.get("/dictionary/:word", (req, res) =>
 {
-    if (!sentenceRepository.isLoaded() || !kanjidic.isLoaded() || !edict.isLoaded())
-    {
-        res.render("stillLoading.ejs")
-    }
-    else
-    {
-        let word = req.params.word
-        ut.log("Requested dictionary Definition for character " + word)
+    let word = req.params.word
+    ut.log("Requested dictionary Definition for character " + word)
 
-        res.render("dictionaryDefinition.ejs", {
-            word: word,
-            definitions: edict.getDefinitions(word),
-            chineseDefinitions: cedict.getDefinitions(word)
-        })
-    }
+    res.type("application/json")
+    res.end(JSON.stringify({
+        japaneseDefinitions: edict.getDefinitions(word),
+        chineseDefinitions: cedict.getDefinitions(word)
+    }))
 })
 app.get("/:username/hidden-characters", (req, res) => 
 {
@@ -202,7 +195,7 @@ app.post("/:username/hidden-characters/:character", (req, res) =>
     const character = req.params.character
 
     hiddenCharacterRepository.hideCharacter(username, character)
-    
+
     res.type("text/plain")
     res.end("OK, hidden " + character + " for user " + username)
 })
