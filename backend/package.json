@@ -18,7 +18,7 @@
   },
   "scripts": {
     "test": "mocha",
-    "start": "node kanjiLearning.js",
+    "start": "node backend.js",
     "build-sentences": "cd utilities && python3 buildAllSentencesCsv.py",
     "build": "echo nothing to do for now"
   }
