@@ -17,80 +17,50 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 const hiddenCharacterRepository = new HiddenCharacterRepository()
 
-// Check "authentication" and whether the datasets are all loaded. If necessary, redirects to the login page or
-// renders an error page and returns false.
-function canOpenPage(req, res)
+app.get("/:username/random-sentence", (req, res) =>
 {
-    if (req.query.userName == "" || req.query.userName == undefined || req.query.userName == null)
-    {
-        res.redirect("/?invalidLogin=true")
-        return false
-    }
     if (!sentenceRepository.isLoaded()
         || !edict.isLoaded()
         || !kanjidic.isLoaded()
         || !jigen.isLoaded()
         || !cedict.isLoaded()) 
     {
-        res.render("stillLoading.ejs")
-        return false
+        res.status(503).end("not ready")
+        return
     }
-    return true
-}
 
-//PAGES
-app.get("/sentences", (req, res) =>
-{
-    if (!canOpenPage(req, res))
-        return
-
-    hiddenCharacterRepository.getHiddenCharacters(req.query.userName, (hiddenCharacters) =>
+    hiddenCharacterRepository.getHiddenCharacters(req.params.username, (hiddenCharacters) =>
     {
-        res.render("mainPage.ejs", {
-            firstBatchOfRandomSentences:
-                sentenceRepository.getFullListOfRandomSentences()
-                    .filter((x) =>
-                    {
-                        return !hiddenCharacters.has(x["char"])
-                    })
-                    .slice(0, 25)
-                    .shuffle() // TODO make some real pagination
-                    .map((x) =>
-                    {
-                        x.splits = sentenceSplitter.split(x.jpn)
-                        x.kana = x.splits
-                            .map(x =>
-                            {
-                                let readings = edict.getReadings(x, true)
-                                if (readings.length == 1)
-                                    return readings[0]
-                                else
-                                    return "[" + readings.join("/") + "]"
-                            })
-                            .join("")
-                        return x
-                    }),
-            userName: req.query.userName,
-            sentenceSplitter: sentenceSplitter,
-            edict: edict
-        })
-    })
-})
-app.get("/hiddenCharacters", (req, res) =>
-{
-    if (!canOpenPage(req, res))
-        return
+        const hiddenCharactersSet = new Set(hiddenCharacters)
 
-    hiddenCharacterRepository.getHiddenCharacters(req.query.userName, (hiddenCharacters) =>
-    {
-        res.render("hiddenCharacters.ejs", {
-            hiddenCharacters: hiddenCharacters,
-            userName: req.query.userName
-        })
+        const firstBatchOfRandomSentences =
+            sentenceRepository.getFullListOfRandomSentences()
+                .filter((x) =>
+                {
+                    return !hiddenCharactersSet.has(x["char"])
+                })
+                .slice(0, 25)
+                .shuffle() // TODO make some real pagination
+                .map((x) =>
+                {
+                    x.splits = sentenceSplitter.split(x.jpn)
+                    x.kana = x.splits
+                        .map(x =>
+                        {
+                            let readings = edict.getReadings(x, true)
+                            if (readings.length == 1)
+                                return readings[0]
+                            else
+                                return "[" + readings.join("/") + "]"
+                        })
+                        .join("")
+                    return x
+                })
+        res.type("application/json")
+        res.end(JSON.stringify(firstBatchOfRandomSentences))
     })
 })
 
-//REST API
 app.get("/:username/random-sentence/:character", (req, res) =>
 {
     ut.log("Requested new sentence for character " + req.params.character)
@@ -214,8 +184,7 @@ app.use(express.static('web/static'))
 http.listen(PORT, "0.0.0.0")
 ut.log("Server running on port " + PORT)
 
-
-// endpoints:
+// endpoint summary:
 
 // GET /:username/random-sentence
 // GET /:username/random-sentence/:character
