@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SentencesService } from '../sentences.service';
 import { Sentence } from 'src/model/sentence';
+import { HiddenCharactersService } from '../hidden-characters.service';
 
 @Component({
   selector: 'app-home-page',
@@ -10,9 +11,12 @@ import { Sentence } from 'src/model/sentence';
 export class HomePageComponent implements OnInit {
 
   title = 'webKanjiLearnerFrontend';
-  sentenceList : Sentence[] = [];
+  sentenceList: Sentence[] = [];
 
-  constructor(private sentencesService: SentencesService) { }
+  constructor(
+    private sentencesService: SentencesService,
+    private hiddenCharactersService: HiddenCharactersService
+  ) { }
 
   ngOnInit() {
 
@@ -22,17 +26,19 @@ export class HomePageComponent implements OnInit {
       });
   }
 
-  loadNewSentence(i: number)
-  {
+  loadNewSentence(i: number) {
     this.sentencesService.getRandomSentence(this.sentenceList[i].kanji)
-    .subscribe(s => 
-      {
+      .subscribe(s => {
         this.sentenceList[i] = s
       })
   }
 
-  hideCharacter(i: number)
-  {
-    alert("hiding character " + this.sentenceList[i].kanji)
+  hideCharacter(i: number) {
+    const character = this.sentenceList[i].kanji
+
+    this.hiddenCharactersService.hideCharacter("iccanobif", character)
+      .subscribe(() => {
+        this.sentenceList.splice(i, 1)
+      })
   }
 }

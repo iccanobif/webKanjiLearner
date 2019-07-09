@@ -13,11 +13,11 @@ export class SentencesService {
 
   getRandomSentence(kanji: string): Observable<Sentence> {
     return this.http
-      .get<Sentence>("http://localhost:4200/api/dummyuser/random-sentence/" + kanji)
+      .get<Sentence>("http://localhost:4200/api/iccanobif/random-sentence/" + kanji)
   }
 
   getRandomSentences(): Observable<Sentence[]> {
     return this.http
-      .get<Sentence[]>("http://localhost:4200/api/dummyuser/random-sentence")
+      .get<Sentence[]>("http://localhost:4200/api/iccanobif/random-sentence")
   }
 }
