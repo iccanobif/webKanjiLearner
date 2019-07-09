@@ -17,7 +17,19 @@ export class SentencesService {
   getRandomSentence(kanji: string): Observable<Sentence> {
 
     return this.http
-      .get<Sentence>("http://localhost:4200/api/getRandomSentence/" + kanji)
+      .get<Sentence>("http://localhost:4200/api/dummyuser/random-sentence/" + kanji)
+      .pipe(
+        catchError(err => {
+          console.error(err);
+          return throwError(err);
+        })
+      )
+  }
+
+  getRandomSentences(): Observable<Sentence> {
+
+    return this.http
+      .get<Sentence>("http://localhost:4200/api/dummyuser/random-sentence")
       .pipe(
         catchError(err => {
           console.error(err);

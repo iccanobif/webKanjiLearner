@@ -1,19 +1,12 @@
-<ul *ngIf="thisSentence">
-  <li>{{thisSentence.kanji}}</li>
-  <li>{{thisSentence.kanjiText}}</li>
-  <li *ngIf="thisSentence.kanaText">
-    {{thisSentence.kanaText}}
-  </li>
-  <li>
-    <button *ngIf="!translationVisible" (click)="showTranslation()">
-      Show translation
-    </button>
-    <span *ngIf="translationVisible">
-      {{thisSentence.englishText}}
-    </span>
-  </li>
-</ul>
-<p *ngIf="error">
-  An error occured:
-  {{ error.message || error }}
-</p>
+<div class="kanjiText">{{sentence.kanjiText}}</div>
+<div class="kanaText" *ngIf="sentence.kanaText">
+  {{sentence.kanaText}}
+</div>
+<div class="translation">
+  <button *ngIf="!translationVisible" (click)="showTranslation()">
+    Show translation
+  </button>
+  <div *ngIf="translationVisible">
+    {{sentence.englishText}}
+  </div>
+</div>

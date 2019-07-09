@@ -43,18 +43,23 @@ app.get("/:username/random-sentence", (req, res) =>
                 .shuffle() // TODO make some real pagination
                 .map((x) =>
                 {
-                    x.splits = sentenceSplitter.split(x.jpn)
-                    x.kana = x.splits
-                        .map(x =>
-                        {
-                            let readings = edict.getReadings(x, true)
-                            if (readings.length == 1)
-                                return readings[0]
-                            else
-                                return "[" + readings.join("/") + "]"
-                        })
-                        .join("")
-                    return x
+                    const splits = sentenceSplitter.split(x.jpn)
+
+                    return {
+                        kanji: x.char,
+                        kanjiText: x.jpn,
+                        kanaText: splits
+                            .map(x =>
+                            {
+                                let readings = edict.getReadings(x, true)
+                                if (readings.length == 1)
+                                    return readings[0]
+                                else
+                                    return "[" + readings.join("/") + "]"
+                            })
+                            .join(""),
+                        englishText: x.eng,
+                    }
                 })
         res.type("application/json")
         res.end(JSON.stringify(firstBatchOfRandomSentences))

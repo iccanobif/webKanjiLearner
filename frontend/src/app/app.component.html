@@ -1,9 +1,7 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to Knaji learner!
-  </h1>
-</div>
-<h2>For now I'll just show a random sentence here:</h2>
-<app-sentence></app-sentence>
 <router-outlet></router-outlet>
+
+<h1>
+  Welcome to Knaji learner!
+</h1>
+
+<app-sentence-loader *ngFor="let sentence of sentenceList" [sentence]="sentence"></app-sentence-loader>

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-// import { Sentence } from "../model/sentence.ts";
-
+import { SentencesService } from './sentences.service';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -9,8 +10,20 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'webKanjiLearnerFrontend';
+  sentenceList = [];
+
+  constructor(private sentencesService: SentencesService) {}
 
   ngOnInit() {
-
+    
+    this.sentencesService.getRandomSentences()
+      .pipe(
+        catchError(err => {
+          return of(null);
+        })
+      )
+      .subscribe(sentenceList => {
+        this.sentenceList = sentenceList;
+      });
   }
 }

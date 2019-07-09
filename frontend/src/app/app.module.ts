@@ -5,11 +5,13 @@ import { HttpClientModule }    from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SentenceComponent } from './sentence/sentence.component';
+import { SentenceLoaderComponent } from './sentence-loader/sentence-loader.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    SentenceComponent
+    SentenceComponent,
+    SentenceLoaderComponent
   ],
   imports: [
     BrowserModule,
