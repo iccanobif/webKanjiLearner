@@ -12,3 +12,11 @@ body {
     font-family: "MS Gothic", TakaoGothic;
     font-size: 2em;
 }
+
+a {
+    color: #887caf;
+}
+
+a:visited {
+    color: #887caf;
+}

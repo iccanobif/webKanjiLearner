@@ -15,7 +15,6 @@ export class KanjiDetailComponent implements OnInit {
   constructor(private route: ActivatedRoute) { }
 
   ngOnInit() {
-
     this.route.paramMap.subscribe((params: ParamMap) => {
       this.character = params.get("character")
     })

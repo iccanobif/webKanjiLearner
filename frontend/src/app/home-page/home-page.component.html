@@ -2,10 +2,4 @@
   Welcome to Knaji learner!
 </h1>
 
-
-<div *ngFor="let sentence of sentenceList; let i = index">
-  <div class="kanji">{{sentence.kanji}}</div>
-  <button (click)="loadNewSentence(i)">Load new sentence</button>
-  <button (click)="hideCharacter(i)">Hide character</button>
-  <app-sentence [sentence]="sentence"></app-sentence>
-</div>
+<a *ngFor="let kanji of kanjiList" [routerLink]="['/kanji', kanji]">{{ kanji }}</a>

@@ -1,4 +1,5 @@
 const PORT = 8081
+const delay = 0 // This is for slowing down all api responses for test purposes
 
 const express = require("express")
 const app = express()
@@ -22,6 +23,13 @@ app.use((req, res, next) =>
     res.setHeader("Access-Control-Allow-Origin", "*")
     next()
 })
+
+if (delay > 0)
+    app.use((req, res, next) =>
+    {
+        setTimeout(next, delay)
+    })
+
 app.get("/:username/random-sentence", (req, res) =>
 {
     if (!sentenceRepository.isLoaded()
