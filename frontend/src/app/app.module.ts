@@ -8,13 +8,15 @@ import { SentenceComponent } from './sentence/sentence.component';
 import { GlobalErrorHandler } from './global-error-handler';
 import { ErrorPageComponent } from './error-page/error-page.component';
 import { HomePageComponent } from './home-page/home-page.component';
+import { KanjiDetailComponent } from './kanji-detail/kanji-detail.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SentenceComponent,
     ErrorPageComponent,
-    HomePageComponent
+    HomePageComponent,
+    KanjiDetailComponent
   ],
   imports: [
     BrowserModule,

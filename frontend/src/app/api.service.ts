@@ -24,4 +24,25 @@ export class ApiService {
       .get<Sentence[]>(environment.apiURL + "/iccanobif/random-sentence")
   }
 
+  getKanjiDetail(kanji: string): Observable<KanjiDetail> {
+    return this.http
+      .get<any>(environment.apiURL + "/kanji/" + kanji)
+      .pipe(
+        map(apiOutput => {
+          return {
+            character: kanji,
+            readings: apiOutput.readings,
+            sentences: apiOutput.sentences.map((s: any) => {
+              const output = new Sentence()
+              output.englishText = s.eng
+              output.kanjiText = s.jpn
+              output.kanaText = s.kana
+              return output
+            }),
+            meanings: apiOutput.meanings,
+            jigen: apiOutput.jigen,
+          };
+        })
+      )
+  }
 }
