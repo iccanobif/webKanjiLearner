@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SentencesService } from '../sentences.service';
+import { ApiService } from '../api.service';
 import { Sentence } from 'src/model/sentence';
 import { HiddenCharactersService } from '../hidden-characters.service';
 
@@ -14,7 +14,7 @@ export class HomePageComponent implements OnInit {
   sentenceList: Sentence[] = [];
 
   constructor(
-    private sentencesService: SentencesService,
+    private sentencesService: ApiService,
     private hiddenCharactersService: HiddenCharactersService
   ) { }
 
