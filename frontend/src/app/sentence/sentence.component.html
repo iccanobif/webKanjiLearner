@@ -1,4 +1,7 @@
-<div class="kanjiText">{{sentence.kanjiText}}</div>
+<div class="kanjiText">
+  <a *ngFor="let word of sentence.splitKanjiText" [routerLink]="['/dictionary', word]" >{{word}}</a>
+</div>
+
 <div class="kanaText" *ngIf="sentence.kanaText">
   {{sentence.kanaText}}
 </div>

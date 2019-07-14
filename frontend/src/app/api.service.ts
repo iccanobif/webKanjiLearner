@@ -42,7 +42,7 @@ export class ApiService {
             sentences: apiOutput.sentences.map((s: any) => {
               const output = new Sentence()
               output.englishText = s.eng
-              output.kanjiText = s.jpn
+              output.splitKanjiText = s.splits
               output.kanaText = s.kana
               return output
             }),
