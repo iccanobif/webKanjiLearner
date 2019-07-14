@@ -7,6 +7,8 @@ body {
     color: #887caf;
     font-family: "MS Gothic", TakaoGothic;
     font-size: 2em;
+    padding-left: 2em;
+    padding-right: 2em;
 }
 
 a {
@@ -15,4 +17,10 @@ a {
 
 a:visited {
     color: #887caf;
+}
+
+.sentenceContainer
+{
+    border-bottom-style: solid;
+    border-bottom-color: #887caf;
 }
