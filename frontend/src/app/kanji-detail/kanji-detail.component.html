@@ -1,18 +1,31 @@
+<header>
+    <a [routerLink]="['/' + username]">一覧へ移動</a>
+</header>
+
 <h1>{{ character }}</h1>
 <div>hidden: {{ isCharacterHidden | async }}</div>
 <button *ngIf="!(isCharacterHidden | async)" (click)="hideCharacter()">Hide</button>
 <button *ngIf="isCharacterHidden | async" (click)="unhideCharacter()">Unhide</button>
 
-<h2>Readings</h2>
+<h2>発音</h2>
 {{ kanjiDetail.readings.join(" / ") }}
 
-<h2>Meanings</h2>
+<h2>意義</h2>
 {{ kanjiDetail.meanings.join(" / ") }}
+
+<h2>{{ character }}を含む単語</h2>
+<ul>
+    <li *ngFor="let word of kanjiDetail.wordsFromExamples">
+        {{ word.kanjiText }} ({{ word.readings.join("/") }}) ({{ word.frequency}})
+    </li>
+</ul>
 
 <h2>「{{ character }}」の字源</h2>
 <app-sentence [sentence]="kanjiDetail.jigen"></app-sentence>
 
-<h2>Sentences</h2>
+
+
+<h2>例文</h2>
 
 <div *ngFor="let sentence of kanjiDetail.sentences" class="sentenceContainer">
     <app-sentence [sentence]="sentence">

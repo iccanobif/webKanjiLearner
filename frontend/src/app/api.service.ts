@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Sentence } from 'src/model/sentence';
 import { environment } from 'src/environments/environment';
-import { KanjiDetail } from 'src/model/kanji-detail';
+import { KanjiDetail, Word } from 'src/model/kanji-detail';
 
 @Injectable({
   providedIn: 'root'
@@ -59,6 +59,13 @@ export class ApiService {
             jigen: {
               kanjiText: apiOutput.jigen
             } as Sentence,
+            wordsFromExamples: apiOutput.exampleWords.map((w: any) => {
+              const output = new Word
+              output.kanjiText = w.word
+              output.frequency = w.count
+              output.readings = w.readings
+              return output
+            })
           };
         })
       )

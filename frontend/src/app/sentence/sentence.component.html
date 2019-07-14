@@ -4,7 +4,7 @@
 </div>
 <div class="translation" *ngIf="sentence.englishText">
   <button *ngIf="!translationVisible" (click)="showTranslation()">
-    Show translation
+    翻訳を表示する
   </button>
   <div *ngIf="translationVisible">
     {{sentence.englishText}}
