@@ -13,9 +13,9 @@ import { DictionaryEntryResolverService } from './dictionary-entry-resolver.serv
 const routes: Routes = [
   { path: "", component: LoginPageComponent },
   { path: "error", component: ErrorPageComponent },
-  { 
-    path: "dictionary/:word", 
-    component: DictionaryComponent ,
+  {
+    path: "dictionary/:word",
+    component: DictionaryComponent,
     resolve: {
       dictionaryEntry: DictionaryEntryResolverService
     }
@@ -41,7 +41,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' })],
+  imports: [RouterModule.forRoot(routes, { scrollPositionRestoration: "enabled", anchorScrolling: "enabled" })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

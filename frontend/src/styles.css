@@ -35,3 +35,12 @@ a:visited {
     border-bottom:1px solid #444; 
     cursor: pointer;
 }
+
+.card
+{
+    background-color: #180b22;
+    border-style: solid;
+    border-color: #887caf;
+    padding: 10px;
+    margin: 5px 0;
+}

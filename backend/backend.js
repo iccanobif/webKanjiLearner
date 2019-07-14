@@ -146,7 +146,7 @@ app.get("/kanji/:character", (req, res) =>
         sentences: sentences,
         readings: kanjidic.getKanjiReadings(req.params.character),
         meanings: kanjidic.getKanjiMeanings(req.params.character),
-        jigen: jigen.getJigen(req.params.character),
+        jigen: sentenceSplitter.split(jigen.getJigen(req.params.character)),
         exampleWords: sentences
             .map(x => x.splits) // Extract the kanji text (split in words) from each sentence object
             .reduce((acc, val) => acc.concat(val), []) // Flatten into an array of arrays

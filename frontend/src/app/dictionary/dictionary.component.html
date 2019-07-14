@@ -4,7 +4,7 @@
 
 <h3>日本語</h3>
 
-<div *ngFor="let definition of dictionaryEntry.japaneseDefinitions">
+<div *ngFor="let definition of dictionaryEntry.japaneseDefinitions" class="card">
   <div>
     <label>Word:</label>
     {{ definition.kanjiElements.join("/") }}
@@ -22,7 +22,7 @@
 <h3>中国語</h3>
 
 
-<div *ngFor="let definition of dictionaryEntry.chineseDefinitions">
+<div *ngFor="let definition of dictionaryEntry.chineseDefinitions" class="card">
   <div>
     {{ definition }}
   </div>

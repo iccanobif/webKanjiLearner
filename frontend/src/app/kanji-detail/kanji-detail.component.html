@@ -8,26 +8,30 @@
 <button *ngIf="isCharacterHidden | async" (click)="unhideCharacter()">Unhide</button>
 
 <h2>発音</h2>
-{{ kanjiDetail.readings.join(" / ") }}
+<div class="card">
+    {{ kanjiDetail.readings.join(" / ") }}
+</div>
 
 <h2>意義</h2>
-{{ kanjiDetail.meanings.join(" / ") }}
+<div class="card">
+    {{ kanjiDetail.meanings.join(" / ") }}
+</div>
 
 <h2>{{ character }}を含む単語</h2>
-<ul>
-    <li *ngFor="let word of kanjiDetail.wordsFromExamples">
-        <button (click)="goToSentencesForWord(word)" class="linkbutton">
-            {{ word.kanjiText }} ({{ word.readings.join("/") }}) ({{ word.frequency}})
-        </button>
-    </li>
-</ul>
+<div class="card">
+    <ul>
+        <li *ngFor="let word of kanjiDetail.wordsFromExamples">
+            <button (click)="goToSentencesForWord(word)" class="linkbutton">
+                {{ word.kanjiText }} ({{ word.readings.join("/") }}) ({{ word.frequency}})
+            </button>
+        </li>
+    </ul>
+</div>
 
 <h2>「{{ character }}」の字源</h2>
 <app-sentence [sentence]="kanjiDetail.jigen"></app-sentence>
 
 <h2>例文</h2>
 
-<div *ngFor="let sentence of kanjiDetail.sentences" class="sentenceContainer">
-    <app-sentence [sentence]="sentence">
-    </app-sentence>
-</div>
+<app-sentence [sentence]="sentence" *ngFor="let sentence of kanjiDetail.sentences">
+</app-sentence>

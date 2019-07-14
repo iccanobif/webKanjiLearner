@@ -1,15 +1,17 @@
-<div class="kanjiText">
-  <a *ngFor="let word of sentence.splitKanjiText" [routerLink]="['/dictionary', word]" >{{word}}</a>
-</div>
+<div class="card">
+  <div class="kanjiText">
+    <a *ngFor="let word of sentence.splitKanjiText" [routerLink]="['/dictionary', word]">{{word}}</a>
+  </div>
 
-<div class="kanaText" *ngIf="sentence.kanaText">
-  {{sentence.kanaText}}
-</div>
-<div class="translation" *ngIf="sentence.englishText">
-  <button *ngIf="!translationVisible" (click)="showTranslation()">
-    翻訳を表示する
-  </button>
-  <div *ngIf="translationVisible">
-    {{sentence.englishText}}
+  <div class="kanaText" *ngIf="sentence.kanaText">
+    {{sentence.kanaText}}
+  </div>
+  <div class="translation" *ngIf="sentence.englishText">
+    <button *ngIf="!translationVisible" (click)="showTranslation()">
+      翻訳を表示する
+    </button>
+    <div *ngIf="translationVisible">
+      {{sentence.englishText}}
+    </div>
   </div>
 </div>
