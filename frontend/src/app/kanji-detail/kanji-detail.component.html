@@ -1,4 +1,7 @@
 <h1>{{ character }}</h1>
+<div>hidden: {{ isCharacterHidden | async }}</div>
+<button *ngIf="!(isCharacterHidden | async)" (click)="hideCharacter()">Hide</button>
+<button *ngIf="isCharacterHidden | async" (click)="unhideCharacter()">Unhide</button>
 
 <h2>Readings</h2>
 {{ kanjiDetail.readings.join(" / ") }}

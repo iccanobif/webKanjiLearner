@@ -179,7 +179,6 @@ app.get("/:username/hidden-characters", (req, res) =>
 {
     hiddenCharacterRepository.getHiddenCharacters(req.params.username, (hiddenCharacters) =>
     {
-        console.log(hiddenCharacters)
         res.type("application/json")
         res.end(JSON.stringify(hiddenCharacters))
     })

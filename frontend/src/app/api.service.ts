@@ -25,6 +25,11 @@ export class ApiService {
       { responseType: "arraybuffer" })
   }
 
+  unhideCharacter(userName: string, character: string): Observable<any> {
+    return this.http.delete(environment.apiURL + "/" + userName + "/hidden-characters/" + character,
+      { responseType: "arraybuffer" })
+  }
+
   getRandomSentence(kanji: string): Observable<Sentence> {
     return this.http
       .get<Sentence>(environment.apiURL + "/iccanobif/random-sentence/" + kanji)

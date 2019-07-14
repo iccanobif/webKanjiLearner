@@ -13,7 +13,11 @@ const routes: Routes = [
   {
     path: ":username/kanji/:character",
     component: KanjiDetailComponent,
-    resolve: { kanjiDetail: KanjiDetailResolverService },
+    resolve: {
+      kanjiDetail: KanjiDetailResolverService,
+      // the hiddenCharacters list isn't actually used by KanjiDetailComponent, but this forces a cache refresh 
+      hiddenCharacters: HiddenCharactersResolverService, 
+    },
   },
   {
     path: ":username",
