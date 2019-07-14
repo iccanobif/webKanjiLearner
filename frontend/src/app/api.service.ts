@@ -14,6 +14,17 @@ export class ApiService {
 
   constructor(private http: HttpClient) { }
 
+  getAllHiddenCharacters(userName: string): Observable<string[]> {
+    return this.http
+      .get<string[]>(environment.apiURL + "/" + userName + "/hidden-characters")
+  }
+
+  hideCharacter(userName: string, character: string): Observable<any> {
+    return this.http.post(environment.apiURL + "/" + userName + "/hidden-characters/" + character,
+      null,
+      { responseType: "arraybuffer" })
+  }
+
   getRandomSentence(kanji: string): Observable<Sentence> {
     return this.http
       .get<Sentence>(environment.apiURL + "/iccanobif/random-sentence/" + kanji)

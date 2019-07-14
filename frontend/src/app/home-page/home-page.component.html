@@ -1,5 +1,5 @@
-<h1>
-  Welcome to Knaji learner!
-</h1>
+<h2>
+    Welcome, {{ username }}!
+</h2>
 
-<a *ngFor="let kanji of kanjiList" [routerLink]="['/kanji', kanji]">{{ kanji }}</a>
+<a *ngFor="let kanji of kanjiToShow" [routerLink]="['.', 'kanji', kanji]">{{ kanji }}</a>

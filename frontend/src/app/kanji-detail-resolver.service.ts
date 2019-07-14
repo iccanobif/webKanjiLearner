@@ -8,9 +8,7 @@ import { ApiService } from './api.service';
   providedIn: 'root'
 })
 export class KanjiDetailResolverService implements Resolve<KanjiDetail> {
-  constructor(
-    private api: ApiService
-  ) { }
+  constructor(private api: ApiService) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<KanjiDetail> | Observable<never> {
 

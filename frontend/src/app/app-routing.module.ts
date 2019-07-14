@@ -4,19 +4,26 @@ import { ErrorPageComponent } from './error-page/error-page.component';
 import { HomePageComponent } from './home-page/home-page.component';
 import { KanjiDetailComponent } from './kanji-detail/kanji-detail.component';
 import { KanjiDetailResolverService } from './kanji-detail-resolver.service';
+import { LoginPageComponent } from './login-page/login-page.component';
+import { HiddenCharactersResolverService } from './hidden-characters-resolver.service';
 
 const routes: Routes = [
-  { path: "", component: HomePageComponent },
+  { path: "", component: LoginPageComponent },
+  { path: "error", component: ErrorPageComponent },
   {
-    path: "kanji/:character",
+    path: ":username/kanji/:character",
     component: KanjiDetailComponent,
     resolve: { kanjiDetail: KanjiDetailResolverService },
   },
-  { path: "error", component: ErrorPageComponent },
+  {
+    path: ":username",
+    component: HomePageComponent,
+    resolve: { hiddenCharacters: HiddenCharactersResolverService }
+  },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
