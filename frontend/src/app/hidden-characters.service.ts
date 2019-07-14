@@ -14,7 +14,7 @@ export class HiddenCharactersService {
   constructor(private api: ApiService) { }
 
   private load(username: string) {
-    return this.api.getAllHiddenCharacters("iccanobif").pipe(
+    return this.api.getAllHiddenCharacters(username).pipe(
       tap((hiddenCharacters) => {
         this.cachedHiddenCharacters = new Set(hiddenCharacters);
         this.cachedUsername = username
