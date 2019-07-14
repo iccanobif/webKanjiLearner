@@ -6,6 +6,7 @@ import { KanjiDetailComponent } from './kanji-detail/kanji-detail.component';
 import { KanjiDetailResolverService } from './kanji-detail-resolver.service';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { HiddenCharactersResolverService } from './hidden-characters-resolver.service';
+import { SentencesForWordComponent } from './sentences-for-word/sentences-for-word.component';
 
 const routes: Routes = [
   { path: "", component: LoginPageComponent },
@@ -18,6 +19,10 @@ const routes: Routes = [
       // the hiddenCharacters list isn't actually used by KanjiDetailComponent, but this forces a cache refresh 
       hiddenCharacters: HiddenCharactersResolverService, 
     },
+  },
+  {
+    path: ":username/kanji/:character/:word",
+    component: SentencesForWordComponent,
   },
   {
     path: ":username",

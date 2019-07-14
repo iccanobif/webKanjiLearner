@@ -11,6 +11,7 @@ import { ErrorPageComponent } from './error-page/error-page.component';
 import { HomePageComponent } from './home-page/home-page.component';
 import { KanjiDetailComponent } from './kanji-detail/kanji-detail.component';
 import { LoginPageComponent } from './login-page/login-page.component';
+import { SentencesForWordComponent } from './sentences-for-word/sentences-for-word.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { LoginPageComponent } from './login-page/login-page.component';
     ErrorPageComponent,
     HomePageComponent,
     KanjiDetailComponent,
-    LoginPageComponent
+    LoginPageComponent,
+    SentencesForWordComponent
   ],
   imports: [
     BrowserModule,

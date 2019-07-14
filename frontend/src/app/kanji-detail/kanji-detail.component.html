@@ -16,7 +16,9 @@
 <h2>{{ character }}を含む単語</h2>
 <ul>
     <li *ngFor="let word of kanjiDetail.wordsFromExamples">
-        {{ word.kanjiText }} ({{ word.readings.join("/") }}) ({{ word.frequency}})
+        <button (click)="goToSentencesForWord(word)" class="linkbutton">
+            {{ word.kanjiText }} ({{ word.readings.join("/") }}) ({{ word.frequency}})
+        </button>
     </li>
 </ul>
 

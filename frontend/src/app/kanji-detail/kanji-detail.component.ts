@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap } from '@angular/router';
-import { KanjiDetail } from 'src/model/kanji-detail';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { KanjiDetail, Word } from 'src/model/kanji-detail';
 import { HiddenCharactersService } from '../hidden-characters.service';
 import { Observable, of } from 'rxjs';
 
@@ -16,7 +16,11 @@ export class KanjiDetailComponent implements OnInit {
   kanjiDetail: KanjiDetail
   isCharacterHidden: Observable<boolean>
 
-  constructor(private route: ActivatedRoute, private hiddenCharacters: HiddenCharactersService) { }
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private hiddenCharacters: HiddenCharactersService
+  ) { }
 
   ngOnInit() {
     this.route.paramMap.subscribe((params: ParamMap) => {
@@ -40,5 +44,17 @@ export class KanjiDetailComponent implements OnInit {
     this.hiddenCharacters.unhide(this.username, this.character).subscribe(() => {
       this.isCharacterHidden = of(false)
     })
+  }
+
+  goToSentencesForWord(word: Word) {
+    // alert(word.kanjiText)
+    this.router
+    this.router.navigate(
+      [word.kanjiText],
+      {
+        relativeTo: this.route,
+        state: { sentences: this.kanjiDetail.sentences.filter(s => s.kanjiText.indexOf(word.kanjiText) >= 0) }
+      }
+    )
   }
 }
