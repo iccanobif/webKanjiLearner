@@ -40,7 +40,9 @@ export class ApiService {
               return output
             }),
             meanings: apiOutput.meanings,
-            jigen: apiOutput.jigen,
+            jigen: {
+              kanjiText: apiOutput.jigen
+            } as Sentence,
           };
         })
       )

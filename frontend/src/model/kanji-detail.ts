@@ -6,5 +6,5 @@ export class KanjiDetail
     readings: string[];
     sentences: Sentence[];
     meanings: string[];
-    jigen: Sentence[];
+    jigen: Sentence;
 }

@@ -23,5 +23,4 @@ export class KanjiDetailComponent implements OnInit {
       this.kanjiDetail = data.kanjiDetail
     })
   }
-
 }

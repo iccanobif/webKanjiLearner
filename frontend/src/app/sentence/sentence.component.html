@@ -2,7 +2,7 @@
 <div class="kanaText" *ngIf="sentence.kanaText">
   {{sentence.kanaText}}
 </div>
-<div class="translation">
+<div class="translation" *ngIf="sentence.englishText">
   <button *ngIf="!translationVisible" (click)="showTranslation()">
     Show translation
   </button>

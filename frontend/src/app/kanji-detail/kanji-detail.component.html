@@ -1,4 +1,15 @@
-<p>
-  kanji-detail works! aperto per {{ character }}
-  primo reading: {{ kanjiDetail.readings[0] }}
-</p>
+<h1>{{ character }}</h1>
+
+<h2>Readings</h2>
+{{ kanjiDetail.readings.join(" / ") }}
+
+<h2>Meanings</h2>
+{{ kanjiDetail.meanings.join(" / ") }}
+
+<h2>「{{ character }}」の字源</h2>
+<app-sentence [sentence]="kanjiDetail.jigen"></app-sentence>
+
+<h2>Sentences</h2>
+
+<app-sentence *ngFor="let sentence of kanjiDetail.sentences" [sentence]="sentence">
+</app-sentence>
