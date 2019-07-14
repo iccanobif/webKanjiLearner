@@ -1,0 +1,30 @@
+<h2>
+  {{ word }}
+</h2>
+
+<h3>日本語</h3>
+
+<div *ngFor="let definition of dictionaryEntry.japaneseDefinitions">
+  <div>
+    <label>Word:</label>
+    {{ definition.kanjiElements.join("/") }}
+  </div>
+  <div>
+    <label>Reading:</label>
+    {{ definition.readingElements.join("/") }}
+  </div>
+  <div>
+    <label>Meaning:</label>
+    {{ definition.glosses.join("/") }}
+  </div>
+</div>
+
+<h3>中国語</h3>
+
+
+<div *ngFor="let definition of dictionaryEntry.chineseDefinitions">
+  <div>
+    {{ definition }}
+  </div>
+</div>
+<div *ngIf="dictionaryEntry.chineseDefinitions.length == 0">無し</div>

@@ -11,7 +11,6 @@ export class KanjiDetailResolverService implements Resolve<KanjiDetail> {
   constructor(private api: ApiService) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<KanjiDetail> | Observable<never> {
-
     const character = route.paramMap.get("character")
     return this.api.getKanjiDetail(character)
   }

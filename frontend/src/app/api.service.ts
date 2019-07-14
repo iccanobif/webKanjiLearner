@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 import { Sentence } from 'src/model/sentence';
 import { environment } from 'src/environments/environment';
 import { KanjiDetail, Word } from 'src/model/kanji-detail';
+import { DictionaryEntry } from './dictionary-entry';
 
 @Injectable({
   providedIn: 'root'
@@ -28,16 +29,6 @@ export class ApiService {
   unhideCharacter(userName: string, character: string): Observable<any> {
     return this.http.delete(environment.apiURL + "/" + userName + "/hidden-characters/" + character,
       { responseType: "arraybuffer" })
-  }
-
-  getRandomSentence(kanji: string): Observable<Sentence> {
-    return this.http
-      .get<Sentence>(environment.apiURL + "/iccanobif/random-sentence/" + kanji)
-  }
-
-  getRandomSentences(): Observable<Sentence[]> {
-    return this.http
-      .get<Sentence[]>(environment.apiURL + "/iccanobif/random-sentence")
   }
 
   getKanjiDetail(kanji: string): Observable<KanjiDetail> {
@@ -69,5 +60,22 @@ export class ApiService {
           };
         })
       )
+  }
+
+  getDictionaryEntry(word: string): Observable<DictionaryEntry> {
+    return this.http.get<any>(environment.apiURL + "/dictionary/" + word).pipe(
+      map(data => {
+        return {
+          japaneseDefinitions: data.japaneseDefinitions.map(j => {
+            return {
+              kanjiElements: j.kanjiElements,
+              readingElements: j.readingElements,
+              glosses: j.glosses,
+            }
+          }),
+          chineseDefinitions: data.chineseDefinitions
+        }
+      })
+    )
   }
 }

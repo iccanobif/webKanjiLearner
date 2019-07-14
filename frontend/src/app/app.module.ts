@@ -12,6 +12,7 @@ import { HomePageComponent } from './home-page/home-page.component';
 import { KanjiDetailComponent } from './kanji-detail/kanji-detail.component';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { SentencesForWordComponent } from './sentences-for-word/sentences-for-word.component';
+import { DictionaryComponent } from './dictionary/dictionary.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { SentencesForWordComponent } from './sentences-for-word/sentences-for-wo
     HomePageComponent,
     KanjiDetailComponent,
     LoginPageComponent,
-    SentencesForWordComponent
+    SentencesForWordComponent,
+    DictionaryComponent
   ],
   imports: [
     BrowserModule,
