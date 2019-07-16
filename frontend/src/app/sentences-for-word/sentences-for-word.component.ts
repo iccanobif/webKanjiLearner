@@ -12,13 +12,11 @@ export class SentencesForWordComponent implements OnInit {
 
   sentences: Sentence[] = []
 
-  constructor(private router: Router) { }
+  constructor(private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.sentences = window.history.state.sentences
-
-    if (this.sentences === undefined)
-      this.router.navigate(["/"])
+    this.route.data.subscribe((data: { sentences: Sentence[] }) => {
+      this.sentences = data.sentences
+    })
   }
-
 }

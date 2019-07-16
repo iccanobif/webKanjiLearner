@@ -9,6 +9,7 @@ import { HiddenCharactersResolverService } from './hidden-characters-resolver.se
 import { SentencesForWordComponent } from './sentences-for-word/sentences-for-word.component';
 import { DictionaryComponent } from './dictionary/dictionary.component';
 import { DictionaryEntryResolverService } from './dictionary-entry-resolver.service';
+import { SentencesForWordResolverService } from './sentences-for-word-resolver.service';
 
 const routes: Routes = [
   { path: "", component: LoginPageComponent },
@@ -32,6 +33,7 @@ const routes: Routes = [
   {
     path: ":username/kanji/:character/:word",
     component: SentencesForWordComponent,
+    resolve: { sentences: SentencesForWordResolverService }
   },
   {
     path: ":username",
@@ -41,7 +43,11 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { scrollPositionRestoration: "enabled", anchorScrolling: "enabled" })],
+  imports: [RouterModule.forRoot(routes, {
+    scrollPositionRestoration: "enabled",
+    anchorScrolling: "enabled",
+    paramsInheritanceStrategy: "always",
+  })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

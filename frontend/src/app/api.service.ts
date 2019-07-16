@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import { Sentence } from 'src/model/sentence';
 import { environment } from 'src/environments/environment';
 import { KanjiDetail, Word } from 'src/model/kanji-detail';
 import { DictionaryEntry } from './dictionary-entry';
+import Cache from 'js-cache';
 
 @Injectable({
   providedIn: 'root'
@@ -31,7 +32,14 @@ export class ApiService {
       { responseType: "arraybuffer" })
   }
 
+  // kanjiDetailCache: { kanji: string, kanjiDetail: KanjiDetail }[] = []
+  kanjiDetailCache = new Cache();
+
   getKanjiDetail(kanji: string): Observable<KanjiDetail> {
+    const cachedValue = this.kanjiDetailCache.get(kanji)
+    if (cachedValue)
+      return of(cachedValue)
+
     return this.http
       .get<any>(environment.apiURL + "/kanji/" + kanji)
       .pipe(
@@ -60,6 +68,9 @@ export class ApiService {
               return output
             })
           };
+        }),
+        tap((detail: KanjiDetail) => {
+          this.kanjiDetailCache.set(kanji, detail, 1000 * 60 * 60)
         })
       )
   }

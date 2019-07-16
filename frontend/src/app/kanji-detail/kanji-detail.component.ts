@@ -51,10 +51,7 @@ export class KanjiDetailComponent implements OnInit {
     this.router
     this.router.navigate(
       [word.kanjiText],
-      {
-        relativeTo: this.route,
-        state: { sentences: this.kanjiDetail.sentences.filter(s => s.kanjiText.indexOf(word.kanjiText) >= 0) }
-      }
+      { relativeTo: this.route }
     )
   }
 }
