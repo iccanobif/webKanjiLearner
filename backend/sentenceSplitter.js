@@ -5,7 +5,7 @@ let particles = new Set(["は", "が", "を", "に", "で"])
 
 module.exports.split = (function split(sentence)
 {
-    if (!sentence)
+    if (sentence == null || sentence == undefined)
         return sentence
     if (sentence.length == 0)
         return []

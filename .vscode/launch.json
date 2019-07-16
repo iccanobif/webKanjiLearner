@@ -5,12 +5,12 @@
             "type": "node",
             "request": "launch",
             "name": "Launch npm test",
-            "program": "${workspaceFolder}/src/node_modules/mocha/bin/mocha",
+            "program": "${workspaceFolder}/backend/node_modules/mocha/bin/mocha",
             "args": [
                 "--timeout",
                 "999999",
                 "--colors",
-                "${workspaceFolder}/src/test"
+                "${workspaceFolder}/backend/test"
             ],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen"
@@ -19,8 +19,8 @@
             "type": "node",
             "request": "launch",
             "name": "Launch npm start",
-            "program": "${workspaceFolder}/src/web/kanjiLearning.js",
-            "cwd": "${workspaceFolder}/src",
+            "program": "${workspaceFolder}/backend/backend.js",
+            "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen"
         }
