@@ -47,9 +47,11 @@ export class ApiService {
               return output
             }),
             meanings: apiOutput.meanings,
-            jigen: {
-              splitKanjiText: apiOutput.jigen
-            } as Sentence,
+            jigen: apiOutput.jigen
+              ? {
+                splitKanjiText: apiOutput.jigen
+              } as Sentence
+              : null,
             wordsFromExamples: apiOutput.exampleWords.map((w: any) => {
               const output = new Word
               output.kanjiText = w.word
