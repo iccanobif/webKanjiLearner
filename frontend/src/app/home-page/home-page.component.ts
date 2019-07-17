@@ -1,26 +1,33 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { allKanji } from '../all-kanji-list'
 import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ViewportScroller } from '@angular/common';
 
 @Component({
   selector: 'app-home-page',
   templateUrl: './home-page.component.html',
   styleUrls: ['./home-page.component.css']
 })
-export class HomePageComponent implements OnInit {
+export class HomePageComponent implements OnInit, AfterViewInit {
+
   kanjiToShow: string[]
   username: string
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(private route: ActivatedRoute, private viewportScroller: ViewportScroller) { }
 
   ngOnInit() {
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       this.username = paramMap.get("username")
     })
-    
+
     this.route.data.subscribe((data: { hiddenCharacters: string[] }) => {
       const hiddenCharacters = new Set(data.hiddenCharacters)
       this.kanjiToShow = allKanji.filter(k => !hiddenCharacters.has(k))
     })
+  }
+
+  ngAfterViewInit(): void {
+    // To move somewhere centralized
+    this.viewportScroller.scrollToPosition(window["scrollPositionToRestore"]);
   }
 }
