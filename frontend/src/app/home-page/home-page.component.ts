@@ -2,6 +2,7 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { allKanji } from '../all-kanji-list'
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { ViewportScroller } from '@angular/common';
+import { ScrollPositionRestorerService } from '../scroll-position-restorer.service';
 
 @Component({
   selector: 'app-home-page',
@@ -13,7 +14,9 @@ export class HomePageComponent implements OnInit, AfterViewInit {
   kanjiToShow: string[]
   username: string
 
-  constructor(private route: ActivatedRoute, private viewportScroller: ViewportScroller) { }
+  constructor(
+    private route: ActivatedRoute, 
+    private scrollPositionRestorer: ScrollPositionRestorerService) { }
 
   ngOnInit() {
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
@@ -27,7 +30,6 @@ export class HomePageComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // To move somewhere centralized
-    this.viewportScroller.scrollToPosition(window["scrollPositionToRestore"]);
+    this.scrollPositionRestorer.restoreScrollPosition();
   }
 }
