@@ -3,6 +3,7 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { KanjiDetail, Word } from 'src/model/kanji-detail';
 import { HiddenCharactersService } from '../hidden-characters.service';
 import { Observable, of } from 'rxjs';
+import { ScrollPositionRestorerService } from '../scroll-position-restorer.service';
 
 @Component({
   selector: 'app-kanji-detail',
@@ -19,8 +20,13 @@ export class KanjiDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private hiddenCharacters: HiddenCharactersService
+    private hiddenCharacters: HiddenCharactersService,
+    private scrollPositionRestorer: ScrollPositionRestorerService
   ) { }
+
+  ngAfterViewInit(): void {
+    this.scrollPositionRestorer.restoreScrollPosition();
+  }
 
   ngOnInit() {
     this.route.paramMap.subscribe((params: ParamMap) => {

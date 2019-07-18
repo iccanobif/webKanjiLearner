@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { DictionaryEntry } from '../dictionary-entry';
+import { ScrollPositionRestorerService } from '../scroll-position-restorer.service';
 
 @Component({
   selector: 'app-dictionary',
@@ -12,7 +13,11 @@ export class DictionaryComponent implements OnInit {
   word: string
   dictionaryEntry: DictionaryEntry
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(private route: ActivatedRoute,private scrollPositionRestorer: ScrollPositionRestorerService) { }
+
+  ngAfterViewInit(): void {
+    this.scrollPositionRestorer.restoreScrollPosition();
+  }
 
   ngOnInit() {
     this.route.paramMap.subscribe((params: ParamMap) => {
