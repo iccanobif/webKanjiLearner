@@ -4,6 +4,7 @@ import { KanjiDetail, Word } from 'src/model/kanji-detail';
 import { HiddenCharactersService } from '../hidden-characters.service';
 import { Observable, of } from 'rxjs';
 import { ScrollPositionRestorerService } from '../scroll-position-restorer.service';
+import { allKanji } from '../all-kanji-list';
 
 @Component({
   selector: 'app-kanji-detail',
@@ -16,11 +17,13 @@ export class KanjiDetailComponent implements OnInit {
   character: string
   kanjiDetail: KanjiDetail
   isCharacterHidden: Observable<boolean>
+  nextKanji: string
+  prevKanji: string
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private hiddenCharacters: HiddenCharactersService,
+    private hiddenCharactersService: HiddenCharactersService,
     private scrollPositionRestorer: ScrollPositionRestorerService
   ) { }
 
@@ -32,22 +35,31 @@ export class KanjiDetailComponent implements OnInit {
     this.route.paramMap.subscribe((params: ParamMap) => {
       this.character = params.get("character")
       this.username = params.get("username")
-      this.isCharacterHidden = this.hiddenCharacters.isHidden(this.username, this.character)
+      this.isCharacterHidden = this.hiddenCharactersService.isHidden(this.username, this.character)
     })
 
-    this.route.data.subscribe((data: { kanjiDetail: KanjiDetail }) => {
+    this.route.data.subscribe((data: {
+      kanjiDetail: KanjiDetail,
+      hiddenCharacters: string[]
+    }) => {
+      const hiddenCharacters = new Set(data.hiddenCharacters)
+      const availableKanji = allKanji.filter(k => !hiddenCharacters.has(k))
+      const i = availableKanji.findIndex(k => k == this.character);
+      this.prevKanji = i == -1 ? null : availableKanji[i - 1];
+      this.nextKanji = i == -1 ? null : availableKanji[i + 1];
+
       this.kanjiDetail = data.kanjiDetail
     })
   }
 
   hideCharacter() {
-    this.hiddenCharacters.hide(this.username, this.character).subscribe(() => {
+    this.hiddenCharactersService.hide(this.username, this.character).subscribe(() => {
       this.isCharacterHidden = of(true)
     })
   }
 
   unhideCharacter() {
-    this.hiddenCharacters.unhide(this.username, this.character).subscribe(() => {
+    this.hiddenCharactersService.unhide(this.username, this.character).subscribe(() => {
       this.isCharacterHidden = of(false)
     })
   }

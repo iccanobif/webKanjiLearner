@@ -7,6 +7,12 @@
 
 <h1>{{ character }}</h1>
 
+<div *ngIf="prevKanji || nextKanji">
+<a *ngIf="prevKanji" [routerLink]="['../' + prevKanji]">&lt;--{{ prevKanji }}</a>
+&nbsp;
+<a *ngIf="nextKanji" [routerLink]="['../' + nextKanji]">{{ nextKanji }}--&gt;</a>
+</div>
+
 <h2>発音</h2>
 <div class="card">
     {{ kanjiDetail.readings.join(" / ") }}

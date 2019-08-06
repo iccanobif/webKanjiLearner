@@ -33,7 +33,7 @@ const routes: Routes = [
   {
     path: ":username/kanji/:character/:word",
     component: SentencesForWordComponent,
-    resolve: { sentences: SentencesForWordResolverService }
+    resolve: { sentences: SentencesForWordResolverService, hiddenCharacters: HiddenCharactersResolverService }
   },
   {
     path: ":username",
