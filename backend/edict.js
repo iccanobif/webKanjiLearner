@@ -1,13 +1,14 @@
 const fs = require("fs")
 const readline = require("readline")
 const ut = require("./utils.js")
+const redis = require("redis").createClient()
 
 const partOfSpeechWhitelist = new Set("v1|v5aru|v5b|v5g|v5k-s|v5k|v5m|v5n|v5r-i|v5r|v5s|v5t|v5u-s|v5uru|v5u|v5|adj-ix|adj-i|vs-s|vs-i".split("|"))
 const unsupportedConjugations = new Set(["v5", "v5aru", "v5r-i", "v5u-s", "v5uru"])
 
-let dictionary = {}
-let conjugatedToUnconjugatedFormsDictionary = {} // keys are strings, values are Set
-let kanjiToReadingsDictionary = {}
+// let dictionary = {}
+// let conjugatedToUnconjugatedFormsDictionary = {} // keys are strings, values are Set
+// let kanjiToReadingsDictionary = {}
 let isLoaded = false
 let callbacks = []
 
@@ -176,9 +177,7 @@ function conjugate(kanjiWord, kanaWord, partOfSpeech)
 }
 
 ut.log("Start loading edict")
-
-const dirtyOpeningTag = new RegExp("<(pos|misc|ke_inf|dial|re_inf|field)>&", "g")
-const dirtyClosingTag = new RegExp(";</(pos|misc|ke_inf|dial|re_inf|field)>", "g")
+redis.flushall();
 
 readline
     .createInterface({ input: fs.createReadStream("../datasets/JMdict_e") })
@@ -239,14 +238,12 @@ readline
             // I have collected all relevant data for this entry, can add it to the dictionary
 
             // Add unconjugated forms to the kanjiToReadingsDictionary
-            currentParsingStatus
-                .kanjiReadingLinks
-                .forEach(link =>
-                {
-                    ut.addToDictionaryOfSets(kanjiToReadingsDictionary,
-                        link.kanjiElement,
-                        ut.katakanaToHiragana(link.readingElement))
-                })
+
+            // TODO! This was a dictionary of sets, not a dictionary of lists
+            redis.rpush("kanjiToReadingsDictionary:" + link.kanjiElement,
+                currentParsingStatus
+                    .kanjiReadingLinks
+                    .map(link => ut.katakanaToHiragana(link.readingElement)));
 
             // Conjugate all words I can conjugate, and at the same time populate the data
             // structures needed for converting kanji to kana etc..
@@ -263,15 +260,26 @@ readline
                             let conjugations = conjugate(link.kanjiElement, link.readingElement, partOfSpeech)
                             conjugations.forEach(conjugatedLink =>
                             {
-                                ut.addToDictionaryOfSets(kanjiToReadingsDictionary,
-                                    conjugatedLink.kanjiElement,
-                                    ut.katakanaToHiragana(conjugatedLink.readingElement))
-                                ut.addToDictionaryOfSets(conjugatedToUnconjugatedFormsDictionary,
-                                    conjugatedLink.kanjiElement,
-                                    link.kanjiElement)
-                                ut.addToDictionaryOfSets(conjugatedToUnconjugatedFormsDictionary,
-                                    conjugatedLink.readingElement,
-                                    link.readingElement)
+                                // TODO! This was a dictionary of sets, not a dictionary of lists
+                                redis.rpush("kanjiToReadingsDictionary:" + conjugatedLink.kanjiElement,
+                                    ut.katakanaToHiragana(conjugatedLink.readingElement));
+                                // ut.addToDictionaryOfSets(kanjiToReadingsDictionary,
+                                //     conjugatedLink.kanjiElement,
+                                //     ut.katakanaToHiragana(conjugatedLink.readingElement))
+                                
+                                // TODO! This was a dictionary of sets, not a dictionary of lists
+                                redis.rpush("conjugatedToUnconjugatedFormsDictionary:" + conjugatedLink.kanjiElement,
+                                            link.kanjiElement);
+                                // ut.addToDictionaryOfSets(conjugatedToUnconjugatedFormsDictionary,
+                                //     conjugatedLink.kanjiElement,
+                                //     link.kanjiElement)
+
+                                // TODO! This was a dictionary of sets, not a dictionary of lists
+                                redis.rpush("conjugatedToUnconjugatedFormsDictionary:" + conjugatedLink.readingElement,
+                                            link.kanjiElement);
+                                // ut.addToDictionaryOfSets(conjugatedToUnconjugatedFormsDictionary,
+                                //     conjugatedLink.readingElement,
+                                //     link.readingElement)
                                 currentParsingStatus.kanjiReadingLinks.push(conjugatedLink)
                                 currentParsingStatus.keys.add(conjugatedLink.kanjiElement)
                                 currentParsingStatus.keys.add(conjugatedLink.readingElement)
@@ -292,7 +300,8 @@ readline
             Array.from(currentParsingStatus.keys)
                 .forEach((key) => // For each "key" adds the entry in the dictionary
                 {
-                    ut.addToDictionaryOfLists(dictionary, key, entryData)
+                    redis.rpush("dictionary:" + key, JSON.stringify(entryData));
+                    // ut.addToDictionaryOfLists(dictionary, key, entryData)
                 })
 
             currentParsingStatus = makeCleanParsingStatus()
@@ -306,22 +315,29 @@ readline
         callbacks = null
     })
 
-module.exports.isLoaded = () =>
-{
-    return isLoaded
-}
-
 module.exports.isJapaneseWord = (word) =>
 {
-    return word in dictionary
+    return new Promise((resolve, reject) => {
+        redis.exists("dictionary:" + word, (err, reply) => {
+            if (err) reject(err);
+            else resolve(reply == 1 ? true : false);
+         })
+    })
+    // return word in dictionary
 }
 
 module.exports.getDefinitions = (word) =>
 {
-    if (word in dictionary)
-        return dictionary[word]
-    else
-        return []
+    return new Promise((resolve, reject) => {
+        redis.lrange("dictionary:" + word, 0, -1, (err, reply) => {
+            if (err) reject(err)
+            else resolve(reply)
+        })
+    })
+    // if (word in dictionary)
+    //     return dictionary[word]
+    // else
+    //     return []
 }
 
 let exceptions = {
@@ -355,8 +371,10 @@ module.exports.getReadings = (word, doFiltering) =>
         if (word in exceptions) return exceptions[word]
     }
 
-    if (word in kanjiToReadingsDictionary)
-        return Array.from(kanjiToReadingsDictionary[word])
+    // TODO! This was a dictionary of sets, not a dictionary of lists
+    const output = redis.lrange("kanjiToReadingsDictionary:" + word, 0, -1);
+    if (output.length > 0)
+        return output;
     else
         return [word]
 }
