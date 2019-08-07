@@ -47,3 +47,36 @@ a:visited {
     padding: 10px;
     margin: 5px 0;
 }
+
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 50;
+    background-color: rgba(255, 255, 255, 0.3);
+    display: none;
+}
+
+#loaderText {
+    animation: spin 2s linear infinite;
+    z-index: 100;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-left: -2.5em;
+    margin-top: -0.75em;
+    background-color: #180b22;
+    /* color: darkred; */
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

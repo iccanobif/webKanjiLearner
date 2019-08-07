@@ -35,7 +35,7 @@ import { DictionaryComponent } from './dictionary/dictionary.component';
     {
       provide: ErrorHandler,
       useClass: GlobalErrorHandler
-    }
+    },
   ],
   bootstrap: [AppComponent]
 })
