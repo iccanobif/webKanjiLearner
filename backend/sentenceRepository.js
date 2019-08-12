@@ -1,10 +1,18 @@
 const fs = require("fs")
 const readline = require("readline")
 const ut = require("./utils.js")
+const bluebird = require("bluebird")
+const redis = require("redis")
+bluebird.promisifyAll(redis)
 
-let sentences = {}
-let isLoaded = false
-let callbacks = []
+let callbacksToDoWhenReady = []
+let isReady = false;
+
+
+// I can wait for the dataset to be fully loaded by using redis, writing a message
+// on a "message list" (??) to say that the sentence list is complete and making 
+// getRandomSentence() and friends first read to it and waiting till it's ready
+const redisClient = redis.createClient()
 
 ut.log("Start loading sentences")
 
@@ -16,60 +24,107 @@ readline
             return;
         // Format:
         // {"char": "糞", "freq": 1, "jpn": "糞です", "kana": "くそです", "eng": "It's poop"}
-        parsed = JSON.parse(line)
-        if (parsed["char"] in sentences)
-            sentences[parsed["char"]].push(parsed)
-        else
-            sentences[parsed["char"]] = [parsed]
+        const char = JSON.parse(line).char;
+        redisClient.rpush("sentences:" + char, line)
     })
     .on("close", () =>
     {
+        redisClient.quit()
         ut.log("Finished loading sentences")
-        isLoaded = true
-        callbacks.forEach(callback => callback())
-        callbacks = null
+        callbacksToDoWhenReady.forEach(callback => callback())
+        callbacksToDoWhenReady = []
+        isReady = true
     })
-    
-module.exports.getFullListOfRandomSentences = () =>
-{
-    // TODO: precompute sorted keys instead of sorting at every request
-    return Object.keys(sentences)
-        .map((c) =>
-        {
-            let index = Math.floor((sentences[c].length) * Math.random())
-            return sentences[c][index]
-        })
-        .sort((a, b) =>
-        {
-            if (a.freq > b.freq) return -1;
-            if (a.freq < b.freq) return 1;
-            return 0;
-        })
-}
-module.exports.getRandomSentence = (char) =>
-{
-    if (!(char in sentences))
-        return null
 
-    let index = Math.floor((sentences[char].length) * Math.random())
-    return sentences[char][index]
-}
-module.exports.getAllSentences = (char) =>
+function doWhenReady(callback)
 {
-    if (!(char in sentences))
-        return []
-    else
-        return sentences[char]
-}
-module.exports.isLoaded = () =>
-{
-    return isLoaded
-}
-
-module.exports.addLoadedCallback = (callback) =>
-{
-    if (isLoaded)
+    if (isReady)
         callback()
     else
-        callbacks.push(callback)
+        callbacksToDoWhenReady.push(callback)
 }
+
+module.exports.SentenceRepository = class
+{
+    constructor()
+    {
+        // console.log("create")
+        this.redisClient = redis.createClient()
+    }
+
+    dispose()
+    {
+        // console.log("destroy")
+        this.redisClient.quit()
+    }
+
+    getFullListOfRandomSentences()
+    {
+        return new Promise((resolve, reject) =>
+        {
+            doWhenReady(async () =>
+            {
+                try
+                {
+                    const keys = await this.redisClient.keysAsync("sentences:*");
+                    const output = []
+                    for (let i = 0; i<keys.length; i++)
+                    {
+                        const sentences = await this.redisClient.lrangeAsync(keys[i], 0, -1)
+                        let index = Math.floor((sentences.length) * Math.random())
+                        output.push(JSON.parse(sentences[index]))
+                    }
+                    resolve(output)
+                }
+                catch (exc) {
+                    reject(exc)
+                }
+            })
+        })
+    }
+
+    getRandomSentence(char)
+    {
+        return new Promise((resolve, reject) =>
+        {
+            doWhenReady(() =>
+            {
+                //TODO add try catch?
+                this.redisClient.lrange("sentences:" + char, 0, -1, (err, reply) =>
+                {
+                    if (err) reject(err)
+                    else
+                    {
+                        if (reply.length == 0) resolve(null)
+                        else 
+                        {
+                            let index = Math.floor((reply.length) * Math.random())
+                            resolve(JSON.parse(reply[index]))
+                        }
+                    }
+                })
+            })
+        })
+    }
+
+    getAllSentences(char)
+    {
+        return new Promise((resolve, reject) =>
+        {
+            doWhenReady(() =>
+            {
+                this.redisClient.lrange("sentences:" + char, 0, -1, (err, reply) =>
+                {
+                    if (err) reject(err)
+                    else
+                    {
+                        resolve(reply.map(r => JSON.parse(r)))
+                    }
+
+                })
+            })
+        });
+    }
+}
+
+
