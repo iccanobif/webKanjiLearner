@@ -7,3 +7,4 @@ node_modules
 *.db
 datasets/allSentences.csv
 frontend/dist
+db/letters
