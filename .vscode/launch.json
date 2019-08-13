@@ -4,6 +4,12 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Launch initialize db",
+            "program": "${workspaceFolder}/db/initializeDbSanseido.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Launch npm test",
             "program": "${workspaceFolder}/backend/node_modules/mocha/bin/mocha",
             "args": [

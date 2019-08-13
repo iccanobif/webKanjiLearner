@@ -1,43 +1,34 @@
-module.exports.go = function (elements, limit, operation)
+module.exports.go = async function (elements, limit, operation)
 {
-    return new Promise((resolve, reject) =>
+    let processedElementsCount = 0
+
+    const next = () =>
     {
-        try
-        {
-            let processedElementsCount = 0
-
-            const next = () =>
-            {
-                processedElementsCount++
-                if (processedElementsCount < elements.length)
-                    operation(elements[processedElementsCount])
-                        .then(next)
-                        .catch((err) =>
-                        {
-                            console.log("processedElementsCount: " + processedElementsCount)
-                            reject(err)
-                        })
-                else
-                    resolve()
-            }
-
-            for (i = 0; i < limit; i++)
-            {
-                setTimeout(() =>
+        processedElementsCount++
+        if (processedElementsCount <= elements.length)
+            operation(elements[processedElementsCount - 1])
+                .then(next)
+                .catch((err) =>
                 {
-                    operation(elements[i])
-                        .then(next)
-                        .catch((err) =>
-                        {
-                            console.log("i: " + i)
-                            reject(err)
-                        })
-                }, 30 * i);
-            }
-        }
-        catch (err)
+                    console.log("processedElementsCount: " + processedElementsCount)
+                    throw err
+                })
+        else
+            return
+    }
+
+    for (let i = 0; i < limit; i++)
+    {
+        setTimeout(() =>
         {
-            reject(err)
-        }
-    })
+            operation(elements[i])
+                .then(next)
+                .catch((err) =>
+                {
+                    console.log("i: " + i)
+                    throw err
+                })
+        }, 50 * i);
+    }
+    processedElementsCount = limit
 }
