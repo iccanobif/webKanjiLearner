@@ -1,34 +1,36 @@
-module.exports.go = async function (elements, limit, operation)
+module.exports.go = function (elements, limit, initialGap, operation)
 {
-    let processedElementsCount = 0
-
-    const next = () =>
+    return new Promise(resolve =>
     {
-        processedElementsCount++
-        if (processedElementsCount <= elements.length)
-            operation(elements[processedElementsCount - 1])
-                .then(next)
-                .catch((err) =>
-                {
-                    console.log("processedElementsCount: " + processedElementsCount)
-                    throw err
-                })
-        else
-            return
-    }
+        let count = 0
 
-    for (let i = 0; i < limit; i++)
-    {
-        setTimeout(() =>
+        const doNextOperation = async () =>
         {
-            operation(elements[i])
-                .then(next)
-                .catch((err) =>
+            if (count >= elements.length)
+                resolve()
+            else
+            {
+                count++
+                try
                 {
-                    console.log("i: " + i)
-                    throw err
+                    await operation(elements[count - 1])
+                }
+                catch (err)
+                {
+                    console.error(err)
+                }
+                doNextOperation();
+            }
+        }
+
+        for (let i = 0; i < limit; i++)
+        {
+            new Promise(resolve => setTimeout(resolve, initialGap * i))
+                .then(() =>
+                {
+                    doNextOperation().catch(console.error)
                 })
-        }, 50 * i);
-    }
-    processedElementsCount = limit
+        }
+    })
+
 }
