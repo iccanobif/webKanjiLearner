@@ -7,7 +7,7 @@ const http = require("http").Server(app)
 const bodyParser = require("body-parser");
 const kanjidic = require("./kanjidic.js")
 const ut = require("./utils.js")
-const sentenceRepository = require("./sentenceRepository.js")
+const { SentenceRepository } = require("./sentenceRepository.js")
 const sentenceSplitter = require("./sentenceSplitter.js")
 const edict = require("./edict.js")
 const jigen = require("./jigen.js")
@@ -30,139 +30,65 @@ if (delay > 0)
         setTimeout(next, delay)
     })
 
-app.get("/:username/random-sentence", (req, res) =>
-{
-    if (!sentenceRepository.isLoaded()
-        || !edict.isLoaded()
-        || !kanjidic.isLoaded()
-        || !jigen.isLoaded()
-        || !cedict.isLoaded()) 
-    {
-        res.status(503).end("not ready")
-        return
-    }
-
-    hiddenCharacterRepository.getHiddenCharacters(req.params.username, (hiddenCharacters) =>
-    {
-        const hiddenCharactersSet = new Set(hiddenCharacters)
-
-        const firstBatchOfRandomSentences =
-            sentenceRepository.getFullListOfRandomSentences()
-                .filter((x) =>
-                {
-                    return !hiddenCharactersSet.has(x["char"])
-                })
-                .slice(0, 25)
-                .shuffle() // TODO make some real pagination
-                .map((x) =>
-                {
-                    const splits = sentenceSplitter.split(x.jpn)
-
-                    return {
-                        kanji: x.char,
-                        kanjiText: x.jpn,
-                        kanaText: splits
-                            .map(x =>
-                            {
-                                let readings = edict.getReadings(x, true)
-                                if (readings.length == 1)
-                                    return readings[0]
-                                else
-                                    return "[" + readings.join("/") + "]"
-                            })
-                            .join(""),
-                        englishText: x.eng,
-                    }
-                })
-        res.type("application/json")
-        res.end(JSON.stringify(firstBatchOfRandomSentences))
-    })
-})
-app.get("/:username/random-sentence/:character", (req, res) =>
-{
-    ut.log("Requested new sentence for character " + req.params.character)
-    const randomSentence = sentenceRepository.getRandomSentence(req.params.character)
-    if (randomSentence == null)
-    {
-        res.type("text/plain")
-        res.status(404).end("Character not found.")
-    }
-    else
-    {
-        const splits = sentenceSplitter.split(randomSentence.jpn)
-
-        res.type("application/json")
-        res.end(JSON.stringify({
-            kanji: req.params.character,
-            kanjiText: randomSentence.jpn,
-            englishText: randomSentence.eng,
-            kanaText: splits
-                .map(x =>
-                {
-                    let readings = edict.getReadings(x, true)
-                    if (readings.length == 1)
-                        return readings[0]
-                    else
-                        return "[" + readings.join("/") + "]"
-                })
-                .join(""),
-        }))
-        ut.log("Sent new sentence for character " + req.params.character)
-    }
-})
 app.get("/kanji/:character", (req, res) =>
 {
-    if (!sentenceRepository.isLoaded() || !kanjidic.isLoaded() || !edict.isLoaded())
+    if (!kanjidic.isLoaded() || !edict.isLoaded())
     {
         res.status(503).end("not ready")
         return
     }
 
-    let sentences = sentenceRepository.getAllSentences(req.params.character)
-        .sort((a, b) =>
+    const repo = new SentenceRepository()
+    repo.getAllSentences(req.params.character)
+        .catch(err => res.status(500).end(err))
+        .then((allSentences) =>
         {
-            return a.jpn.localeCompare(b.jpn)
-        })
-        .shuffle()
-        .map((x) =>
-        {
-            x.splits = sentenceSplitter.split(x.jpn)
-            x.kana = x.splits
-                .map(x =>
+            let sentences = allSentences
+                .sort((a, b) =>
                 {
-                    let readings = edict.getReadings(x, true)
-                    if (readings.length == 1)
-                        return readings[0]
-                    else
-                        return "[" + readings.join("/") + "]"
+                    return a.jpn.localeCompare(b.jpn)
                 })
-                .join("")
-            return x
-        })
+                .shuffle()
+                .map((x) =>
+                {
+                    x.splits = sentenceSplitter.split(x.jpn)
+                    x.kana = x.splits
+                        .map(x =>
+                        {
+                            let readings = edict.getReadings(x, true)
+                            if (readings.length == 1)
+                                return readings[0]
+                            else
+                                return "[" + readings.join("/") + "]"
+                        })
+                        .join("")
+                    return x
+                })
 
-    res.type("application/json")
-    res.end(JSON.stringify({
-        character: req.params.character,
-        sentences: sentences,
-        readings: kanjidic.getKanjiReadings(req.params.character),
-        meanings: kanjidic.getKanjiMeanings(req.params.character),
-        jigen: sentenceSplitter.split(jigen.getJigen(req.params.character)),
-        exampleWords: sentences
-            .map(x => x.splits) // Extract the kanji text (split in words) from each sentence object
-            .reduce((acc, val) => acc.concat(val), []) // Flatten into an array of arrays
-            .filter(x => x.match(new RegExp(req.params.character))) // Only keep the strings containing the relevant character
-            // Do a "GROUP BY" (sort, and then aggregate every adjacent element equal to each other, keeping count)
-            .sort((a, b) => { return a.localeCompare(b) })
-            .reduce((acc, val) =>
-            {
-                if (acc.length == 0 || val != acc[acc.length - 1].word)
-                    acc.push({ word: val, count: 1, readings: edict.getReadings(val, false) })
-                else
-                    acc[acc.length - 1].count += 1
-                return acc
-            }, [])
-            .sort((a, b) => { return b.count - a.count }),
-    }))
+            res.type("application/json")
+            res.end(JSON.stringify({
+                character: req.params.character,
+                sentences: sentences,
+                readings: kanjidic.getKanjiReadings(req.params.character),
+                meanings: kanjidic.getKanjiMeanings(req.params.character),
+                jigen: sentenceSplitter.split(jigen.getJigen(req.params.character)),
+                exampleWords: sentences
+                    .map(x => x.splits) // Extract the kanji text (split in words) from each sentence object
+                    .reduce((acc, val) => acc.concat(val), []) // Flatten into an array of arrays
+                    .filter(x => x.match(new RegExp(req.params.character))) // Only keep the strings containing the relevant character
+                    // Do a "GROUP BY" (sort, and then aggregate every adjacent element equal to each other, keeping count)
+                    .sort((a, b) => { return a.localeCompare(b) })
+                    .reduce((acc, val) =>
+                    {
+                        if (acc.length == 0 || val != acc[acc.length - 1].word)
+                            acc.push({ word: val, count: 1, readings: edict.getReadings(val, false) })
+                        else
+                            acc[acc.length - 1].count += 1
+                        return acc
+                    }, [])
+                    .sort((a, b) => { return b.count - a.count }),
+            }))
+        })
 })
 app.get("/dictionary/:word", (req, res) =>
 {

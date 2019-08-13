@@ -5,8 +5,8 @@ const sentenceSplitter = require("../sentenceSplitter.js")
 const kanjidic = require("../kanjidic.js")
 const jigen = require("../jigen.js")
 const cedict = require("../cedict.js")
-const sentenceRepository = require("../sentenceRepository.js")
 
+const sentenceRepository = require("../sentenceRepository.js")
 describe("utils", function ()
 {
   describe("uniq()", () =>
@@ -325,24 +325,51 @@ describe('cedict', function ()
     })
   })
 })
-
 describe('sentenceRepository', function ()
 {
   this.timeout(20000)
-  before((done) =>
+  this.beforeAll(() =>
   {
-    sentenceRepository.addLoadedCallback(done)
-    
+    return sentenceRepository
+      .initializeDb()
+      .then(() => this.repo = new sentenceRepository.SentenceRepository())
   })
-  describe('getRandomSentence()', () =>
+  it("getRandomSentence() should return one sentence", () =>
   {
-    it("should return one sentence", () =>
+    return this.repo.getRandomSentence("人").then(sentence =>
     {
-      const sentence = sentenceRepository.getRandomSentence("人")
       assert.strictEqual(sentence.char, "人")
       assert.ok("freq" in sentence)
       assert.ok("jpn" in sentence)
       assert.ok("eng" in sentence)
     })
   })
+  it("getRandomSentence() returns null when no sentence found", () =>
+  {
+    return this.repo.getRandomSentence("non-existing character")
+      .then(sentence =>
+      {
+        assert.strictEqual(sentence, null)
+      })
+  })
+  it("getAllSentences() should return more than one sentence", (done) =>
+  {
+    this.repo.getAllSentences("人")
+      .then(sentences =>
+      {
+        assert.ok(sentences.length > 1);
+        assert.strictEqual(sentences[0].char, "人")
+        assert.ok("freq" in sentences[0])
+        assert.ok("jpn" in sentences[0])
+        assert.ok("eng" in sentences[0])
+        done()
+      })
+      .catch(done)
+  })
+  this.afterAll(() =>
+  {
+    console.log("trying to dispose")
+    return this.repo.dispose()
+  })
 })
+
