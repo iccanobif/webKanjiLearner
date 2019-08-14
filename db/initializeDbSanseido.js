@@ -61,7 +61,7 @@ function getNumberOfPagesFromHtml(html, letter)
 
 async function downloadLemmas()
 {
-    const sema = new asyncsema.Sema(10)
+    const sema = new asyncsema.Sema(30)
 
     const letters = fs.readdirSync("letters")
     for (let i = 0; i < letters.length; i++)
