@@ -54,7 +54,9 @@ export class KanjiDetailComponent implements OnInit {
 
   hideCharacter() {
     this.hiddenCharactersService.hide(this.username, this.character).subscribe(() => {
+
       this.isCharacterHidden = of(true)
+      this.router.navigate(["../" + this.nextKanji], {relativeTo: this.route})
     })
   }
 
