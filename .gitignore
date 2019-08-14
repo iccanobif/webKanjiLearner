@@ -8,3 +8,4 @@ node_modules
 datasets/allSentences.csv
 frontend/dist
 db/letters
+db/lemmas

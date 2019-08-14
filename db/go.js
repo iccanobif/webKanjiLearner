@@ -2,23 +2,27 @@ module.exports.go = function (elements, limit, initialGap, operation)
 {
     return new Promise(resolve =>
     {
-        let count = 0
+        let countStarted = 0
+        let countDone = 0
 
         const doNextOperation = async () =>
         {
-            if (count >= elements.length)
+            if (countDone >= elements.length)
+            {
                 resolve()
+            }
             else
             {
-                count++
+                countStarted++
                 try
                 {
-                    await operation(elements[count - 1])
+                    await operation(elements[countStarted - 1])
                 }
                 catch (err)
                 {
                     console.error(err)
                 }
+                countDone++
                 doNextOperation();
             }
         }
@@ -36,7 +40,7 @@ module.exports.go = function (elements, limit, initialGap, operation)
                     // than initialGap * limit milliseconds, so in this case
                     // it's good to clear the event loop from setTimeout() tasks
                     // that have become useless
-                    if (count >= elements.length)
+                    if (countDone >= elements.length)
                     {
                         handles.forEach(element =>
                         {

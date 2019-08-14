@@ -1,6 +1,9 @@
 const axios = require('axios');
 const fs = require("fs")
 const go = require("./go.js").go
+const pako = require("pako")
+const asyncsema = require("async-sema")
+
 
 
 const initialLetterPageBaseUrl = "https://www.weblio.jp/category/dictionary/ssdjj/"
@@ -22,6 +25,7 @@ const cartesianProduct = initialLetters.reduce((acc, val) =>
 
 async function downloadPage(pageName)
 {
+    console.log("Requested download for " + pageName)
     if (fs.existsSync("letters/" + pageName.replace("/", "")))
     {
         console.log(pageName + " already downloaded")
@@ -55,6 +59,42 @@ function getNumberOfPagesFromHtml(html, letter)
     return Math.max(...allPageNumbers)
 }
 
+async function downloadLemmas()
+{
+    const sema = new asyncsema.Sema(10)
+
+    const letters = fs.readdirSync("letters")
+    for (let i = 0; i < letters.length; i++)
+    {
+        const letter = letters[i]
+        const html = fs.readFileSync("letters/" + letter, { encoding: "utf8" })
+        const regex = new RegExp('"https://www.weblio.jp/content/.*?"', 'g')
+
+        while (m = regex.exec(html))
+        {
+            const url = m[0].replace(/"/g, '')
+            const fileName = "lemmas/" + url.substring(url.lastIndexOf("/") + 1)
+            if (fs.existsSync(fileName))
+            {
+                console.log(fileName + " already exists")
+                continue
+            }
+            await sema.acquire()
+            console.log("downloading " + url)
+
+            axios.get(url).then(response =>
+            {
+                console.log("Saving " + fileName)
+                fs.writeFileSync(fileName, pako.gzip(response.data))
+            })
+            .catch(console.error)
+            .finally(() => {
+                sema.release()
+            })
+        }
+    }
+}
+
 async function initializeDb()
 {
     try
@@ -62,8 +102,28 @@ async function initializeDb()
         fs.mkdirSync("letters")
     }
     catch (_) { }
+    try
+    {
+        fs.mkdirSync("lemmas")
+    }
+    catch (_) { }
     await go(cartesianProduct, 40, 150, downloadPage)
-    console.log("First run finished")
+    console.log("First run finished, finding extra pages to download...")
+    const otherPagesToDownload = cartesianProduct.reduce((acc, val) =>
+    {
+        const html = fs.readFileSync("letters/" + val.replace("/", ""), { encoding: "utf8" })
+        const numPages = getNumberOfPagesFromHtml(html, val)
+        for (let i = 2; i <= numPages; i++)
+            acc.push(val + "/" + i)
+        return acc
+    }, []).sort()
+
+    console.log("Downloading extra pages...")
+    await go(otherPagesToDownload, 50, 150, downloadPage)
+    console.log("Downloaded everything there is to download")
+    console.log("Gathering urls for all lemmas")
+    await downloadLemmas()
+
 }
 
 initializeDb().catch(console.error)

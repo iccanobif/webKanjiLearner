@@ -5,7 +5,8 @@
             "type": "node",
             "request": "launch",
             "name": "Launch initialize db",
-            "program": "${workspaceFolder}/db/initializeDbSanseido.js"
+            "program": "${workspaceFolder}/db/initializeDbSanseido.js",
+            "cwd": "${workspaceFolder}/db",
         },
         {
             "type": "node",
