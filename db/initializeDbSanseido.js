@@ -1,9 +1,10 @@
-const axios = require('axios');
+const axios = require("axios")
 const fs = require("fs")
 const go = require("./go.js").go
 const pako = require("pako")
 const asyncsema = require("async-sema")
-
+const mongodb = require("mongodb")
+const JSSoup = require("jssoup").default
 
 
 const initialLetterPageBaseUrl = "https://www.weblio.jp/category/dictionary/ssdjj/"
@@ -47,13 +48,14 @@ function getNumberOfPagesFromHtml(html, letter)
     const regex = new RegExp(initialLetterPageBaseUrl + letter + '/[0-9]*"', 'g')
 
     const allPageUrls = []
-    while (m = regex.exec(html))
+    let m
+    while ((m = regex.exec(html)))
     {
         // console.log(m[0])
         allPageUrls.push(m[0])
     }
 
-    allPageNumbers = allPageUrls.map(url => +url.substring(url.lastIndexOf("/") + 1).replace('"', ""))
+    const allPageNumbers = allPageUrls.map(url => +url.substring(url.lastIndexOf("/") + 1).replace('"', ""))
     if (allPageNumbers.length == 0)
         return 0
     return Math.max(...allPageNumbers)
@@ -68,9 +70,10 @@ async function downloadLemmas()
     {
         const letter = letters[i]
         const html = fs.readFileSync("letters/" + letter, { encoding: "utf8" })
-        const regex = new RegExp('"https://www.weblio.jp/content/.*?"', 'g')
+        const regex = new RegExp('"https://www.weblio.jp/content/.*?"', "g")
 
-        while (m = regex.exec(html))
+        let m
+        while ((m = regex.exec(html)))
         {
             const url = m[0].replace(/"/g, '')
             const fileName = "lemmas/" + url.substring(url.lastIndexOf("/") + 1)
@@ -87,12 +90,51 @@ async function downloadLemmas()
                 console.log("Saving " + fileName)
                 fs.writeFileSync(fileName, pako.gzip(response.data))
             })
-            .catch(console.error)
-            .finally(() => {
-                sema.release()
-            })
+                .catch(console.error)
+                .finally(() =>
+                {
+                    sema.release()
+                })
         }
     }
+}
+
+async function writeLemmasToDB()
+{
+    const conn = await mongodb.MongoClient.connect("mongodb://localhost:27017", { useNewUrlParser: true, useUnifiedTopology: true })
+    try
+    {
+        const db = conn.db("webKanjiLookup")
+        const sanseidoCollection = db.collection("sanseido")
+        sanseidoCollection.createIndex({ urlId: 1 }, { unique: true })
+
+        const lemmaFileNames = fs.readdirSync("lemmas")
+        for (let i = 0; i < lemmaFileNames.length; i++)
+        {
+            const lemmaFileName = lemmaFileNames[i]
+            if (await sanseidoCollection.findOne({ urlId: lemmaFileName }))
+            {
+                console.log(lemmaFileName + " is already in the db")
+                continue
+            }
+            const html = new TextDecoder("utf-8").decode(pako.ungzip(fs.readFileSync("lemmas/" + lemmaFileName)))
+            const soup = new JSSoup(html)
+            const sanseidoKiji = soup.findAll("div", "kiji")[0]
+            if (sanseidoKiji === undefined)
+            {
+                console.log("File: " + lemmaFileName + " has no kiji")
+                continue
+            }
+            const text = sanseidoKiji.getText()
+            await sanseidoCollection.insertOne({ rawText: text, urlId: lemmaFileName })
+            console.log("Inserted " + lemmaFileName + " to database")
+        }
+    }
+    finally
+    {
+        await conn.close()
+    }
+
 }
 
 async function initializeDb()
@@ -101,12 +143,12 @@ async function initializeDb()
     {
         fs.mkdirSync("letters")
     }
-    catch (_) { }
+    catch (_) { _ }
     try
     {
         fs.mkdirSync("lemmas")
     }
-    catch (_) { }
+    catch (_) { _ }
     await go(cartesianProduct, 40, 150, downloadPage)
     console.log("First run finished, finding extra pages to download...")
     const otherPagesToDownload = cartesianProduct.reduce((acc, val) =>
@@ -123,7 +165,7 @@ async function initializeDb()
     console.log("Downloaded everything there is to download")
     console.log("Gathering urls for all lemmas")
     await downloadLemmas()
-
+    await writeLemmasToDB()
 }
 
 initializeDb().catch(console.error)
