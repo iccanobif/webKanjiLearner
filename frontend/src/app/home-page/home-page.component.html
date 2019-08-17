@@ -1,13 +1,15 @@
-<h2>
-    Welcome, {{ username }}!
-</h2>
-
-<h3>Mode:</h3>
-<input type="radio" id="OPEN" value="OPEN" name="editMode" checked>
-<label for="OPEN">Open</label>
-<input type="radio" id="HIDE" value="HIDE" name="editMode">
-<label for="HIDE">Hide</label>
-<p>
+<header>
+    <h2>
+        {{ username }}
+    </h2>
+    <h3>Mode:</h3>
+    <input type="radio" id="OPEN" value="OPEN" name="editMode" checked>
+    <label for="OPEN">Open</label>
+    <input type="radio" id="HIDE" value="HIDE" name="editMode">
+    <label for="HIDE">Hide</label>
+</header>
+<article>
     <button class="linkbutton" *ngFor="let kanji of kanjiToDisplay; trackBy: trackByFn"
-        (click)="characterClicked(kanji.character)" [ngClass]="{hiddenKanji: kanji.isHidden}">{{ kanji.character }}</button>
-</p>
+        (click)="characterClicked(kanji.character)"
+        [ngClass]="{hiddenKanji: kanji.isHidden}">{{ kanji.character }}</button>
+</article>

@@ -1,5 +1,11 @@
-h1 {
+h2 {
     text-align: center;
+    margin: 3px;
+}
+
+h3 {
+    display: inline-block;
+    margin: 3px;
 }
 
 .kanji
@@ -14,4 +20,19 @@ h1 {
 
 .hiddenKanji {
     background-color: yellow;
+}
+
+header
+{
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 100px;
+    background-color: #13073a;
+    padding: 0;
+}
+
+article
+{
+    padding-top: 100px;
 }
