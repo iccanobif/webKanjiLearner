@@ -42,103 +42,9 @@ async function downloadPage(pageName)
     }
 }
 
-
-function getNumberOfPagesFromHtml(html, letter)
+async function downloadLetterPages()
 {
-    const regex = new RegExp(initialLetterPageBaseUrl + letter + '/[0-9]*"', 'g')
 
-    const allPageUrls = []
-    let m
-    while ((m = regex.exec(html)))
-    {
-        // console.log(m[0])
-        allPageUrls.push(m[0])
-    }
-
-    const allPageNumbers = allPageUrls.map(url => +url.substring(url.lastIndexOf("/") + 1).replace('"', ""))
-    if (allPageNumbers.length == 0)
-        return 0
-    return Math.max(...allPageNumbers)
-}
-
-async function downloadLemmas()
-{
-    const sema = new asyncsema.Sema(30)
-
-    const letters = fs.readdirSync("letters")
-    for (let i = 0; i < letters.length; i++)
-    {
-        const letter = letters[i]
-        const html = fs.readFileSync("letters/" + letter, { encoding: "utf8" })
-        const regex = new RegExp('"https://www.weblio.jp/content/.*?"', "g")
-
-        let m
-        while ((m = regex.exec(html)))
-        {
-            const url = m[0].replace(/"/g, '')
-            const fileName = "lemmas/" + url.substring(url.lastIndexOf("/") + 1)
-            if (fs.existsSync(fileName))
-            {
-                console.log(fileName + " already exists")
-                continue
-            }
-            await sema.acquire()
-            console.log("downloading " + url)
-
-            axios.get(url).then(response =>
-            {
-                console.log("Saving " + fileName)
-                fs.writeFileSync(fileName, pako.gzip(response.data))
-            })
-                .catch(console.error)
-                .finally(() =>
-                {
-                    sema.release()
-                })
-        }
-    }
-}
-
-async function writeLemmasToDB()
-{
-    const conn = await mongodb.MongoClient.connect("mongodb://localhost:27017", { useNewUrlParser: true, useUnifiedTopology: true })
-    try
-    {
-        const db = conn.db("webKanjiLookup")
-        const sanseidoCollection = db.collection("sanseido")
-        sanseidoCollection.createIndex({ urlId: 1 }, { unique: true })
-
-        const lemmaFileNames = fs.readdirSync("lemmas")
-        for (let i = 0; i < lemmaFileNames.length; i++)
-        {
-            const lemmaFileName = lemmaFileNames[i]
-            if (await sanseidoCollection.findOne({ urlId: lemmaFileName }))
-            {
-                console.log(lemmaFileName + " is already in the db")
-                continue
-            }
-            const html = new TextDecoder("utf-8").decode(pako.ungzip(fs.readFileSync("lemmas/" + lemmaFileName)))
-            const soup = new JSSoup(html)
-            const sanseidoKiji = soup.findAll("div", "kiji")[0]
-            if (sanseidoKiji === undefined)
-            {
-                console.log("File: " + lemmaFileName + " has no kiji")
-                continue
-            }
-            const text = sanseidoKiji.getText()
-            await sanseidoCollection.insertOne({ rawText: text, urlId: lemmaFileName })
-            console.log("Inserted " + lemmaFileName + " to database")
-        }
-    }
-    finally
-    {
-        await conn.close()
-    }
-
-}
-
-async function initializeDb()
-{
     try
     {
         fs.mkdirSync("letters")
@@ -162,10 +68,148 @@ async function initializeDb()
 
     console.log("Downloading extra pages...")
     await go(otherPagesToDownload, 50, 150, downloadPage)
-    console.log("Downloaded everything there is to download")
-    console.log("Gathering urls for all lemmas")
-    await downloadLemmas()
-    await writeLemmasToDB()
+}
+
+function getNumberOfPagesFromHtml(html, letter)
+{
+    const regex = new RegExp(initialLetterPageBaseUrl + letter + '/[0-9]*"', 'g')
+
+    const allPageUrls = []
+    let m
+    while ((m = regex.exec(html)))
+    {
+        // console.log(m[0])
+        allPageUrls.push(m[0])
+    }
+
+    const allPageNumbers = allPageUrls.map(url => +url.substring(url.lastIndexOf("/") + 1).replace('"', ""))
+    if (allPageNumbers.length == 0)
+        return 0
+    return Math.max(...allPageNumbers)
+}
+
+async function downloadLemmas()
+{
+    console.log("Downloading all lemma pages to db")
+    const conn = await mongodb.MongoClient.connect("mongodb://localhost:27017", { useNewUrlParser: true, useUnifiedTopology: true })
+    try
+    {
+        const db = conn.db("webKanjiLookup")
+        const sanseidoCollection = db.collection("sanseido")
+        sanseidoCollection.createIndex({ urlId: 1 }, { unique: true })
+
+        const sema = new asyncsema.Sema(40)
+
+        const letters = fs.readdirSync("letters")
+        for (let i = 0; i < letters.length; i++)
+        {
+            const letter = letters[i]
+            const html = fs.readFileSync("letters/" + letter, { encoding: "utf8" })
+            const regex = new RegExp('"https://www.weblio.jp/content/.*?"', "g")
+
+            let m
+            while ((m = regex.exec(html)))
+            {
+                const url = m[0].replace(/"/g, '')
+                const urlId = url.substring(url.lastIndexOf("/") + 1)
+
+                if (await sanseidoCollection.findOne({ urlId: urlId }))
+                {
+                    // console.log(urlId + " is already in db")
+                    continue
+                }
+
+
+                await sema.acquire()
+                console.log("downloading " + url)
+
+                axios.get(url).then(async response =>
+                {
+                    console.log("Saving " + urlId)
+                    await sanseidoCollection.insertOne({ urlId: urlId, gzippedData: pako.gzip(response.data) }) // old urlId: fileName
+                })
+                    .catch(console.error)
+                    .finally(() =>
+                    {
+                        sema.release()
+                    })
+            }
+        }
+    }
+    finally
+    {
+        conn.close()
+    }
+}
+
+function getKijiTextFromGzippedHtml(gzippedHtml)
+{
+    const html = new TextDecoder("utf-8").decode(pako.ungzip(gzippedHtml))
+    const soup = new JSSoup(html)
+    const kiji = soup.findAll("div", "kiji")[0]
+    if (kiji)
+        return kiji.toString()
+    else
+        return kiji
+}
+
+async function saveKijiText()
+{
+    console.log("Extracting Kiji texts")
+    const conn = await mongodb.MongoClient.connect("mongodb://localhost:27017", { useNewUrlParser: true, useUnifiedTopology: true })
+    try
+    {
+        const db = conn.db("webKanjiLookup")
+        const sanseidoCollection = db.collection("sanseido")
+        const cursor = sanseidoCollection.find({ kijiText: null })
+        let noKijiCount = 0
+        let yesKijiCount = 0
+        while (await cursor.hasNext())
+        {
+            const doc = await cursor.next()
+            if (!doc.gzippedData.buffer)
+            {
+                console.log(doc._id + " is anomalous")
+            }
+            const kijiText = getKijiTextFromGzippedHtml(doc.gzippedData.buffer
+                                                        ? doc.gzippedData.buffer
+                                                        : doc.gzippedData)
+            if (kijiText)
+            {
+                yesKijiCount++
+                await sanseidoCollection.updateOne({ _id: doc._id }, { $set: { kijiText: kijiText } })
+                if (yesKijiCount % 100 == 0)
+                    console.log("yes kiji: " + yesKijiCount)
+            }
+            else
+            {
+                noKijiCount++
+                console.log(noKijiCount + " File: " + doc.urlId + " has no kiji")
+            }
+        }
+        console.log("son qui")
+        cursor.close()
+    }
+    finally
+    {
+        console.log("e pure qui")
+        await conn.close()
+    }
+
+}
+
+function extractKeysFromKijiHtml(html)
+{
+    // Reading: it's the <b> inside the <h2 class="midashigo"> , replace "・" with "" 
+    // Kanji key: it's a free text inside the <h2> wrapped between 【】
+}
+
+
+async function initializeDb()
+{
+    // await downloadLetterPages()
+    // await downloadLemmas()
+    await saveKijiText()
 }
 
 initializeDb().catch(console.error)
