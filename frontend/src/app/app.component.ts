@@ -8,9 +8,8 @@ import { filter, tap } from 'rxjs/operators';
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit {
 
-    private scrollPositionSubscription: Subscription = new Subscription();
     loading: boolean = false;
 
     constructor(
@@ -18,14 +17,14 @@ export class AppComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit(): void {
-        this.scrollPositionSubscription = this.router.events.pipe(
+        this.router.events.pipe(
             filter((e: any) => e instanceof Scroll),
             tap((e: any) => {
                 window["scrollPositionToRestore"] = (e as Scroll).position ? (e as Scroll).position : [0, 0];
             })
         ).subscribe();
 
-        this.scrollPositionSubscription = this.router.events.subscribe((event: Event) => {
+        this.router.events.subscribe((event: Event) => {
             switch (true) {
                 case event instanceof NavigationStart: {
                     document.getElementById("loader").style.display = "block";
@@ -46,9 +45,6 @@ export class AppComponent implements OnInit, OnDestroy {
         })
     }
 
-    ngOnDestroy(): void {
-        this.scrollPositionSubscription.unsubscribe();
-    }
 }
 
 
