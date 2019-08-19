@@ -172,8 +172,8 @@ async function saveKijiText()
                 console.log(doc._id + " is anomalous")
             }
             const kijiText = getKijiTextFromGzippedHtml(doc.gzippedData.buffer
-                                                        ? doc.gzippedData.buffer
-                                                        : doc.gzippedData)
+                ? doc.gzippedData.buffer
+                : doc.gzippedData)
             if (kijiText)
             {
                 yesKijiCount++
@@ -198,10 +198,73 @@ async function saveKijiText()
 
 }
 
-function extractKeysFromKijiHtml(html)
+async function extractKeysFromKijiHtml()
 {
-    // Reading: it's the <b> inside the <h2 class="midashigo"> , replace "・" with "" 
-    // Kanji key: it's a free text inside the <h2> wrapped between 【】
+
+    const conn = await mongodb.MongoClient.connect("mongodb://localhost:27017", { useNewUrlParser: true, useUnifiedTopology: true })
+    try
+    {
+        const db = conn.db("webKanjiLookup")
+        const sanseidoCollection = db.collection("sanseido")
+        sanseidoCollection.createIndex({ midashigo: 1 })
+        const cursor = sanseidoCollection.find({ midashigo: null, kijiText: { $exists: true } })
+        let i = 0
+        while (await cursor.hasNext())
+        {
+            i++
+            const doc = await cursor.next()
+            const html = doc.kijiText
+            if (html)
+            {
+                const soup = new JSSoup(html)
+                const midashigo = soup.findAll("h2", "midashigo")[0]
+
+                const b = midashigo.findAll("b")[0]
+                const partInB = b
+                    ? b.text
+                        .replace(/\s*<span.*?<\/span>\s*/g, "")
+                        .replace(/（.*?）/g, "")
+                        .replace(/[・ ]/g, "")
+                    : null
+
+                const brackets = midashigo
+                    .toString()
+                    .match(/【.*?】/g)
+
+                const partsInBrackets = brackets
+                    ? brackets[0]
+                        .replace(/[【】〈〉]/g, "") // remove brackets and useless 〈〉that sometimes are inside the brackets
+                        .replace(/\s*<span.*?<\/span>\s*/g, "")
+                        .replace(/（.*?）/g, "")
+                        .split("・")
+                        .map(x => x.trim())
+                    : null
+
+                // TODO: 心血を注そそぐ should be 心血を注ぐ
+
+                const title = midashigo.attrs.title
+
+                // console.log(doc._id)
+                // console.log(midashigo.toString())
+                // console.log(title)
+                // console.log(partsInBrackets)
+                // console.log(partInB)
+
+                const allMidashigo = Array
+                    .from(new Set([title, partInB].concat(partsInBrackets))) // Remove duplicates
+                    .filter(x => x) // Remove nulls and undefineds
+
+                await sanseidoCollection.updateOne({ _id: doc._id }, { $set: { midashigo: allMidashigo } })
+
+                if (i % 100 == 0)
+                    console.log(i)
+            }
+        }
+    }
+    finally
+    {
+        await conn.close()
+    }
 }
 
 
@@ -209,7 +272,8 @@ async function initializeDb()
 {
     // await downloadLetterPages()
     // await downloadLemmas()
-    await saveKijiText()
+    // await saveKijiText()
+    await extractKeysFromKijiHtml()
 }
 
 initializeDb().catch(console.error)
