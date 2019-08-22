@@ -7,6 +7,7 @@
     <label for="OPEN">Open</label>
     <input type="radio" id="HIDE" value="HIDE" name="editMode">
     <label for="HIDE">Hide</label>
+    {{ hiddenKanjiCount }}/{{ totalKanjiCount }}
 </header>
 <article>
     <button class="linkbutton" *ngFor="let kanji of kanjiToDisplay; trackBy: trackByFn"

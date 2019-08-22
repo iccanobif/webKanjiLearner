@@ -16,19 +16,22 @@ export class HomePageComponent implements OnInit, AfterViewInit {
 
   username: string
   kanjiToDisplay: Kanji[]
+  hiddenCharacters: Set<string>
+  hiddenKanjiCount: number
+  totalKanjiCount: number = allKanji.length
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private scrollPositionRestorer: ScrollPositionRestorerService,
     private hiddenCharactersService: HiddenCharactersService) { }
-  hiddenCharacters: Set<string>
 
   refreshKanjiToDisplay() {
     this.kanjiToDisplay = allKanji.map(k => ({
       character: k,
       isHidden: this.hiddenCharacters.has(k)
     }))
+    this.hiddenKanjiCount = this.hiddenCharacters.size
     console.log("aggiornati kanji to display")
   }
 
