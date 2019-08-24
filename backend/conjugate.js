@@ -19,8 +19,8 @@ module.exports.conjugate = (kanjiWord, kanaWord, partOfSpeech) =>
             charactersToTrim = 1
 
         newWords.push({
-            kanjiElement: kanjiWord == null ? null : kanjiWord.slice(0, kanjiWord.length - charactersToTrim) + suffix,
-            readingElement: kanaWord == null ? null : kanaWord.slice(0, kanaWord.length - charactersToTrim) + suffix
+            kanji: kanjiWord == null ? null : kanjiWord.slice(0, kanjiWord.length - charactersToTrim) + suffix,
+            reading: kanaWord == null ? null : kanaWord.slice(0, kanaWord.length - charactersToTrim) + suffix
         })
     }
 

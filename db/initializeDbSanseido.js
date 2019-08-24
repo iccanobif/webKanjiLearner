@@ -273,7 +273,7 @@ async function initializeDb()
     // await downloadLetterPages()
     // await downloadLemmas()
     // await saveKijiText()
-    await extractKeysFromKijiHtml()
+    // await extractKeysFromKijiHtml()
 }
 
 initializeDb().catch(console.error)
