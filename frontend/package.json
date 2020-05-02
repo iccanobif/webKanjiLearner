@@ -6,7 +6,7 @@
     "start": "node frontend.js",
     "start-dev": "ng serve",
     "start-prod": "node frontend.js",
-    "build": "ng build --prod --base-href=/knaji/",
+    "build": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
